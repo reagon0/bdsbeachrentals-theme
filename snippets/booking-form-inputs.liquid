@@ -1,0 +1,712 @@
+<style>
+    .datetime-picker {
+        font-family: system-ui, -apple-system, sans-serif;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        background: white;
+        border: 1px solid rgb(var(--color-foreground));
+        margin-bottom: 20px;
+        margin-top: 1rem;
+    }
+
+    .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .calendar-header button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .calendar-header button svg {
+        width: 12px;
+    }
+    .calendar-header button#prev-month svg {
+        transform: rotate(90deg);
+    }
+    .calendar-header button#next-month svg {
+        transform: rotate(-90deg);
+    }
+
+    .calendar-header button:hover {
+        background: #f3f4f6;
+        border-radius: 4px;
+    }
+
+    .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 2px;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .weekday {
+        font-weight: 500;
+        color: #6b7280;
+        padding: 5px;
+        font-size: 12px;
+    }
+
+    .date {
+        padding: 8px;
+        cursor: pointer;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    .date:hover:not(.disabled) {
+        background: #f3f4f6;
+    }
+
+    .date.selected {
+        background: rgb(var(--color-foreground)) !important;
+        color: white;
+    }
+
+    .date.today {
+        font-weight: bold;
+        color: #000;
+        /*border: 1px solid rgb(var(--color-foreground));*/
+    }
+    .date.today.selected {
+        color: #FFF;
+    }
+
+    .date.disabled {
+        color: #d1d5db;
+        cursor: not-allowed;
+    }
+
+    .time-selector {
+        margin-top: 10px;
+    }
+
+    .time-selector select {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        font-size: 14px;
+        background: white;
+    }
+
+    .time-selector select:focus {
+        outline: none;
+        border-color: rgb(var(--color-foreground));
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+    }
+
+    .selected-datetime {
+        margin-top: 20px;
+        padding: 15px;
+        background: #f9fafb;
+        border-radius: 6px;
+        font-size: 14px;
+    }
+    #current-month,
+    #selected-datetime,
+    #time-select,
+    .time-selector-label {
+        font-family: var(--font-body-family), sans-serif;
+        color: rgb(var(--color-foreground));
+        text-align: center;
+    }
+    .fake-select {
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+    }
+    #preferred_pickup_location,
+    #preferred_drop_off_location,
+    #special_requirements {
+        max-width: 100%;
+        padding: 20px;
+        margin-top: 1rem;
+        border: 1px solid rgb(var(--color-foreground));
+    }
+    #special_requirements {
+        min-height: 200px;
+    }
+
+    /* Add these styles to the <style> section in booking-form-inputs.liquid */
+
+    .date.in-range {
+        background-color: rgba(var(--color-foreground), 0.3);
+    }
+
+    .booking-selection-mode {
+        margin: 10px 0;
+        text-align: center;
+    }
+
+    .booking-price-summary {
+        margin-top: 20px;
+        padding: 15px;
+        background: #f9fafb;
+        border-radius: 6px;
+        font-size: 14px;
+    }
+
+    .booking-total {
+        margin-top: 10px;
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    /* Style for highlighting the range of dates */
+    .date.in-range:not(.selected) {
+        background-color: rgba(var(--color-foreground), 0.3);
+        color: rgb(var(--color-foreground));
+    }
+
+    /* Make the calendar responsive */
+    @media screen and (max-width: 768px) {
+        .calendar-grid {
+            gap: 1px;
+        }
+        
+        .date {
+            padding: 6px;
+            font-size: 12px;
+        }
+    }
+
+</style>
+<!-- Add these elements to booking-form-inputs.liquid -->
+
+<fieldset class="product-form__input product-form__input--pill">
+    <legend class="form__label">Booking Dates</legend>
+    <div class="datetime-picker">
+        <div class="calendar-header">
+            <button id="prev-month" type="button"><svg class="icon icon-caret" viewBox="0 0 10 6"><path fill="currentColor" fill-rule="evenodd" d="M9.354.646a.5.5 0 0 0-.708 0L5 4.293 1.354.646a.5.5 0 0 0-.708.708l4 4a.5.5 0 0 0 .708 0l4-4a.5.5 0 0 0 0-.708" clip-rule="evenodd"></path></svg></button>
+            <span id="current-month"></span>
+            <button id="next-month" type="button"><svg class="icon icon-caret" viewBox="0 0 10 6"><path fill="currentColor" fill-rule="evenodd" d="M9.354.646a.5.5 0 0 0-.708 0L5 4.293 1.354.646a.5.5 0 0 0-.708.708l4 4a.5.5 0 0 0 .708 0l4-4a.5.5 0 0 0 0-.708" clip-rule="evenodd"></path></svg></button>
+        </div>
+        <div class="booking-selection-mode">
+            <button type="button" id="booking-mode-toggle" class="button button--small">Select End Date</button>
+        </div>
+        <div class="calendar-grid" id="calendar"></div>
+        <div class="time-selector-label form__label">Pickup Time</div>
+        <div class="time-selector">
+            <select id="time-select"></select>
+        </div>
+        <div class="selected-datetime" id="selected-datetime"></div>
+        
+        <!-- Pricing Information -->
+        <div id="booking-total-price" class="booking-price"></div>
+
+        <!-- Hidden inputs for Shopify -->
+        <input type="hidden" name="properties[Start Date]" id="shopify-date-input">
+        <input type="hidden" name="properties[End Date]" id="shopify-end-date-input">
+        <input type="hidden" name="properties[Pickup Time]" id="shopify-time-input">
+        <input type="hidden" name="properties[Duration]" id="shopify-duration-input">
+        <input type="hidden" name="properties[Discount]" id="shopify-discount-input">
+    </div>
+</fieldset>
+{% comment %}
+{% if block.settings.preferred_pickup_location_options %}
+    {% assign preferred_pickup_location_options = block.settings.preferred_pickup_location_options | newline_to_br | split: '<br />' %}
+    <fieldset class="product-form__input product-form__input--pill">
+        <legend class="form__label"><label for="preferred_pickup_location">Preferred Pickup Location</label></legend>
+        <div class="select fake-select">
+            <select id="preferred_pickup_location" class="select__select" name="properties[Preferred Pickup Location]">
+                {% for preferred_pickup_location_option in preferred_pickup_location_options %}
+                <option value="{{ preferred_pickup_location_option }}"{% if forloop.first %} selected{% endif %}>{{ preferred_pickup_location_option }}</option>
+                {% endfor %}
+            </select>
+            <span class="svg-wrapper"><svg class="icon icon-caret" viewBox="0 0 10 6"><path fill="currentColor" fill-rule="evenodd" d="M9.354.646a.5.5 0 0 0-.708 0L5 4.293 1.354.646a.5.5 0 0 0-.708.708l4 4a.5.5 0 0 0 .708 0l4-4a.5.5 0 0 0 0-.708" clip-rule="evenodd"></path></svg>
+        </span>
+        </div>
+    </fieldset>
+{% endif %}
+{% if block.settings.preferred_drop_off_location_options %}
+    {% assign preferred_drop_off_location_options = block.settings.preferred_drop_off_location_options | newline_to_br | split: '<br />' %}
+    <fieldset class="product-form__input product-form__input--pill">
+        <legend class="form__label"><label for="preferred_drop_off_location">Preferred Drop-off Location</label></legend>
+        <div class="select fake-select">
+            <select id="preferred_drop_off_location" class="select__select" name="properties[Preferred Drop-off Location]">
+                {% for preferred_drop_off_location_option in preferred_drop_off_location_options %}
+                    <option value="{{ preferred_drop_off_location_option }}"{% if forloop.first %} selected{% endif %}>{{ preferred_drop_off_location_option }}</option>
+                {% endfor %}
+            </select>
+            <span class="svg-wrapper"><svg class="icon icon-caret" viewBox="0 0 10 6"><path fill="currentColor" fill-rule="evenodd" d="M9.354.646a.5.5 0 0 0-.708 0L5 4.293 1.354.646a.5.5 0 0 0-.708.708l4 4a.5.5 0 0 0 .708 0l4-4a.5.5 0 0 0 0-.708" clip-rule="evenodd"></path></svg>
+        </span>
+        </div>
+    </fieldset>
+{% endif %}{% endcomment %}
+<fieldset class="product-form__input product-form__input--pill">
+    <legend class="form__label"><label for="preferred_pickup_location">Preferred Pickup Location</label></legend>
+    <input type="text" id="preferred_pickup_location" class="select__select" name="properties[Preferred Pickup Location]" placeholder="Include full address"/>
+</fieldset>
+<fieldset class="product-form__input product-form__input--pill">
+    <legend class="form__label"><label for="preferred_drop_off_location">Preferred Drop-off Location</label></legend>
+    <input type="text" id="preferred_drop_off_location" class="select__select" name="properties[Preferred Drop-off Location]" placeholder="Include full address"></input>
+</fieldset>
+<fieldset class="product-form__input product-form__input--pill">
+    <legend class="form__label"><label for="special_requirements">Additional Rental Details</label></legend>
+    <textarea id="special_requirements" class="select__select" name="properties[Special Requests]" placeholder="Let us know how we can help"></textarea>
+</fieldset>
+<script>
+    /*
+    chat hash: c63e4f76-cdc9-425c-84c9-42d36c75a267
+    * */
+    
+    // Modifications for the DateTimePicker class in booking-form-inputs.liquid
+
+class DateTimePicker {
+    constructor(settings = {}) {
+        this.settings = {
+            availability: {
+                Monday: { start: '08:00', end: '22:00' },
+                Tuesday: { start: '08:00', end: '22:00' },
+                Wednesday: { start: '08:00', end: '22:00' },
+                Thursday: { start: '08:00', end: '22:00' },
+                Friday: { start: '08:00', end: '22:00' },
+                Saturday: { start: '08:00', end: '22:00' },
+                Sunday: { start: '08:00', end: '22:00' }
+            },
+            minTimeFromNow: 60, // 1 hour minimum by default
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            timeFormat: '12',
+            minuteStep: 30,
+            startFromNow: true,
+            // Add discount tiers for multi-day pricing
+            discountTiers: {
+                1: 1.00, // 100% of price (no discount)
+                2: 0.80, // 80% per day (20% discount)
+                3: 0.70  // 70% per day (30% discount) for 3+ days
+            },
+            ...settings
+        };
+
+        this.currentDate = new Date();
+        this.minDateTime = new Date();
+        this.minDateTime.setMinutes(this.minDateTime.getMinutes() + this.settings.minTimeFromNow)
+
+        // Preselect the first available date 
+        this.selectedDate = new Date(
+            this.minDateTime.getFullYear(),
+            this.minDateTime.getMonth(),
+            this.minDateTime.getDate()
+        );
+
+        // Initialize array for multi-day selection
+        this.selectedDates = [this.selectedDate];
+        this.selectionMode = 'start'; // 'start' or 'end' mode for range selection
+
+        this.initializeElements();
+        this.setupEventListeners();
+        this.render();
+
+        // After rendering, select the first available time
+        this.preselectFirstAvailableTime();
+    }
+
+    initializeElements() {
+        this.calendarEl = document.getElementById('calendar');
+        this.currentMonthEl = document.getElementById('current-month');
+        this.timeSelectEl = document.getElementById('time-select');
+        this.selectedDateTimeEl = document.getElementById('selected-datetime');
+        this.shopifyDateInput = document.getElementById('shopify-date-input');
+        this.shopifyTimeInput = document.getElementById('shopify-time-input');
+        
+        // Add new elements for multi-day selection
+        this.shopifyEndDateInput = document.getElementById('shopify-end-date-input');
+        this.shopifyDurationInput = document.getElementById('shopify-duration-input');
+        this.shopifyDiscountInput = document.getElementById('shopify-discount-input');
+        
+        // Get base price from product variant
+        this.basePrice = this.getBasePrice();
+        this.totalPriceEl = document.getElementById('booking-total-price');
+    }
+
+    getBasePrice() {
+        // Get the price from the current product variant
+        const priceElement = document.querySelector('.price .price__regular .price-item--regular');
+        if (priceElement) {
+            const priceText = priceElement.textContent.trim();
+            // Extract just the number from the price text (remove currency symbols, etc.)
+            const priceMatch = priceText.match(/[\d,.]+/);
+            if (priceMatch) {
+                return parseFloat(priceMatch[0].replace(/,/g, ''));
+            }
+        }
+        return 0; // Default if price can't be found
+    }
+
+    setupEventListeners() {
+        document.getElementById('prev-month').addEventListener('click', () => {
+            this.currentDate.setMonth(this.currentDate.getMonth() - 1);
+            this.render();
+        });
+
+        document.getElementById('next-month').addEventListener('click', () => {
+            this.currentDate.setMonth(this.currentDate.getMonth() + 1);
+            this.render();
+        });
+
+        this.timeSelectEl.addEventListener('change', (e) => {
+            this.selectTime(e.target.value);
+        });
+        
+        // Add event listener for switching selection mode
+        document.getElementById('booking-mode-toggle').addEventListener('click', () => {
+            this.toggleSelectionMode();
+        });
+        
+        // Add event listener for product variant changes to update base price
+        document.addEventListener('variant:change', () => {
+            this.basePrice = this.getBasePrice();
+            this.updateTotalPrice();
+        });
+    }
+
+    toggleSelectionMode() {
+        if (this.selectionMode === 'start') {
+            this.selectionMode = 'end';
+            document.getElementById('booking-mode-toggle').textContent = 'Select Start Date';
+        } else {
+            this.selectionMode = 'start';
+            document.getElementById('booking-mode-toggle').textContent = 'Select End Date';
+        }
+    }
+
+    render() {
+        this.renderCalendar();
+        this.renderTimeDropdown();
+        this.updateSelectedDateTime();
+        this.updateTotalPrice();
+    }
+
+    renderCalendar() {
+        const year = this.currentDate.getFullYear();
+        const month = this.currentDate.getMonth();
+
+        this.currentMonthEl.textContent = new Date(year, month)
+            .toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+
+        this.calendarEl.innerHTML = '';
+
+        // Add weekday headers
+        const weekdays = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+        weekdays.forEach(day => {
+            const dayEl = document.createElement('div');
+            dayEl.className = 'weekday';
+            dayEl.textContent = day;
+            this.calendarEl.appendChild(dayEl);
+        });
+
+        const firstDayOfMonth = new Date(year, month, 1);
+        const daysFromPrevMonth = firstDayOfMonth.getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const prevMonthLastDay = new Date(year, month, 0).getDate();
+
+        // Add previous month's days
+        for (let i = daysFromPrevMonth - 1; i >= 0; i--) {
+            const dateEl = document.createElement('div');
+            dateEl.className = 'date disabled';
+            dateEl.textContent = prevMonthLastDay - i;
+            this.calendarEl.appendChild(dateEl);
+        }
+
+        // Current month days
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dateEl = document.createElement('div');
+            dateEl.className = 'date';
+            dateEl.textContent = day;
+
+            const currentDate = new Date(year, month, day);
+            
+            // Check if date is in the selected range
+            const isInRange = this.isDateInSelectedRange(currentDate);
+            if (isInRange) {
+                dateEl.classList.add('in-range');
+            }
+
+            // Check if date is selected (start or end date)
+            if (this.isDateSelected(currentDate)) {
+                dateEl.classList.add('selected');
+            }
+
+            if (currentDate.toDateString() === new Date().toDateString()) {
+                dateEl.classList.add('today');
+            }
+
+            const currentDateMidnight = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
+            const minDateMidnight = new Date(this.minDateTime.getFullYear(), this.minDateTime.getMonth(), this.minDateTime.getDate());
+
+            if (currentDateMidnight < minDateMidnight) {
+                dateEl.classList.add('disabled');
+            } else {
+                dateEl.addEventListener('click', () => {
+                    this.selectDate(new Date(year, month, day));
+                });
+            }
+
+            this.calendarEl.appendChild(dateEl);
+        }
+
+        // Add next month's days to complete the grid
+        const totalDaysOnCalendar = this.calendarEl.children.length;
+        const nextMonthDays = Math.ceil(totalDaysOnCalendar / 7) * 7 - totalDaysOnCalendar;
+
+        for (let i = 1; i <= nextMonthDays; i++) {
+            const dateEl = document.createElement('div');
+            dateEl.className = 'date disabled';
+            dateEl.textContent = i;
+            this.calendarEl.appendChild(dateEl);
+        }
+    }
+
+    isDateSelected(date) {
+        return this.selectedDates.some(selectedDate => 
+            selectedDate.toDateString() === date.toDateString());
+    }
+
+    isDateInSelectedRange(date) {
+        if (this.selectedDates.length !== 2) return false;
+        
+        const startDate = new Date(Math.min(
+            this.selectedDates[0].getTime(), 
+            this.selectedDates[1].getTime()
+        ));
+        const endDate = new Date(Math.max(
+            this.selectedDates[0].getTime(), 
+            this.selectedDates[1].getTime()
+        ));
+        
+        return date >= startDate && date <= endDate;
+    }
+
+    selectDate(date) {
+        if (this.selectionMode === 'start') {
+            // Clear previous selection if we're starting a new range
+            this.selectedDates = [date];
+            this.selectionMode = 'end';
+            document.getElementById('booking-mode-toggle').textContent = 'Select Start Date';
+        } else {
+            // Add end date to complete the range
+            this.selectedDates.push(date);
+            // Sort dates to ensure start date is first
+            this.selectedDates.sort((a, b) => a - b);
+            this.selectionMode = 'start';
+            document.getElementById('booking-mode-toggle').textContent = 'Select End Date';
+        }
+        
+        this.updateShopifyInputs();
+        this.render();
+    }
+
+    // Calculate the number of days in the booking
+    calculateDuration() {
+        if (this.selectedDates.length !== 2) return 1;
+        
+        const startDate = new Date(this.selectedDates[0]);
+        const endDate = new Date(this.selectedDates[1]);
+        
+        // Set time to midnight to ensure we're only counting days
+        startDate.setHours(0, 0, 0, 0);
+        endDate.setHours(0, 0, 0, 0);
+        
+        // Calculate difference in days
+        const diffTime = Math.abs(endDate - startDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        // Add 1 to include both start and end dates
+        return diffDays + 1;
+    }
+
+    // Get the discount multiplier based on duration
+    getDiscountMultiplier(duration) {
+        // Use the highest applicable discount tier
+        for (let tier = Math.min(duration, 3); tier > 0; tier--) {
+            if (this.settings.discountTiers[tier]) {
+                return this.settings.discountTiers[tier];
+            }
+        }
+        return 1; // Default: no discount
+    }
+
+    // Calculate total price based on duration and discount
+    calculateTotalPrice() {
+        const duration = this.calculateDuration();
+        const discountMultiplier = this.getDiscountMultiplier(duration);
+        return this.basePrice * duration * discountMultiplier;
+    }
+
+    // Update the displayed total price
+    updateTotalPrice() {
+        if (!this.totalPriceEl) return;
+        
+        const duration = this.calculateDuration();
+        const discountMultiplier = this.getDiscountMultiplier(duration);
+        const totalPrice = this.calculateTotalPrice();
+        
+        // Format the price
+        const formatter = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+        });
+        
+        // Update the display
+        let priceHtml = `<div class="booking-price-summary">`;
+        priceHtml += `<div>Duration: ${duration} day${duration !== 1 ? 's' : ''}</div>`;
+        
+        if (discountMultiplier < 1) {
+            const discount = (1 - discountMultiplier) * 100;
+            priceHtml += `<div>Discount: ${discount}% off</div>`;
+            priceHtml += `<div>Base Price: ${formatter.format(this.basePrice)} × ${duration} days</div>`;
+        }
+        
+        priceHtml += `<div class="booking-total">Total: ${formatter.format(totalPrice)}</div>`;
+        priceHtml += `</div>`;
+        
+        this.totalPriceEl.innerHTML = priceHtml;
+        
+        // Update hidden inputs
+        if (this.shopifyDurationInput) {
+            this.shopifyDurationInput.value = duration;
+        }
+        
+        if (this.shopifyDiscountInput) {
+            this.shopifyDiscountInput.value = discountMultiplier;
+        }
+    }
+
+    selectTime(time) {
+        this.selectedTime = time;
+        this.updateShopifyInputs();
+        this.updateSelectedDateTime();
+    }
+
+    updateShopifyInputs() {
+        // Update start date
+        if (this.selectedDates[0] && this.shopifyDateInput) {
+            this.shopifyDateInput.value = this.formatDateForShopify(this.selectedDates[0]);
+        }
+        
+        // Update end date
+        if (this.selectedDates[1] && this.shopifyEndDateInput) {
+            this.shopifyEndDateInput.value = this.formatDateForShopify(this.selectedDates[1]);
+        } else if (this.shopifyEndDateInput) {
+            // If no end date yet, use the start date
+            this.shopifyEndDateInput.value = this.shopifyDateInput.value;
+        }
+        
+        // Update time
+        if (this.selectedTime && this.shopifyTimeInput) {
+            this.shopifyTimeInput.value = this.formatTimeForShopify(this.selectedTime);
+        }
+        
+        // Update duration and price
+        this.updateTotalPrice();
+    }
+
+    updateSelectedDateTime() {
+        if (this.selectedDates.length > 0 && this.selectedTime) {
+            let displayText = '';
+            
+            if (this.selectedDates.length === 1) {
+                // Single date
+                const formattedDate = this.selectedDates[0].toLocaleDateString(undefined, {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                displayText = `${formattedDate} at ${this.formatTimeForDisplay(this.selectedTime)}`;
+            } else {
+                // Date range
+                const startDate = this.selectedDates[0].toLocaleDateString(undefined, {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                
+                const endDate = this.selectedDates[1].toLocaleDateString(undefined, {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                
+                displayText = `From ${startDate} to ${endDate}`;
+                displayText += `<br>Pickup: ${this.formatTimeForDisplay(this.selectedTime)}`;
+            }
+            
+            this.selectedDateTimeEl.innerHTML = displayText;
+        } else {
+            this.selectedDateTimeEl.textContent = 'Select dates';
+        }
+    }
+
+    // Rest of the methods remain the same...
+}
+
+    {% liquid
+        assign days_in_a_week = 'monday-tuesday-wednesday-thursday-friday-saturday-sunday' | split: '-'
+        assign availability_options = ''
+        assign template = "[day]: { start: '[start_time]', end: '[end_time]' }"
+        for day_in_a_week in days_in_a_week
+            assign block_key = 'dt_' | append: day_in_a_week
+            assign row_results = template
+            assign capitalize_day_in_a_week = day_in_a_week | capitalize
+            assign row_results = row_results | replace: '[day]', capitalize_day_in_a_week
+
+            assign start_time = block.settings[block_key] | split: '-' | first
+
+            assign time_parts = start_time | split: ":"
+            assign hour = time_parts[0] | times: 1
+            assign minutes = time_parts[1] | slice: 0, 2
+            assign ampm = time_parts[1] | slice: -2, 2 | downcase
+            if ampm == "pm" and hour != 12
+                assign hour = hour | plus: 12
+            endif
+            if ampm == "am" and hour == 12
+                assign hour = 0
+            endif
+
+            assign prepared_time = hour | append: ":" | append: minutes
+            assign row_results = row_results | replace: '[start_time]', prepared_time
+
+            assign end_time = block.settings[block_key] | split: '-' | last
+
+            assign time_parts = end_time | split: ":"
+            assign hour = time_parts[0] | times: 1
+            assign minutes = time_parts[1] | slice: 0, 2
+            assign ampm = time_parts[1] | slice: -2, 2 | downcase
+            if ampm == "pm" and hour != 12
+                assign hour = hour | plus: 12
+            endif
+            if ampm == "am" and hour == 12
+                assign hour = 0
+            endif
+
+            assign prepared_time = hour | append: ":" | append: minutes
+            assign row_results = row_results | replace: '[end_time]', prepared_time
+
+            assign availability_options = availability_options | append: row_results
+            unless forloop.last
+                assign availability_options = availability_options | append: ","
+            endunless
+        endfor
+    %}
+
+    // Initialize with settings
+    const picker = new DateTimePicker({
+        availability: {
+            {{ availability_options }}
+        },
+        minTimeFromNow: 60, // 1 hour minimum
+        timeFormat: '12',
+        minuteStep: 30,
+        startFromNow: true
+    });
+</script>

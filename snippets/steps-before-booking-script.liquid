@@ -1,0 +1,229 @@
+<div id="steps-before-booking">
+    <style>
+        #steps-before-booking {
+            width: 100%;
+        }
+        .widget-loading-indicator,
+        #bta-product-widget{
+            max-height: 0;
+            overflow: hidden;
+        }
+        #bta-product-widget.show {
+            max-height: 100%;
+        }
+        .freeze_body {
+            overflow: hidden !important;
+            touch-action: manipulation;
+        }
+        .terms_popup_step.hide {
+            display: none;
+        }
+        .terms_popup_step_2 .terms_popup_context {
+            height: 75vh;
+        }
+        #terms_text {
+            display: none !important;
+        }
+        .terms_popup_backdrop {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0, .5);
+            z-index: 2147483647;
+        }
+        .terms_popup {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 10px;
+            right: 10px;
+            margin: 10px auto;
+            max-width: 600px;
+            background: #FFF;
+            z-index: 2147483647;
+            padding: 20px 30px;
+            box-shadow: 0 0 10px #ccc;
+            border-radius: 15px;
+        }
+        .terms_popup_context {
+            height: 50vh;
+            overflow-y: auto;
+        }
+        .terms_popup_context p {
+            margin: 0;
+        }
+        #terms_text:checked ~ .terms_popup {
+            display: block;
+        }
+        #terms_text:checked + .terms_popup_backdrop {
+            display: block !important;
+        }
+        .terms_popup .terms_popup_close {
+            width: 30px;
+            display: flex;
+            margin: 0 0 20px auto;
+            border-radius: 50%;
+            border: 1px solid #000;
+            padding: 7px;
+            cursor: pointer;
+        }
+        .terms_popup .terms_popup_close svg {
+            width: 100%;
+        }
+        .terms_popup_footer {
+            margin-top: 20px;
+        }
+        .agree_with_terms_label {
+            cursor: pointer;
+        }
+        #agree_with_terms {
+            accent-color: #000;
+        }
+        .continue_allowed {
+            padding-top: 10px;
+            position: relative;
+        }
+        .continue_allowed:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255, .5);
+            z-index: 2;
+        }
+        .continue_allowed label {
+            pointer-events: none;
+        }
+        #agree_with_terms:checked ~ .continue_allowed:after {
+            display: none !important;
+        }
+        #agree_with_terms:checked ~ .continue_allowed label {
+            pointer-events: all;
+        }
+        .force-biggest-z-index {
+            z-index: 2147483647 !important;
+        }
+        .continue_button {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+        }
+        .continue_button > * {
+            width: 100%;
+        }
+    </style>
+    <label for="terms_text"
+           onclick="window?.bookingPopup?.openPopup();"
+           class="reserve_now_button_helper button button--full-width button--primary"
+    >
+        {{ 'sections.cart.checkout' | t }}
+    </label>
+
+    <input type="checkbox" id="terms_text" name="terms_text" class="g-booking-checkbox">
+    <label for="terms_text" class="terms_popup_backdrop" onclick="window?.bookingPopup?.closePopup();"></label>
+    <div class="terms_popup">
+        <div class="terms_popup_step terms_popup_step_1">
+            <label for="terms_text" class="terms_popup_close" onclick="window?.bookingPopup?.closePopup();">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" class="icon icon-close" viewBox="0 0 18 17"><path fill="currentColor" d="M.865 15.978a.5.5 0 0 0 .707.707l7.433-7.431 7.579 7.282a.501.501 0 0 0 .846-.37.5.5 0 0 0-.153-.351L9.712 8.546l7.417-7.416a.5.5 0 1 0-.707-.708L8.991 7.853 1.413.573a.5.5 0 1 0-.693.72l7.563 7.268z"></path></svg>
+            </label>
+            <div class="terms_popup_context">
+                <p>
+                    {{ block.settings.popup_text }}
+                </p>
+            </div>
+            <div class="terms_popup_footer">
+                <input type="checkbox" name="agree_with_terms" id="agree_with_terms" class="g-booking-checkbox">
+                <label class="agree_with_terms_label" for="agree_with_terms">{{ block.settings.checkbox_right_text }}</label>
+                <div class="continue_allowed">
+                    <span
+                            class="continue_button"
+                    >
+                        <button
+                                type="submit"
+                                id="checkout"
+                                class="cart__checkout-button button"
+                                name="checkout"
+                          {% if cart == empty %}
+                              disabled
+                          {% endif %}
+                          form="cart"
+                                >
+                          {{ 'sections.cart.checkout' | t }}
+                        </button>
+
+                        {%- if additional_checkout_buttons -%}
+                            <div class="cart__dynamic-checkout-buttons additional-checkout-buttons">
+                              {{ content_for_additional_checkout_buttons }}
+                            </div>
+                        {%- endif -%}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function (){
+            window.bookingPopup = {} || window.bookingPopup;
+            window.bookingPopup.openPopup = function(){
+                document.body.classList.add('freeze_body');
+                const product_info_wrapper = document.querySelector('.cart__footer');
+                product_info_wrapper?.classList.add('force-biggest-z-index');
+            }
+            window.bookingPopup.closePopup = function(){
+                document.body.classList.remove('freeze_body');
+                const product_info_wrapper = document.querySelector('.cart__footer');
+                product_info_wrapper?.classList.remove('force-biggest-z-index');
+            }
+
+            // const intervalCount = 0;
+            // function clearCheckboxes () {
+            //     const checkboxes = document.querySelectorAll('.g-booking-checkbox');
+            //     checkboxes && checkboxes.forEach(checkbox => {
+            //         checkbox.checked = false;
+            //     });
+            // }
+            // const interval = setInterval(() => {
+            //     clearCheckboxes();
+            //     if(intervalCount > 10){
+            //         clearInterval(interval);
+            //     }
+            // }, 100);
+            // window.addEventListener('load', () => {
+            //     clearInterval(interval);
+            //     clearCheckboxes();
+            // });
+            //terms logic
+            const terms_popup = document.querySelector('.terms_popup');
+            if(terms_popup){
+                const terms_button = terms_popup.querySelector('.continue_button');
+                console.log('terms_button: ', terms_button);
+                if(terms_button){
+                    terms_button.addEventListener('click', () => {
+                        console.log('asadasdasdfASDFSD')
+                        // const product_form = document.querySelector('.product-form');
+                        // if(product_form){
+                        //     const bookingForm = product_form.querySelector('#bta-product-widget');
+                        //     if(bookingForm) {
+                        //         const step_1_div = terms_popup.querySelector('.terms_popup_step_1');
+                        //         const step_2_div = terms_popup.querySelector('.terms_popup_step_2');
+                        //         if(step_1_div && step_2_div){
+                        //             step_1_div.classList.add('hide');
+                        //             //step_2_div.append(product_form);
+                        //             bookingForm.classList.add('show');
+                        //             step_2_div.classList.remove('hide');
+                        //         }
+                        //     }
+                        // }
+                    });
+                }
+            }
+        })()
+    </script>
+</div>
