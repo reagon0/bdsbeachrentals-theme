@@ -1,0 +1,11 @@
+# macOS system files
+.DS_Store
+
+# Ignore config.yml if it contains sensitive information
+config/settings_data.json
+
+# Compiled files
+*.compiled
+
+# Logs
+*.log

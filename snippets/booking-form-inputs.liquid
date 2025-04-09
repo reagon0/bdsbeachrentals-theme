@@ -176,10 +176,53 @@
             font-size: 12px;
         }
     }
+    <!-- CSS styles - Add these to your existing styles -->
+
+    /* Add these to your existing styles */
+    .selection-status {
+        text-align: center;
+        padding: 10px;
+        margin-bottom: 10px;
+        background-color: rgb(var(--color-foreground));
+        color: white;
+        font-weight: bold;
+        border-radius: 4px;
+    }
+    
+    .selected-date-range {
+        margin: 15px 0;
+        padding: 12px;
+        background: #f9fafb;
+        border-radius: 6px;
+        font-size: 14px;
+        text-align: center;
+    }
+    
+    .date.start-date {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+    
+    .date.end-date {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+    
+    .date.start-date, .date.end-date {
+        background-color: rgb(var(--color-foreground)) !important;
+        color: white;
+        font-weight: bold;
+    }
+    
+    .date.in-range {
+        background-color: rgba(var(--color-foreground), 0.3);
+        color: rgb(var(--color-foreground));
+    }
 
 </style>
 <!-- Add these elements to booking-form-inputs.liquid -->
 
+<!-- HTML structure - Replace the current calendar HTML with this -->
 <fieldset class="product-form__input product-form__input--pill">
     <legend class="form__label">Booking Dates</legend>
     <div class="datetime-picker">
@@ -188,15 +231,15 @@
             <span id="current-month"></span>
             <button id="next-month" type="button"><svg class="icon icon-caret" viewBox="0 0 10 6"><path fill="currentColor" fill-rule="evenodd" d="M9.354.646a.5.5 0 0 0-.708 0L5 4.293 1.354.646a.5.5 0 0 0-.708.708l4 4a.5.5 0 0 0 .708 0l4-4a.5.5 0 0 0 0-.708" clip-rule="evenodd"></path></svg></button>
         </div>
-        <div class="booking-selection-mode">
-            <button type="button" id="booking-mode-toggle" class="button button--small">Select End Date</button>
-        </div>
+        <div class="selection-status" id="selection-status">Select your booking dates</div>
         <div class="calendar-grid" id="calendar"></div>
+        
+        <div class="selected-date-range" id="selected-date-range"></div>
+        
         <div class="time-selector-label form__label">Pickup Time</div>
         <div class="time-selector">
             <select id="time-select"></select>
         </div>
-        <div class="selected-datetime" id="selected-datetime"></div>
         
         <!-- Pricing Information -->
         <div id="booking-total-price" class="booking-price"></div>
@@ -209,6 +252,7 @@
         <input type="hidden" name="properties[Discount]" id="shopify-discount-input">
     </div>
 </fieldset>
+
 {% comment %}
 {% if block.settings.preferred_pickup_location_options %}
     {% assign preferred_pickup_location_options = block.settings.preferred_pickup_location_options | newline_to_br | split: '<br />' %}
@@ -259,6 +303,7 @@
     
     // Modifications for the DateTimePicker class in booking-form-inputs.liquid
 
+<script>
 class DateTimePicker {
     constructor(settings = {}) {
         this.settings = {
@@ -276,7 +321,7 @@ class DateTimePicker {
             timeFormat: '12',
             minuteStep: 30,
             startFromNow: true,
-            // Add discount tiers for multi-day pricing
+            // Discount tiers for multi-day pricing
             discountTiers: {
                 1: 1.00, // 100% of price (no discount)
                 2: 0.80, // 80% per day (20% discount)
@@ -287,24 +332,20 @@ class DateTimePicker {
 
         this.currentDate = new Date();
         this.minDateTime = new Date();
-        this.minDateTime.setMinutes(this.minDateTime.getMinutes() + this.settings.minTimeFromNow)
+        this.minDateTime.setMinutes(this.minDateTime.getMinutes() + this.settings.minTimeFromNow);
 
-        // Preselect the first available date 
-        this.selectedDate = new Date(
-            this.minDateTime.getFullYear(),
-            this.minDateTime.getMonth(),
-            this.minDateTime.getDate()
-        );
-
-        // Initialize array for multi-day selection
-        this.selectedDates = [this.selectedDate];
-        this.selectionMode = 'start'; // 'start' or 'end' mode for range selection
+        // Initialize date selection variables
+        this.startDate = null;
+        this.endDate = null;
+        this.selectedTime = null;
+        this.selectionState = 'start'; // 'start' or 'end'
 
         this.initializeElements();
         this.setupEventListeners();
         this.render();
-
-        // After rendering, select the first available time
+        this.updateSelectionStatus();
+        
+        // Preselect first available time
         this.preselectFirstAvailableTime();
     }
 
@@ -312,18 +353,26 @@ class DateTimePicker {
         this.calendarEl = document.getElementById('calendar');
         this.currentMonthEl = document.getElementById('current-month');
         this.timeSelectEl = document.getElementById('time-select');
-        this.selectedDateTimeEl = document.getElementById('selected-datetime');
-        this.shopifyDateInput = document.getElementById('shopify-date-input');
-        this.shopifyTimeInput = document.getElementById('shopify-time-input');
+        this.selectedDateRangeEl = document.getElementById('selected-date-range');
+        this.selectionStatusEl = document.getElementById('selection-status');
         
-        // Add new elements for multi-day selection
+        // Hidden inputs for Shopify
+        this.shopifyDateInput = document.getElementById('shopify-date-input');
         this.shopifyEndDateInput = document.getElementById('shopify-end-date-input');
+        this.shopifyTimeInput = document.getElementById('shopify-time-input');
         this.shopifyDurationInput = document.getElementById('shopify-duration-input');
         this.shopifyDiscountInput = document.getElementById('shopify-discount-input');
         
-        // Get base price from product variant
+        // Price elements
         this.basePrice = this.getBasePrice();
         this.totalPriceEl = document.getElementById('booking-total-price');
+    }
+
+    preselectFirstAvailableTime() {
+        if (this.timeSelectEl && this.timeSelectEl.options.length > 0) {
+            const firstTimeOption = this.timeSelectEl.options[0].value;
+            this.selectTime(firstTimeOption);
+        }
     }
 
     getBasePrice() {
@@ -331,7 +380,7 @@ class DateTimePicker {
         const priceElement = document.querySelector('.price .price__regular .price-item--regular');
         if (priceElement) {
             const priceText = priceElement.textContent.trim();
-            // Extract just the number from the price text (remove currency symbols, etc.)
+            // Extract number from price text
             const priceMatch = priceText.match(/[\d,.]+/);
             if (priceMatch) {
                 return parseFloat(priceMatch[0].replace(/,/g, ''));
@@ -355,32 +404,27 @@ class DateTimePicker {
             this.selectTime(e.target.value);
         });
         
-        // Add event listener for switching selection mode
-        document.getElementById('booking-mode-toggle').addEventListener('click', () => {
-            this.toggleSelectionMode();
-        });
-        
-        // Add event listener for product variant changes to update base price
+        // Listen for product variant changes to update the price
         document.addEventListener('variant:change', () => {
             this.basePrice = this.getBasePrice();
             this.updateTotalPrice();
         });
     }
 
-    toggleSelectionMode() {
-        if (this.selectionMode === 'start') {
-            this.selectionMode = 'end';
-            document.getElementById('booking-mode-toggle').textContent = 'Select Start Date';
+    updateSelectionStatus() {
+        if (!this.selectionStatusEl) return;
+        
+        if (this.selectionState === 'start') {
+            this.selectionStatusEl.textContent = 'Select Start Date';
         } else {
-            this.selectionMode = 'start';
-            document.getElementById('booking-mode-toggle').textContent = 'Select End Date';
+            this.selectionStatusEl.textContent = 'Select End Date';
         }
     }
 
     render() {
         this.renderCalendar();
         this.renderTimeDropdown();
-        this.updateSelectedDateTime();
+        this.updateSelectedDateRange();
         this.updateTotalPrice();
     }
 
@@ -423,29 +467,36 @@ class DateTimePicker {
 
             const currentDate = new Date(year, month, day);
             
+            // Check if this date is the start date
+            if (this.startDate && this.isSameDay(currentDate, this.startDate)) {
+                dateEl.classList.add('start-date');
+            }
+            
+            // Check if this date is the end date
+            if (this.endDate && this.isSameDay(currentDate, this.endDate)) {
+                dateEl.classList.add('end-date');
+            }
+            
             // Check if date is in the selected range
-            const isInRange = this.isDateInSelectedRange(currentDate);
-            if (isInRange) {
+            if (this.isDateInRange(currentDate)) {
                 dateEl.classList.add('in-range');
             }
 
-            // Check if date is selected (start or end date)
-            if (this.isDateSelected(currentDate)) {
-                dateEl.classList.add('selected');
-            }
-
-            if (currentDate.toDateString() === new Date().toDateString()) {
+            if (this.isSameDay(currentDate, new Date())) {
                 dateEl.classList.add('today');
             }
 
-            const currentDateMidnight = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
-            const minDateMidnight = new Date(this.minDateTime.getFullYear(), this.minDateTime.getMonth(), this.minDateTime.getDate());
+            const currentDateMidnight = new Date(currentDate);
+            currentDateMidnight.setHours(0, 0, 0, 0);
+            
+            const minDateMidnight = new Date(this.minDateTime);
+            minDateMidnight.setHours(0, 0, 0, 0);
 
             if (currentDateMidnight < minDateMidnight) {
                 dateEl.classList.add('disabled');
             } else {
                 dateEl.addEventListener('click', () => {
-                    this.selectDate(new Date(year, month, day));
+                    this.handleDateClick(new Date(year, month, day));
                 });
             }
 
@@ -464,58 +515,151 @@ class DateTimePicker {
         }
     }
 
-    isDateSelected(date) {
-        return this.selectedDates.some(selectedDate => 
-            selectedDate.toDateString() === date.toDateString());
+    isSameDay(date1, date2) {
+        return date1.getDate() === date2.getDate() && 
+               date1.getMonth() === date2.getMonth() && 
+               date1.getFullYear() === date2.getFullYear();
     }
 
-    isDateInSelectedRange(date) {
-        if (this.selectedDates.length !== 2) return false;
+    isDateInRange(date) {
+        if (!this.startDate || !this.endDate) return false;
         
-        const startDate = new Date(Math.min(
-            this.selectedDates[0].getTime(), 
-            this.selectedDates[1].getTime()
-        ));
-        const endDate = new Date(Math.max(
-            this.selectedDates[0].getTime(), 
-            this.selectedDates[1].getTime()
-        ));
+        // Ensure correct order of dates
+        const start = new Date(Math.min(this.startDate.getTime(), this.endDate.getTime()));
+        const end = new Date(Math.max(this.startDate.getTime(), this.endDate.getTime()));
         
-        return date >= startDate && date <= endDate;
+        // Set all to midnight for proper date comparison
+        start.setHours(0, 0, 0, 0);
+        end.setHours(0, 0, 0, 0);
+        const checkDate = new Date(date);
+        checkDate.setHours(0, 0, 0, 0);
+        
+        // Check if the date is between start and end (exclusive)
+        return checkDate > start && checkDate < end;
     }
 
-    selectDate(date) {
-        if (this.selectionMode === 'start') {
-            // Clear previous selection if we're starting a new range
-            this.selectedDates = [date];
-            this.selectionMode = 'end';
-            document.getElementById('booking-mode-toggle').textContent = 'Select Start Date';
+    handleDateClick(date) {
+        if (this.selectionState === 'start') {
+            // Start new selection
+            this.startDate = date;
+            this.endDate = null;
+            this.selectionState = 'end';
         } else {
-            // Add end date to complete the range
-            this.selectedDates.push(date);
-            // Sort dates to ensure start date is first
-            this.selectedDates.sort((a, b) => a - b);
-            this.selectionMode = 'start';
-            document.getElementById('booking-mode-toggle').textContent = 'Select End Date';
+            // Complete the range
+            // If clicked date is before start date, swap them
+            if (date < this.startDate) {
+                this.endDate = this.startDate;
+                this.startDate = date;
+            } else {
+                this.endDate = date;
+            }
+            this.selectionState = 'start';
         }
         
         this.updateShopifyInputs();
+        this.updateSelectionStatus();
         this.render();
+    }
+
+    renderTimeDropdown() {
+        if (!this.timeSelectEl) return;
+        
+        this.timeSelectEl.innerHTML = '';
+        
+        // Only show time dropdown if start date is selected
+        if (!this.startDate) {
+            this.timeSelectEl.disabled = true;
+            return;
+        }
+        
+        this.timeSelectEl.disabled = false;
+        
+        const dayOfWeek = this.startDate.toLocaleString('en-US', { weekday: 'long' });
+        const dayAvailability = this.settings.availability[dayOfWeek];
+
+        if (!dayAvailability) return;
+
+        const [startHour] = dayAvailability.start.split(':').map(Number);
+        const [endHour] = dayAvailability.end.split(':').map(Number);
+
+        const isSelectedDateToday = this.isSameDay(this.startDate, new Date());
+
+        for (let hour = startHour; hour <= endHour; hour++) {
+            for (let minute = 0; minute < 60; minute += this.settings.minuteStep) {
+                if (hour === endHour && minute > 0) continue;
+                
+                const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+
+                if (isSelectedDateToday) {
+                    const timeDate = new Date(this.startDate);
+                    timeDate.setHours(hour, minute);
+                    if (timeDate < this.minDateTime) continue;
+                }
+
+                const option = document.createElement('option');
+                option.value = timeString;
+                option.textContent = this.formatTimeForDisplay(timeString);
+                
+                if (this.selectedTime === timeString) {
+                    option.selected = true;
+                }
+                
+                this.timeSelectEl.appendChild(option);
+            }
+        }
+    }
+
+    formatTimeForDisplay(time) {
+        if (!time) return '';
+        
+        const [hours, minutes] = time.split(':');
+        const hour = parseInt(hours, 10);
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        const hour12 = hour % 12 || 12;
+        
+        return `${hour12}:${minutes} ${ampm}`;
+    }
+
+    formatDateForShopify(date) {
+        if (!date) return '';
+        
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        const year = date.getFullYear();
+        
+        return `${month}/${day}/${year}`;
+    }
+
+    formatTimeForShopify(time) {
+        if (!time) return '';
+        
+        const [hours, minutes] = time.split(':');
+        const hour = parseInt(hours, 10);
+        const ampm = hour >= 12 ? 'pm' : 'am';
+        const hour12 = (hour % 12 || 12).toString().padStart(2, '0');
+        
+        return `${hour12}:${minutes}${ampm}`;
+    }
+
+    selectTime(time) {
+        this.selectedTime = time;
+        this.updateShopifyInputs();
+        this.updateSelectedDateRange();
     }
 
     // Calculate the number of days in the booking
     calculateDuration() {
-        if (this.selectedDates.length !== 2) return 1;
+        if (!this.startDate || !this.endDate) return 1;
         
-        const startDate = new Date(this.selectedDates[0]);
-        const endDate = new Date(this.selectedDates[1]);
+        const start = new Date(this.startDate);
+        const end = new Date(this.endDate);
         
-        // Set time to midnight to ensure we're only counting days
-        startDate.setHours(0, 0, 0, 0);
-        endDate.setHours(0, 0, 0, 0);
+        // Set time to midnight for proper day calculation
+        start.setHours(0, 0, 0, 0);
+        end.setHours(0, 0, 0, 0);
         
         // Calculate difference in days
-        const diffTime = Math.abs(endDate - startDate);
+        const diffTime = Math.abs(end - start);
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         
         // Add 1 to include both start and end dates
@@ -540,9 +684,78 @@ class DateTimePicker {
         return this.basePrice * duration * discountMultiplier;
     }
 
-    // Update the displayed total price
+    updateShopifyInputs() {
+        // Update start date
+        if (this.startDate && this.shopifyDateInput) {
+            this.shopifyDateInput.value = this.formatDateForShopify(this.startDate);
+        }
+        
+        // Update end date
+        if (this.endDate && this.shopifyEndDateInput) {
+            this.shopifyEndDateInput.value = this.formatDateForShopify(this.endDate);
+        } else if (this.shopifyEndDateInput && this.startDate) {
+            // If no end date yet, use the start date
+            this.shopifyEndDateInput.value = this.formatDateForShopify(this.startDate);
+        }
+        
+        // Update time
+        if (this.selectedTime && this.shopifyTimeInput) {
+            this.shopifyTimeInput.value = this.formatTimeForShopify(this.selectedTime);
+        }
+        
+        // Update duration and discount info
+        const duration = this.calculateDuration();
+        if (this.shopifyDurationInput) {
+            this.shopifyDurationInput.value = duration;
+        }
+        
+        const discountMultiplier = this.getDiscountMultiplier(duration);
+        if (this.shopifyDiscountInput) {
+            this.shopifyDiscountInput.value = discountMultiplier;
+        }
+    }
+
+    updateSelectedDateRange() {
+        if (!this.selectedDateRangeEl) return;
+        
+        if (!this.startDate) {
+            this.selectedDateRangeEl.textContent = 'Select your booking dates';
+            return;
+        }
+        
+        const formatDate = (date) => {
+            return date.toLocaleDateString(undefined, {
+                weekday: 'short',
+                month: 'short',
+                day: 'numeric'
+            });
+        };
+        
+        let displayText = '';
+        
+        if (this.startDate && !this.endDate) {
+            // Only start date selected
+            displayText = `Start: ${formatDate(this.startDate)}`;
+            if (this.selectedTime) {
+                displayText += ` at ${this.formatTimeForDisplay(this.selectedTime)}`;
+            }
+        } else if (this.startDate && this.endDate) {
+            // Both dates selected
+            const duration = this.calculateDuration();
+            
+            displayText = `${formatDate(this.startDate)} to ${formatDate(this.endDate)}`;
+            displayText += ` (${duration} day${duration !== 1 ? 's' : ''})`;
+            
+            if (this.selectedTime) {
+                displayText += `<br>Pickup: ${this.formatTimeForDisplay(this.selectedTime)}`;
+            }
+        }
+        
+        this.selectedDateRangeEl.innerHTML = displayText;
+    }
+
     updateTotalPrice() {
-        if (!this.totalPriceEl) return;
+        if (!this.totalPriceEl || !this.startDate) return;
         
         const duration = this.calculateDuration();
         const discountMultiplier = this.getDiscountMultiplier(duration);
@@ -568,87 +781,69 @@ class DateTimePicker {
         priceHtml += `</div>`;
         
         this.totalPriceEl.innerHTML = priceHtml;
-        
-        // Update hidden inputs
-        if (this.shopifyDurationInput) {
-            this.shopifyDurationInput.value = duration;
-        }
-        
-        if (this.shopifyDiscountInput) {
-            this.shopifyDiscountInput.value = discountMultiplier;
-        }
     }
-
-    selectTime(time) {
-        this.selectedTime = time;
-        this.updateShopifyInputs();
-        this.updateSelectedDateTime();
-    }
-
-    updateShopifyInputs() {
-        // Update start date
-        if (this.selectedDates[0] && this.shopifyDateInput) {
-            this.shopifyDateInput.value = this.formatDateForShopify(this.selectedDates[0]);
-        }
-        
-        // Update end date
-        if (this.selectedDates[1] && this.shopifyEndDateInput) {
-            this.shopifyEndDateInput.value = this.formatDateForShopify(this.selectedDates[1]);
-        } else if (this.shopifyEndDateInput) {
-            // If no end date yet, use the start date
-            this.shopifyEndDateInput.value = this.shopifyDateInput.value;
-        }
-        
-        // Update time
-        if (this.selectedTime && this.shopifyTimeInput) {
-            this.shopifyTimeInput.value = this.formatTimeForShopify(this.selectedTime);
-        }
-        
-        // Update duration and price
-        this.updateTotalPrice();
-    }
-
-    updateSelectedDateTime() {
-        if (this.selectedDates.length > 0 && this.selectedTime) {
-            let displayText = '';
-            
-            if (this.selectedDates.length === 1) {
-                // Single date
-                const formattedDate = this.selectedDates[0].toLocaleDateString(undefined, {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                });
-                displayText = `${formattedDate} at ${this.formatTimeForDisplay(this.selectedTime)}`;
-            } else {
-                // Date range
-                const startDate = this.selectedDates[0].toLocaleDateString(undefined, {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                });
-                
-                const endDate = this.selectedDates[1].toLocaleDateString(undefined, {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                });
-                
-                displayText = `From ${startDate} to ${endDate}`;
-                displayText += `<br>Pickup: ${this.formatTimeForDisplay(this.selectedTime)}`;
-            }
-            
-            this.selectedDateTimeEl.innerHTML = displayText;
-        } else {
-            this.selectedDateTimeEl.textContent = 'Select dates';
-        }
-    }
-
-    // Rest of the methods remain the same...
 }
+
+// Initialize with settings
+{% liquid
+    assign days_in_a_week = 'monday-tuesday-wednesday-thursday-friday-saturday-sunday' | split: '-'
+    assign availability_options = ''
+    assign template = "[day]: { start: '[start_time]', end: '[end_time]' }"
+    for day_in_a_week in days_in_a_week
+        assign block_key = 'dt_' | append: day_in_a_week
+        assign row_results = template
+        assign capitalize_day_in_a_week = day_in_a_week | capitalize
+        assign row_results = row_results | replace: '[day]', capitalize_day_in_a_week
+
+        assign start_time = block.settings[block_key] | split: '-' | first
+
+        assign time_parts = start_time | split: ":"
+        assign hour = time_parts[0] | times: 1
+        assign minutes = time_parts[1] | slice: 0, 2
+        assign ampm = time_parts[1] | slice: -2, 2 | downcase
+        if ampm == "pm" and hour != 12
+            assign hour = hour | plus: 12
+        endif
+        if ampm == "am" and hour == 12
+            assign hour = 0
+        endif
+
+        assign prepared_time = hour | append: ":" | append: minutes
+        assign row_results = row_results | replace: '[start_time]', prepared_time
+
+        assign end_time = block.settings[block_key] | split: '-' | last
+
+        assign time_parts = end_time | split: ":"
+        assign hour = time_parts[0] | times: 1
+        assign minutes = time_parts[1] | slice: 0, 2
+        assign ampm = time_parts[1] | slice: -2, 2 | downcase
+        if ampm == "pm" and hour != 12
+            assign hour = hour | plus: 12
+        endif
+        if ampm == "am" and hour == 12
+            assign hour = 0
+        endif
+
+        assign prepared_time = hour | append: ":" | append: minutes
+        assign row_results = row_results | replace: '[end_time]', prepared_time
+
+        assign availability_options = availability_options | append: row_results
+        unless forloop.last
+            assign availability_options = availability_options | append: ","
+        endunless
+    endfor
+%}
+
+const picker = new DateTimePicker({
+    availability: {
+        {{ availability_options }}
+    },
+    minTimeFromNow: 60, // 1 hour minimum
+    timeFormat: '12',
+    minuteStep: 30,
+    startFromNow: true
+});
+</script>
 
     {% liquid
         assign days_in_a_week = 'monday-tuesday-wednesday-thursday-friday-saturday-sunday' | split: '-'
