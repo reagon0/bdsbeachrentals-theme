@@ -332,21 +332,28 @@
       .product__info-wrapper {
         padding: 0;
       }
-
-      /* Grid items in the carousel */
-      .product__media-list .product__media-item {
-        min-height: 450px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+      
+      /* Target grid images (thumbnails) to keep them small */
+      .product__media-item:not(.is-active):not(:first-child) {
+        max-width: 100px; /* Smaller width */
+        min-height: auto !important; /* Reset min-height */
+        height: 100px; /* Fixed height */
+        margin: 5px; /* Add spacing */
       }
-
-      /* All product images */
-      .product__media img {
-        max-height: 600px;
-        width: auto !important;
-        margin: 0 auto;
-        object-fit: contain !important;
+      
+      /* Reset specific grid image container properties */
+      .product__media-list .product__media-item:not(.is-active):not(:first-child) {
+        min-height: auto !important;
+        max-height: 100px;
+        width: auto;
+      }
+      
+      /* Grid image styling */
+      .product__media-item:not(.is-active):not(:first-child) img {
+        max-height: 100px !important;
+        height: auto !important;
+        width: 100% !important;
+        object-fit: cover !important; /* Cover works better for thumbnails */
       }
 
       /* Fix thumbnail images */
@@ -354,6 +361,20 @@
         object-fit: cover !important;
         width: 100%;
         height: 100%;
+      }
+      
+      /* For the grid layout in mobile and desktop */
+      .product__media-list.grid {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+      }
+      
+      /* Make the main image full-width and thumbnails smaller */
+      .product__media-list.grid .product__media-item.is-active,
+      .product__media-list.grid .product__media-item:first-child {
+        width: 100% !important;
+        min-height: 500px;
       }
 
       /* Hide zoom elements */
@@ -375,14 +396,44 @@
 
       @media screen and (max-width: 749px) {
         .product__media-item.grid__item.is-active,
-        .product__media-list .product__media-item {
+        .product__media-list.grid .product__media-item:first-child {
           min-height: 350px;
         }
         
         .product__media-item.grid__item.is-active img,
-        .product__media img {
+        .product__media-list.grid .product__media-item:first-child img {
           max-height: 350px;
         }
+        
+        /* Even smaller thumbnails on mobile */
+        .product__media-item:not(.is-active):not(:first-child) {
+          max-width: 80px;
+          height: 80px;
+        }
+        
+        .product__media-item:not(.is-active):not(:first-child) img {
+          max-height: 80px !important;
+        }
+      }
+      
+      /* Additional thumbnail slider fixes */
+      #GalleryThumbnails-template--15084987736131__main .thumbnail-list__item {
+        width: auto !important;
+        max-width: 100px;
+        height: 100px;
+      }
+      
+      /* Make the thumbnail images look good */
+      .thumbnail button {
+        height: 100%;
+        width: 100%;
+        padding: 0;
+      }
+      
+      .thumbnail img {
+        max-height: 100%;
+        max-width: 100%;
+        object-fit: cover !important;
       }
     </style>
   </head>
@@ -474,16 +525,6 @@
             img.removeAttribute('data-image-zoom');
             img.removeAttribute('data-action');
             img.style.cursor = 'default';
-            
-            // Add our no-zoom class
-            img.classList.add('product-image-no-zoom');
-            
-            // Set proper sizing
-            img.style.objectFit = 'contain';
-            img.style.maxWidth = '100%';
-            img.style.maxHeight = '600px';
-            img.style.width = 'auto';
-            img.style.margin = '0 auto';
           });
           
           // Hide zoom elements
@@ -513,39 +554,64 @@
               mediaItem.style.alignItems = 'center';
               mediaItem.style.justifyContent = 'center';
               mediaItem.style.minHeight = window.innerWidth < 750 ? '350px' : '600px';
-              
-              // Remove any padding that might be affecting position
               mediaItem.style.padding = '0';
+              mediaItem.style.width = '100%';
             }
           }
           
-          // Fix all product images
-          const mediaItems = document.querySelectorAll('.product__media-item');
-          mediaItems.forEach(item => {
-            // Make the container taller and properly centered
-            item.style.display = 'flex';
-            item.style.alignItems = 'center';
-            item.style.justifyContent = 'center';
-            item.style.minHeight = window.innerWidth < 750 ? '350px' : '450px';
+          // Ensure thumbnails look good while staying small
+          const thumbnails = document.querySelectorAll('.product__media-item:not(.is-active):not(:first-child)');
+          thumbnails.forEach(thumbnail => {
+            thumbnail.style.minHeight = 'auto';
+            thumbnail.style.height = window.innerWidth < 750 ? '80px' : '100px';
+            thumbnail.style.maxWidth = window.innerWidth < 750 ? '80px' : '100px';
+            thumbnail.style.margin = '5px';
             
-            const img = item.querySelector('img');
+            const img = thumbnail.querySelector('img');
             if (img) {
-              // Ensure image has proper dimensions while maintaining aspect ratio
-              img.style.objectFit = 'contain';
-              img.style.maxWidth = '100%';
-              img.style.maxHeight = window.innerWidth < 750 ? '350px' : '600px';
-              img.style.width = 'auto';
-              img.style.margin = '0 auto';
+              img.style.objectFit = 'cover';
+              img.style.width = '100%';
+              img.style.height = 'auto';
+              img.style.maxHeight = window.innerWidth < 750 ? '80px' : '100px';
             }
           });
           
-          // Ensure thumbnails still look good
-          const thumbnails = document.querySelectorAll('.thumbnail-list__item .thumbnail img');
-          thumbnails.forEach(thumb => {
-            thumb.style.objectFit = 'cover';
-            thumb.style.width = '100%';
-            thumb.style.height = '100%';
-          });
+          // Make sure the first image (if not active) follows main image rules
+          const firstImage = document.querySelector('.product__media-item.grid__item:first-child:not(.is-active) img');
+          if (firstImage) {
+            firstImage.style.objectFit = 'contain';
+            firstImage.style.width = 'auto';
+            firstImage.style.height = 'auto';
+            firstImage.style.maxWidth = '100%';
+            firstImage.style.maxHeight = window.innerWidth < 750 ? '350px' : '600px';
+            
+            const container = firstImage.closest('.product__media-item');
+            if (container) {
+              container.style.width = '100%';
+              container.style.minHeight = window.innerWidth < 750 ? '350px' : '500px';
+              container.style.display = 'flex';
+              container.style.alignItems = 'center';
+              container.style.justifyContent = 'center';
+            }
+          }
+          
+          // Adjust the thumbnail slider if it exists
+          const thumbnailSlider = document.querySelector('#GalleryThumbnails-template--15084987736131__main');
+          if (thumbnailSlider) {
+            const thumbnailItems = thumbnailSlider.querySelectorAll('.thumbnail-list__item');
+            thumbnailItems.forEach(item => {
+              item.style.width = 'auto';
+              item.style.maxWidth = '100px';
+              item.style.height = '100px';
+              
+              const thumbImg = item.querySelector('img');
+              if (thumbImg) {
+                thumbImg.style.objectFit = 'cover';
+                thumbImg.style.maxHeight = '100%';
+                thumbImg.style.maxWidth = '100%';
+              }
+            });
+          }
         }
         
         // Run initially
