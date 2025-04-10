@@ -725,101 +725,68 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
   
-  // Update product image based on equipment and cooler selection
-  function updateProductImage() {
-    const imageKey = `${selectedEquipment}-${selectedCooler}`;
-    const imageMapping = {
-      "1U2C-Yes": "2C1UYes",
-      "1U1C-Yes": "1C1UYes", 
-      "2C-Yes": "2CYes",
-      "1C-Yes": "1CYes",
-      "1U-Yes": "1UYes",
-      "None-Yes": "Yes",
-      "1U2C-No": "2C1U",
-      "1U1C-No": "1C1U",
-      "2C-No": "2C",
-      "1C-No": "1C",
-      "1U-No": "1U",
-      "None-No": "None"
-    };
-    
-    const imageName = imageMapping[imageKey] || "None";
+ // Update the updateProductImage function in your booking-form-inputs.liquid file
 
-    // Find main product image and remove zoom functionality
-    const productImages = document.querySelectorAll('.product__media img, .product-featured-media');
-    productImages.forEach(img => {
-      // Remove any zoom-related attributes
-      img.removeAttribute('data-zoom');
-      img.removeAttribute('data-image-zoom');
-      img.removeAttribute('data-action');
-      img.style.cursor = 'default';
-      
-      // Add our no-zoom class
-      img.classList.add('no-zoom');
-      
-      // If there's a parent container with zoom functionality, modify it
-      const parentContainer = img.closest('[data-zoom="true"], [data-image-zoom="true"]');
-      if (parentContainer) {
-        parentContainer.removeAttribute('data-zoom');
-        parentContainer.removeAttribute('data-image-zoom');
-      }
-    });
-    
-    // Try to find thumbnails without triggering the modal
-    const thumbnails = document.querySelectorAll('.product__media-list .product__media-item, .product--thumbnail');
-    
-    let thumbnailFound = false;
-    
-    // First try to find and use data attributes instead of clicking
-    for (let i = 0; i < thumbnails.length; i++) {
-      const thumbnail = thumbnails[i];
-      const thumbnailImg = thumbnail.querySelector('img');
-      
-      if (thumbnailImg && thumbnailImg.src && thumbnailImg.src.includes(imageName)) {
-        // Try to find the main image container
-        const mainImageContainer = document.querySelector('.product__media-item--selected, .product__media--featured');
-        const mainImage = document.querySelector('.product__media img, .product-featured-media');
-        
-        if (mainImageContainer && thumbnailImg.dataset.src) {
-          // Use data attributes if available
-          mainImageContainer.dataset.mediaId = thumbnail.dataset.mediaId;
-          thumbnailFound = true;
-          break;
-        } else if (mainImage && thumbnailImg.src) {
-          // Direct image swap without clicking (to avoid modal)
-          const newSrc = thumbnailImg.src;
-          mainImage.src = newSrc;
-          
-          // Also update srcset if it exists
-          if (thumbnailImg.srcset && mainImage.srcset) {
-            mainImage.srcset = thumbnailImg.srcset;
-          }
-          
-          thumbnailFound = true;
-          break;
-        }
-      }
+function updateProductImage() {
+  // Get selected equipment and cooler options
+  const equipmentCode = selectedEquipment; // e.g. "1U2C", "2C", "1C", "1U", "None"
+  const coolerOption = selectedCooler;     // e.g. "Yes", "No"
+  
+  // Construct the image filename based on selection
+  let imageName;
+  
+  // Map equipment codes to image naming format
+  const equipmentMap = {
+    "1U2C": "2C1U",  // Convert to match your image filename format
+    "1U1C": "1C1U",  // Convert to match your image filename format
+    "2C": "2C",      // Already matches
+    "1C": "1C",      // Already matches
+    "1U": "1U",      // Already matches
+    "None": "None"   // Already matches
+  };
+  
+  // Map equipment+cooler to final image name
+  if (coolerOption === "Yes") {
+    if (equipmentMap[equipmentCode] === "None") {
+      imageName = "Yes"; // Just cooler, no equipment
+    } else {
+      imageName = equipmentMap[equipmentCode] + "Yes"; // Equipment with cooler
     }
-    
-    // If we couldn't update via direct manipulation, try a different approach
-    if (!thumbnailFound) {
-      // This is a fallback that tries to find the correct media ID
-      const mediaItems = document.querySelectorAll('[data-media-id]');
-      for (let i = 0; i < mediaItems.length; i++) {
-        const mediaItem = mediaItems[i];
-        const mediaImg = mediaItem.querySelector('img');
-        
-        if (mediaImg && mediaImg.src && mediaImg.src.includes(imageName)) {
-          // Try to update active media ID on the product section
-          const productSection = document.querySelector('[data-section-type="product-template"], [data-section-id*="product-template"]');
-          if (productSection) {
-            productSection.dataset.mediaId = mediaItem.dataset.mediaId;
-          }
-          break;
-        }
-      }
-    }
+  } else {
+    imageName = equipmentMap[equipmentCode]; // Just equipment, no cooler
   }
+  
+  console.log(`Updating image to: ${imageName}`);
+  
+  // Find the main product image using a direct selector
+  const mainImage = document.querySelector('.product-single__image');
+  
+  if (mainImage) {
+    // Get current image URL
+    const currentSrc = mainImage.src;
+    
+    // Replace the current image filename with our new one
+    // This works by finding the last segment of the URL path and replacing it
+    const newSrc = currentSrc.replace(/([^\/]+)(\.\w+)(?=[^\/]*$)/, imageName + "$2");
+    
+    // Update the main image src
+    mainImage.src = newSrc;
+    
+    // If srcset exists, update it as well
+    if (mainImage.srcset) {
+      const srcsetEntries = mainImage.srcset.split(',');
+      const updatedSrcset = srcsetEntries.map(entry => {
+        return entry.replace(/([^\/]+)(\.\w+)(?=[^\/]*\s)/, imageName + "$2");
+      }).join(',');
+      
+      mainImage.srcset = updatedSrcset;
+    }
+    
+    console.log('Image updated successfully');
+  } else {
+    console.log('Main product image not found');
+  }
+}
   
   // Disable any image magnification/zoom features
   function disableImageZoom() {
