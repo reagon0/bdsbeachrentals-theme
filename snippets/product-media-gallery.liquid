@@ -1,26 +1,21 @@
 {% comment %}
-  Simplified product media gallery - shows only main product image
+  Simplified product media gallery
+  Shows only the main product image without thumbnails or sliders
 {% endcomment %}
 
-<div class="product-single__media-wrapper">
+<div id="MediaGallery-{{ section.id }}" class="product-single__media-wrapper">
   <div class="product-single__media">
     {% assign featured_media = product.selected_or_first_available_variant.featured_media | default: product.featured_media %}
     
     {% if featured_media %}
-      <div class="product-single__media-item" data-media-id="{{ featured_media.id }}">
-        <img 
-          src="{{ featured_media | img_url: '1000x' }}"
-          alt="{{ featured_media.alt | escape }}"
-          class="product-single__image"
-          loading="lazy"
-          width="1000"
-          height="{{ 1000 | divided_by: featured_media.aspect_ratio | round }}"
-        >
+      <div id="ProductMedia-{{ featured_media.id }}" class="product-single__media-item" data-media-id="{{ featured_media.id }}">
+        {% render 'product-media', media: featured_media, loop: section.settings.enable_video_looping %}
       </div>
     {% else %}
-      <div class="product-single__media-item">
+      <div class="product-single__media-item product-single__media-item--placeholder">
         {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
       </div>
     {% endif %}
   </div>
 </div>
+
