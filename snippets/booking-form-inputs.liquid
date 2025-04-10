@@ -1,4 +1,18 @@
-<!-- Beach Cart Booking System with Line Item Properties -->
+<!-- Hard-coded thumbnail list for direct image access -->
+<div id="product-thumbnails" style="display:none;" data-image-list>
+  <div data-key="2C1UYes" data-src="/products/images/2C1UYes.jpg"></div>
+  <div data-key="1C1UYes" data-src="/products/images/1C1UYes.jpg"></div>
+  <div data-key="2CYes" data-src="/products/images/2CYes.jpg"></div>
+  <div data-key="1CYes" data-src="/products/images/1CYes.jpg"></div>
+  <div data-key="1UYes" data-src="/products/images/1UYes.jpg"></div>
+  <div data-key="Yes" data-src="/products/images/Yes.jpg"></div>
+  <div data-key="2C1U" data-src="/products/images/2C1U.jpg"></div>
+  <div data-key="1C1U" data-src="/products/images/1C1U.jpg"></div>
+  <div data-key="2C" data-src="/products/images/2C.jpg"></div>
+  <div data-key="1C" data-src="/products/images/1C.jpg"></div>
+  <div data-key="1U" data-src="/products/images/1U.jpg"></div>
+  <div data-key="None" data-src="/products/images/None.jpg"></div>
+</div><!-- Beach Cart Booking System with Line Item Properties -->
 <!-- Beach Cart Booking System with Line Item Properties -->
 <style>
   .booking-system-container {
@@ -630,7 +644,7 @@ document.addEventListener('DOMContentLoaded', function() {
       selectedEquipment = this.getAttribute('data-equipment');
       equipmentInput.value = selectedEquipment;
       updateBasePrice();
-      updateProductImage();
+      switchProductImage(selectedEquipment, selectedCooler);
     });
   });
   
@@ -643,9 +657,116 @@ document.addEventListener('DOMContentLoaded', function() {
       selectedCooler = this.getAttribute('data-cooler');
       coolerInput.value = selectedCooler;
       updateBasePrice();
-      updateProductImage();
+      switchProductImage(selectedEquipment, selectedCooler);
     });
   });
+  
+  // Alternative image switching method that works across different Shopify themes
+  function switchProductImage(equipment, cooler) {
+    const imageKey = `${equipment}-${cooler}`;
+    let imageName = imageMapping[imageKey] || 'None';
+    
+    console.log('Trying to switch to image:', imageName);
+    
+    // Method 1: Try to select from product media
+    let thumbnails = document.querySelectorAll('.product__media-item, .product-single__thumbnail');
+    for (let thumbnail of thumbnails) {
+      let img = thumbnail.querySelector('img');
+      if (img && (img.src.includes(imageName) || img.alt.includes(imageName))) {
+        console.log('Found matching thumbnail in product media');
+        // Try finding a clickable element within the thumbnail
+        let clickTarget = thumbnail.querySelector('a') || thumbnail;
+        try {
+          clickTarget.click();
+          console.log('Clicked thumbnail');
+          setTimeout(disableImageZoom, 300);
+          return;
+        } catch(e) {
+          console.log('Error clicking thumbnail:', e);
+        }
+      }
+    }
+    
+    // Method 2: Find the main product slider
+    const sliders = document.querySelectorAll('.product__slider-item, .product-single__media-wrapper');
+    for (let slider of sliders) {
+      if (slider.innerHTML.includes(imageName)) {
+        try {
+          slider.click();
+          console.log('Clicked slider item');
+          setTimeout(disableImageZoom, 300);
+          return;
+        } catch(e) {
+          console.log('Error clicking slider:', e);
+        }
+      }
+    }
+    
+    // Method 3: Find the image anywhere in the page and inject it as the main image
+    const allImages = document.querySelectorAll('img');
+    let targetImage = null;
+    
+    for (let img of allImages) {
+      if (img.src.includes(imageName) || (img.alt && img.alt.includes(imageName))) {
+        targetImage = img;
+        break;
+      }
+    }
+    
+    if (targetImage) {
+      console.log('Found target image:', targetImage.src);
+      // Find the main product image container
+      const mainImage = document.querySelector('.product-featured-img, .product-single__photo, .product__img');
+      if (mainImage) {
+        // Backup src
+        const originalSrc = mainImage.src;
+        
+        // Replace the image
+        try {
+          mainImage.src = targetImage.src;
+          console.log('Updated main image src');
+          
+          // Also update srcset if available
+          if (targetImage.srcset) {
+            mainImage.srcset = targetImage.srcset;
+          }
+          
+          setTimeout(disableImageZoom, 300);
+          return;
+        } catch(e) {
+          console.log('Error updating main image:', e);
+          // Restore original if needed
+          mainImage.src = originalSrc;
+        }
+      }
+    }
+    
+    // Method 4: Use known image URLs
+    // Check our hidden thumbnail list for the image
+    const imageList = document.querySelector('[data-image-list]');
+    if (imageList) {
+      const imageData = imageList.querySelector(`[data-key="${imageName}"]`);
+      if (imageData && imageData.dataset.src) {
+        // Found a direct image path, now find the main image to update
+        const mainImage = document.querySelector('.product-featured-img, .product-single__photo, .product__img');
+        if (mainImage) {
+          const imagePath = imageData.dataset.src;
+          console.log('Using hard-coded image path:', imagePath);
+          
+          // For testing, we can construct a complete URL if needed
+          // let fullPath = window.location.origin + imagePath;
+          // Uncomment and change the base path if needed
+          
+          mainImage.src = imagePath;
+          setTimeout(disableImageZoom, 300);
+          return;
+        }
+      }
+    }
+    
+    // If all else fails, at least disable zoom
+    setTimeout(disableImageZoom, 300);
+  }
   
   // Setup calendar navigation
   document.getElementById('prev-month').addEventListener('click', () => {
