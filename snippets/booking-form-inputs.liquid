@@ -1,4 +1,201 @@
 <!-- Beach Cart Booking System with Line Item Properties -->
+<!-- Beach Cart Booking System with Line Item Properties -->
+<style>
+  .booking-system-container {
+    font-family: system-ui, -apple-system, sans-serif;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .product-form__input {
+    margin-bottom: 20px;
+  }
+  
+  .form__label {
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: block;
+  }
+  
+  .equipment-options, .cooler-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+  
+  .option-button {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+  }
+  
+  .option-button:hover {
+    background-color: #f9f9f9;
+  }
+  
+  .option-button.selected {
+    background-color: #0a3b5c;
+    color: white;
+    border-color: #0a3b5c;
+  }
+  
+  .datetime-picker {
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: white;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+  }
+
+  .calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+
+  .calendar-header button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 8px;
+  }
+
+  .calendar-header button svg {
+    width: 12px;
+  }
+  
+  .calendar-header button#prev-month svg {
+    transform: rotate(90deg);
+  }
+  
+  .calendar-header button#next-month svg {
+    transform: rotate(-90deg);
+  }
+
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .weekday {
+    font-weight: 500;
+    color: #6b7280;
+    padding: 5px;
+    font-size: 12px;
+  }
+
+  .date {
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+
+  .date:hover:not(.disabled) {
+    background: #f3f4f6;
+  }
+
+  .date.selected {
+    background: #0a3b5c !important;
+    color: white;
+  }
+
+  .date.today {
+    font-weight: bold;
+    color: #000;
+  }
+  
+  .date.today.selected {
+    color: #FFF;
+  }
+
+  .date.disabled {
+    color: #d1d5db;
+    cursor: not-allowed;
+  }
+
+  .date.in-range {
+    background-color: rgba(10, 59, 92, 0.3);
+    color: #0a3b5c;
+  }
+  
+  .selection-status {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #6b7280;
+  }
+  
+  .selected-date-range {
+    margin-top: 15px;
+    text-align: center;
+    font-weight: 500;
+  }
+  
+  .price-display {
+    background-color: #f9fafb;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .current-price {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+  
+  .price-breakdown {
+    font-size: 14px;
+    color: #6b7280;
+  }
+  
+  .select__select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  
+  /* Fix for image zoom issues */
+  .product-single__photo, .product__img, .product__media img {
+    max-width: 100% !important;
+    object-fit: contain !important;
+    cursor: default !important;
+  }
+  
+  .zoomContainer, .pswp {
+    display: none !important;
+  }
+
+  @media screen and (max-width: 768px) {
+    .equipment-options, .cooler-options {
+      flex-direction: column;
+    }
+    
+    .calendar-grid {
+      gap: 1px;
+    }
+    
+    .date {
+      padding: 6px;
+      font-size: 12px;
+    }
+  }
+</style>
+
 <div class="booking-system-container">
   <!-- Equipment Selection -->
   <fieldset class="product-form__input product-form__input--pill">
@@ -28,6 +225,59 @@
     <div class="datetime-picker">
       <div class="calendar-header">
         <button id="prev-month" type="button"><svg class="icon icon-caret" viewBox="0 0 10 6"><path fill="currentColor" fill-rule="evenodd" d="M9.354.646a.5.5 0 0 0-.708 0L5 4.293 1.354.646a.5.5 0 0 0-.708.708l4 4a.5.5 0 0 0 .708 0l4-4a.5.5 0 0 0 0-.708" clip-rule="evenodd"></path></svg></button>
+        <span id="current-month"></span>
+        <button id="next-month" type="button"><svg class="icon icon-caret" viewBox="0 0 10 6"><path fill="currentColor" fill-rule="evenodd" d="M9.354.646a.5.5 0 0 0-.708 0L5 4.293 1.354.646a.5.5 0 0 0-.708.708l4 4a.5.5 0 0 0 .708 0l4-4a.5.5 0 0 0 0-.708" clip-rule="evenodd"></path></svg></button>
+      </div>
+      
+      <div class="selection-status" id="selection-status">
+        Select your start date, then end date
+      </div>
+      
+      <div class="calendar-grid" id="calendar">
+        <!-- Calendar will be generated here -->
+      </div>
+      
+      <div class="selected-date-range" id="selected-date-range"></div>
+    </div>
+  </fieldset>
+
+  <!-- Pickup/Dropoff Locations -->
+  <fieldset class="product-form__input product-form__input--pill">
+    <legend class="form__label"><label for="preferred_pickup_location">Preferred Pickup Location</label></legend>
+    <input type="text" id="preferred_pickup_location" class="select__select" name="properties[Preferred Pickup Location]" placeholder="Include full address"/>
+  </fieldset>
+
+  <fieldset class="product-form__input product-form__input--pill">
+    <legend class="form__label"><label for="preferred_drop_off_location">Preferred Drop-off Location</label></legend>
+    <input type="text" id="preferred_drop_off_location" class="select__select" name="properties[Preferred Drop-off Location]" placeholder="Include full address"></input>
+  </fieldset>
+
+  <fieldset class="product-form__input product-form__input--pill">
+    <legend class="form__label"><label for="special_requirements">Additional Rental Details</label></legend>
+    <textarea id="special_requirements" class="select__select" name="properties[Special Requests]" placeholder="Let us know how we can help"></textarea>
+  </fieldset>
+
+  <!-- Price Display -->
+  <div class="price-display">
+    <div class="current-price">
+      <span class="price-label">Price:</span>
+      <span id="displayed-price" class="price-amount">$82.00</span>
+    </div>
+    <div id="price-breakdown" class="price-breakdown"></div>
+  </div>
+
+  <!-- Hidden inputs for Shopify -->
+  <div style="display:none;">
+    <input type="hidden" name="properties[Equipment]" id="equipment-input" value="None">
+    <input type="hidden" name="properties[Cooler]" id="cooler-input" value="No">
+    <input type="hidden" name="properties[Start Date]" id="start-date-input">
+    <input type="hidden" name="properties[End Date]" id="end-date-input">
+    <input type="hidden" name="properties[Duration]" id="duration-input" value="1">
+    <input type="hidden" name="properties[Discount]" id="discount-input" value="0">
+    <input type="hidden" name="properties[Base Price]" id="base-price-input" value="82.00">
+    <input type="hidden" name="properties[Total Price]" id="total-price-input" value="82.00">
+  </div>
+</div>0 0-.708" clip-rule="evenodd"></path></svg></button>
         <span id="current-month"></span>
         <button id="next-month" type="button"><svg class="icon icon-caret" viewBox="0 0 10 6"><path fill="currentColor" fill-rule="evenodd" d="M9.354.646a.5.5 0 0 0-.708 0L5 4.293 1.354.646a.5.5 0 0 0-.708.708l4 4a.5.5 0 0 0 .708 0l4-4a.5.5 0 0 0 0-.708" clip-rule="evenodd"></path></svg></button>
       </div>
@@ -335,6 +585,41 @@ document.addEventListener('DOMContentLoaded', function() {
   const discountInput = document.getElementById('discount-input');
   const basePriceInput = document.getElementById('base-price-input');
   const totalPriceInput = document.getElementById('total-price-input');
+  
+  // ---- Disable image magnification globally ----
+  function disableImageZoom() {
+    // Remove zoom containers
+    document.querySelectorAll('.zoomContainer, .zoom-container, .pswp, .pswp--open').forEach(el => {
+      if (el && el.parentNode) {
+        el.parentNode.removeChild(el);
+      }
+    });
+    
+    // Disable zoom on all product images
+    document.querySelectorAll('.product__img, .product-single__photo, .product-featured-img, .product__media img').forEach(img => {
+      if (img) {
+        // Remove zoom attributes
+        img.removeAttribute('data-zoom');
+        img.removeAttribute('data-zoom-image');
+        img.removeAttribute('data-image-zoom');
+        
+        // Add no-zoom classes
+        img.classList.add('no-magnify');
+        img.style.cursor = 'default';
+        
+        // Fix parent container
+        const container = img.closest('.product__media, .product-single__photo-wrapper');
+        if (container) {
+          container.style.overflow = 'visible';
+          container.classList.remove('zoom-container');
+        }
+      }
+    });
+  }
+  
+  // Run on page load and periodically check
+  disableImageZoom();
+  setInterval(disableImageZoom, 1000); // Check every second for new zoom elements
   
   // Setup equipment selection
   const equipmentButtons = document.querySelectorAll('.equipment-options .option-button');
@@ -725,60 +1010,104 @@ document.addEventListener('DOMContentLoaded', function() {
     
     const imageName = imageMapping[imageKey] || "None";
     
-    // Try to find thumbnails without triggering the modal
-    const thumbnails = document.querySelectorAll('.product__media-list .product__media-item, .product--thumbnail');
-    
-    let thumbnailFound = false;
-    
-    // First try to find and use data attributes instead of clicking
+    // Method 1: Try to find the right thumbnail and update it using dataset
+    const thumbnails = document.querySelectorAll('.product-single__thumbnail');
     for (let i = 0; i < thumbnails.length; i++) {
       const thumbnail = thumbnails[i];
       const thumbnailImg = thumbnail.querySelector('img');
       
       if (thumbnailImg && thumbnailImg.src && thumbnailImg.src.includes(imageName)) {
-        // Try to find the main image container
-        const mainImageContainer = document.querySelector('.product__media-item--selected, .product__media--featured');
-        const mainImage = document.querySelector('.product__media img, .product-featured-media');
+        // Try setting the thumbnail as active without clicking it
+        thumbnails.forEach(t => t.classList.remove('active-thumb'));
+        thumbnail.classList.add('active-thumb');
         
-        if (mainImageContainer && thumbnailImg.dataset.src) {
-          // Use data attributes if available
-          mainImageContainer.dataset.mediaId = thumbnail.dataset.mediaId;
-          thumbnailFound = true;
-          break;
-        } else if (mainImage && thumbnailImg.src) {
-          // Direct image swap without clicking (to avoid modal)
-          const newSrc = thumbnailImg.src;
-          mainImage.src = newSrc;
-          
-          // Also update srcset if it exists
-          if (thumbnailImg.srcset && mainImage.srcset) {
-            mainImage.srcset = thumbnailImg.srcset;
+        // Also update the main image directly if possible
+        const mainImg = document.querySelector('.product-featured-img, .product-single__image, .product__img');
+        if (mainImg && thumbnailImg.dataset.src) {
+          mainImg.src = thumbnailImg.dataset.src;
+          if (thumbnailImg.dataset.srcset) {
+            mainImg.srcset = thumbnailImg.dataset.srcset;
           }
           
-          thumbnailFound = true;
-          break;
+          // Remove zoom-related attributes and classes
+          mainImg.removeAttribute('data-zoom');
+          mainImg.removeAttribute('data-zoom-image');
+          mainImg.classList.remove('zoom-img');
+          
+          // Apply no-magnify class and style
+          mainImg.classList.add('no-magnify');
+          mainImg.style.cursor = 'default';
+          
+          // Fix container styles
+          const imgContainer = mainImg.closest('.product__media, .product-single__photo-wrapper');
+          if (imgContainer) {
+            imgContainer.style.overflow = 'visible';
+            imgContainer.classList.remove('zoom-container');
+          }
+          
+          return; // Exit if we successfully updated
         }
       }
     }
     
-    // If we couldn't update via direct manipulation, try a different approach
-    if (!thumbnailFound) {
-      // This is a fallback that tries to find the correct media ID
-      const mediaItems = document.querySelectorAll('[data-media-id]');
-      for (let i = 0; i < mediaItems.length; i++) {
-        const mediaItem = mediaItems[i];
-        const mediaImg = mediaItem.querySelector('img');
+    // Method 2: Try direct image swap
+    const mainImage = document.querySelector('.product__media img, .product-featured-media, .product-single__image');
+    const allImages = document.querySelectorAll('.product__media-list img, .product-single__thumbnails img');
+    
+    for (let img of allImages) {
+      const imgUrl = img.getAttribute('src') || '';
+      if (imgUrl.includes(imageName) && mainImage) {
+        mainImage.src = imgUrl;
         
-        if (mediaImg && mediaImg.src && mediaImg.src.includes(imageName)) {
-          // Try to update active media ID on the product section
-          const productSection = document.querySelector('[data-section-type="product-template"], [data-section-id*="product-template"]');
-          if (productSection) {
-            productSection.dataset.mediaId = mediaItem.dataset.mediaId;
-          }
-          break;
+        // Remove zoom functionality
+        mainImage.removeAttribute('data-zoom');
+        mainImage.removeAttribute('data-image-zoom');
+        mainImage.classList.remove('zoom-img');
+        
+        // Ensure the image is displayed normally
+        mainImage.style.maxWidth = '100%';
+        mainImage.style.height = 'auto';
+        mainImage.style.cursor = 'default';
+        
+        // Also fix parent container if needed
+        const imgContainer = mainImage.closest('.product__media, .product-single__photo-wrapper');
+        if (imgContainer) {
+          imgContainer.style.overflow = 'visible';
+          imgContainer.classList.remove('zoom-container');
         }
+        
+        // Remove any active zoom/lightbox
+        const zoomOverlay = document.querySelector('.zoomContainer, .pswp--open, .zoom-overlay');
+        if (zoomOverlay) {
+          zoomOverlay.remove();
+        }
+        
+        return; // Exit if we successfully updated
       }
     }
+    
+    // Method 3: Last resort - look for all image-related elements
+    document.querySelectorAll('img').forEach(img => {
+      const src = img.getAttribute('src') || '';
+      if (src.includes(imageName) && !img.closest('.product-form') && !img.closest('.product__media-list')) {
+        // This might be the main product image
+        // Disable zoom and magnification
+        img.setAttribute('data-image-magnify', 'none');
+        img.classList.add('no-magnify');
+        img.style.cursor = 'default';
+        
+        // Ensure any parent containers are properly styled
+        const parent = img.parentElement;
+        if (parent) {
+          parent.style.overflow = 'visible';
+        }
+      }
+    });
+    
+    // Cleanup any zoom containers
+    setTimeout(() => {
+      document.querySelectorAll('.zoomContainer, .pswp--open').forEach(el => el.remove());
+    }, 100);
   }
 });
 </script>
