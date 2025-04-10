@@ -190,7 +190,12 @@ document.addEventListener('DOMContentLoaded', function() {
             this.currentDate = new Date();
             this.selectedDates = [];
             this.selectionMode = 'start';
+            
+            // Set initial base price to 0 - will be updated during initialization
             this.currentBasePrice = 0;
+            
+            // Add debug mode
+            this.debug = true;
             
             // Get DOM elements
             this.calendarEl = document.getElementById('calendar');
@@ -204,82 +209,127 @@ document.addEventListener('DOMContentLoaded', function() {
             this.shopifyDurationInput = document.getElementById('shopify-duration-input');
             this.shopifyDiscountInput = document.getElementById('shopify-discount-input');
             
-            // Set up event listeners
-            document.getElementById('prev-month').addEventListener('click', () => {
-                this.prevMonth();
-            });
-            
-            document.getElementById('next-month').addEventListener('click', () => {
-                this.nextMonth();
-            });
-            
-            // Add event listener for variant selection changes
-            this.setupVariantChangeListeners();
-            
-            // Get initial base price
-            this.currentBasePrice = this.getBasePrice();
-            
-            // Render the calendar
-            this.renderCalendar();
+            // Initialize with a small delay to ensure Shopify has setup the page
+            setTimeout(() => {
+                // Get initial base price
+                this.currentBasePrice = this.getBasePrice();
+                if (this.debug) console.log('Initial base price:', this.currentBasePrice);
+                
+                // Set up event listeners
+                this.setupButtonListeners();
+                this.setupVariantChangeListeners();
+                
+                // Render the calendar
+                this.renderCalendar();
+            }, 500);
         }
         
-        // Setup listeners for variant selection changes
+        // Debug log helper
+        log(...args) {
+            if (this.debug) {
+                console.log(...args);
+            }
+        }
+        
+        // Setup button listeners
+        setupButtonListeners() {
+            const prevButton = document.getElementById('prev-month');
+            const nextButton = document.getElementById('next-month');
+            
+            if (prevButton) {
+                prevButton.addEventListener('click', () => {
+                    this.prevMonth();
+                });
+            }
+            
+            if (nextButton) {
+                nextButton.addEventListener('click', () => {
+                    this.nextMonth();
+                });
+            }
+        }
+        
+        // Set up listeners for variant selection changes
         setupVariantChangeListeners() {
-            // Listen for variant change events
-            document.addEventListener('variant:change', (event) => {
-                // Get new base price and update pricing if dates are selected
-                this.currentBasePrice = this.getBasePrice();
-                if (this.selectedDates.length === 1) {
-                    this.updateSingleDatePricing();
-                } else if (this.selectedDates.length === 2) {
-                    this.updatePricing();
+            // Create a MutationObserver to monitor price changes on the page
+            this.priceObserver = new MutationObserver((mutations) => {
+                for (const mutation of mutations) {
+                    if (mutation.type === 'childList' || mutation.type === 'characterData') {
+                        const newPrice = this.getBasePrice();
+                        if (newPrice !== this.currentBasePrice) {
+                            console.log('Price changed from', this.currentBasePrice, 'to', newPrice);
+                            this.currentBasePrice = newPrice;
+                            
+                            // Update price display if dates are selected
+                            if (this.selectedDates.length === 1) {
+                                this.updateSingleDatePricing();
+                            } else if (this.selectedDates.length === 2) {
+                                this.updatePricing();
+                            }
+                        }
+                    }
                 }
             });
             
-            // Listen for radio button or select changes for variants
-            const variantRadios = document.querySelectorAll('input[type="radio"][name^="options"]');
-            variantRadios.forEach(radio => {
-                radio.addEventListener('change', () => {
-                    setTimeout(() => {
-                        this.currentBasePrice = this.getBasePrice();
-                        if (this.selectedDates.length === 1) {
-                            this.updateSingleDatePricing();
-                        } else if (this.selectedDates.length === 2) {
-                            this.updatePricing();
-                        }
-                    }, 100); // Small timeout to allow Shopify to update the price first
-                });
+            // Start observing price elements
+            const priceContainers = document.querySelectorAll('.price, [id^="price-template"], .product__price');
+            priceContainers.forEach(container => {
+                if (container) {
+                    this.priceObserver.observe(container, { 
+                        childList: true, 
+                        characterData: true,
+                        subtree: true
+                    });
+                }
             });
             
-            // Also listen for variant selectors (dropdown)
-            const variantSelects = document.querySelectorAll('select[name^="options"]');
-            variantSelects.forEach(select => {
-                select.addEventListener('change', () => {
-                    setTimeout(() => {
-                        this.currentBasePrice = this.getBasePrice();
-                        if (this.selectedDates.length === 1) {
-                            this.updateSingleDatePricing();
-                        } else if (this.selectedDates.length === 2) {
-                            this.updatePricing();
-                        }
-                    }, 100);
+            // Also observe the entire product section for changes
+            const productSection = document.querySelector('.product, .product-section, main');
+            if (productSection) {
+                this.priceObserver.observe(productSection, { 
+                    childList: true,
+                    subtree: true 
                 });
-            });
+            }
             
-            // Listen for click events on variant buttons
+            // Listen for click events on variant buttons/options
             document.addEventListener('click', (event) => {
-                // Check if clicked element is a variant button or within a variant button
-                const variantButton = event.target.closest('.variant-input label, .single-option-selector__radio + label');
-                if (variantButton) {
+                // Check if clicked element is a variant selection element
+                const variantElement = event.target.closest('[data-value], .single-option-selector, input[name^="options"], .swatch, .swatch-element, .variant-input label');
+                
+                if (variantElement) {
+                    // Wait a moment for Shopify to update the DOM with the new price
                     setTimeout(() => {
-                        this.currentBasePrice = this.getBasePrice();
-                        if (this.selectedDates.length === 1) {
-                            this.updateSingleDatePricing();
-                        } else if (this.selectedDates.length === 2) {
-                            this.updatePricing();
+                        const newPrice = this.getBasePrice();
+                        if (newPrice !== this.currentBasePrice) {
+                            console.log('Price changed after variant click from', this.currentBasePrice, 'to', newPrice);
+                            this.currentBasePrice = newPrice;
+                            
+                            // Update price display if dates are selected
+                            if (this.selectedDates.length === 1) {
+                                this.updateSingleDatePricing();
+                            } else if (this.selectedDates.length === 2) {
+                                this.updatePricing();
+                            }
                         }
-                    }, 200); // Slightly longer timeout
+                    }, 300); // Longer timeout to ensure DOM updates complete
                 }
+            });
+            
+            // Listen for standard variant change events
+            document.addEventListener('variant:change', (event) => {
+                setTimeout(() => {
+                    const newPrice = this.getBasePrice();
+                    console.log('Variant change event detected, price:', newPrice);
+                    this.currentBasePrice = newPrice;
+                    
+                    // Update pricing displays
+                    if (this.selectedDates.length === 1) {
+                        this.updateSingleDatePricing();
+                    } else if (this.selectedDates.length === 2) {
+                        this.updatePricing();
+                    }
+                }, 100);
             });
         }
         
@@ -428,8 +478,26 @@ document.addEventListener('DOMContentLoaded', function() {
                    date1.getFullYear() === date2.getFullYear();
         }
         
+        // Force a refresh of the current price
+        refreshPrice() {
+            // Clear any cached price
+            this.currentBasePrice = 0;
+            
+            // Get fresh price from the page
+            const freshPrice = this.getBasePrice();
+            this.log('Refreshed price:', freshPrice);
+            
+            // Update cached price
+            this.currentBasePrice = freshPrice;
+            
+            return freshPrice;
+        }
+        
         // Select a date
         selectDate(date) {
+            // Always get fresh price when selecting dates
+            this.refreshPrice();
+            
             if (this.selectionMode === 'start') {
                 // Start new selection
                 this.selectedDates = [date];
@@ -689,84 +757,73 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Get base price from product page
+        // Get base price from product page - completely revised method
         getBasePrice() {
-            // First, try to get the price from the selected variant
-            let selectedPrice = null;
+            // First, try to get the visible price element at the top of the page
+            const visiblePriceElement = document.querySelector('.price__regular .price-item--regular, .price--large, .price-item');
             
-            // Check for currently selected variant ID
-            const selectedVariantId = this.getSelectedVariantId();
-            if (selectedVariantId) {
-                const variantElement = document.querySelector(`[data-variant-id="${selectedVariantId}"] .price-item--regular`);
-                if (variantElement) {
-                    const priceText = variantElement.textContent.trim();
-                    const priceMatch = priceText.match(/[\d,.]+/);
-                    if (priceMatch) {
-                        selectedPrice = parseFloat(priceMatch[0].replace(/,/g, ''));
-                    }
+            if (visiblePriceElement) {
+                // Directly get price text content
+                const priceText = visiblePriceElement.textContent.trim();
+                // Extract price value from string containing "$XX.XX USD" format
+                const priceMatch = priceText.match(/[\d,.]+/);
+                
+                if (priceMatch) {
+                    const price = parseFloat(priceMatch[0].replace(/,/g, ''));
+                    console.log('Found visible price:', price);
+                    return price;
                 }
             }
             
-            if (selectedPrice) {
-                return selectedPrice;
-            }
-            
-            // Fallback: try different price selectors
-            const priceSelectors = [
-                '.price__regular .price-item--regular',
-                '.price-item--regular',
-                '.price .price__sale .price-item--sale',
-                '.price .price-item',
-                '.price.price--large'
-            ];
-            
-            for (const selector of priceSelectors) {
-                const priceElement = document.querySelector(selector);
-                if (priceElement) {
-                    const priceText = priceElement.textContent.trim();
-                    const priceMatch = priceText.match(/[\d,.]+/);
-                    if (priceMatch) {
-                        return parseFloat(priceMatch[0].replace(/,/g, ''));
-                    }
+            // If no visible price element found, try to find it at the top of the page by selector
+            const displayPrice = document.querySelector('[id^="price-template"] .price-item, .price.price--large.price--show-badge');
+            if (displayPrice) {
+                const priceText = displayPrice.textContent.trim();
+                const priceMatch = priceText.match(/[\d,.]+/);
+                
+                if (priceMatch) {
+                    const price = parseFloat(priceMatch[0].replace(/,/g, ''));
+                    console.log('Found display price:', price);
+                    return price;
                 }
             }
             
-            // Last resort: try to find any price on the page
-            const priceContentMatch = document.body.textContent.match(/\$\s*([\d,.]+)/);
-            if (priceContentMatch && priceContentMatch[1]) {
-                return parseFloat(priceContentMatch[1].replace(/,/g, ''));
+            // Look for the main product price that appears at the top of the page
+            const mainPriceElement = document.querySelector('h1, h2, .product__title, .product-single__title')?.closest('div')?.querySelector('[data-price], .price-item');
+            if (mainPriceElement) {
+                const priceText = mainPriceElement.textContent.trim();
+                const priceMatch = priceText.match(/[\d,.]+/);
+                
+                if (priceMatch) {
+                    const price = parseFloat(priceMatch[0].replace(/,/g, ''));
+                    console.log('Found main price:', price);
+                    return price;
+                }
             }
             
-            console.log('Failed to find product price, using default');
+            // If all else fails, look for any currency symbol followed by a number on the page
+            const headingElements = document.querySelectorAll('h1, h2, h3, .product__price, .price');
+            for (const element of headingElements) {
+                // Check if element contains a price
+                const match = element.textContent.match(/\$\s*([\d,.]+)/);
+                if (match && match[1]) {
+                    const price = parseFloat(match[1].replace(/,/g, ''));
+                    console.log('Found price in heading:', price);
+                    return price;
+                }
+            }
+            
+            // Last resort: find any price on the page
+            const pageContent = document.body.textContent;
+            const priceMatches = pageContent.match(/\$\s*([\d,.]+)\s*USD/);
+            if (priceMatches && priceMatches[1]) {
+                const price = parseFloat(priceMatches[1].replace(/,/g, ''));
+                console.log('Found price in page content:', price);
+                return price;
+            }
+            
+            console.error('Failed to find product price, using default');
             return 100; // Default if price can't be found
-        }
-        
-        // Get the currently selected variant ID
-        getSelectedVariantId() {
-            // Check for Shopify's selected variant
-            const selectedVariantInput = document.querySelector('input[name="id"]:checked, select[name="id"]');
-            if (selectedVariantInput) {
-                return selectedVariantInput.value;
-            }
-            
-            // Check for data attributes that might contain the selected variant
-            const productForm = document.querySelector('form[action*="/cart/add"]');
-            if (productForm && productForm.dataset.productId) {
-                const variantSelector = `#ProductSelect-${productForm.dataset.productId}`;
-                const variantSelect = document.querySelector(variantSelector);
-                if (variantSelect) {
-                    return variantSelect.value;
-                }
-            }
-            
-            // Check for variant selectors
-            const variantSelectors = document.querySelectorAll('.single-option-selector__radio:checked, .single-option-selector option:checked');
-            if (variantSelectors.length > 0) {
-                // This doesn't give us the ID directly but indicates a selection
-                return true;
-            }
-            
-            return null;
         }
         
         // Calculate duration between selected dates
