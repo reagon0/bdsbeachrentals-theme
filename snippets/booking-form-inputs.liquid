@@ -696,54 +696,57 @@ document.addEventListener('DOMContentLoaded', function() {
     updateTotalPrice();
   }
   
-function updateTotalPrice() {
-  const basePrice = parseFloat(basePriceInput.value);
-  const duration = calculateDuration();
-  
-  // Get discount tier based on duration
-  let discountMultiplier = 1.0;
-  if (duration === 2) {
-    discountMultiplier = 0.9; // 10% discount
-  } else if (duration >= 3) {
-    discountMultiplier = 0.8; // 20% discount
-  }
-  
-  // Calculate total price
-  const totalPrice = basePrice * duration * discountMultiplier;
-  
-  // Update hidden inputs
-  durationInput.value = duration;
-  discountInput.value = discountMultiplier;
-  totalPriceInput.value = totalPrice.toFixed(2);
-  
-  // Format for display
-  const formatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  });
-  
-  // Update price display
-  if (displayedPriceEl) {
-    displayedPriceEl.textContent = formatter.format(totalPrice);
-  }
-  
-  // Update price breakdown
-  if (priceBreakdownEl) {
-    if (duration > 1) {
-      // Reordered breakdown with base price first, then duration, then discount
-      let breakdownHtml = `<div>Base Price: ${formatter.format(basePrice)} × ${duration} days</div>`;
-      breakdownHtml += `<div>Duration: ${duration} days</div>`;
-      
-      if (discountMultiplier < 1) {
-        const discount = Math.round((1 - discountMultiplier) * 100);
-        breakdownHtml += `<div class="discount-row">Duration Discount: ${discount}% off</div>`;
-      }
-      
-      priceBreakdownEl.innerHTML = breakdownHtml;
-    } else {
-      // Just show base price for single day
-      priceBreakdownEl.innerHTML = `<div>Base Price: ${formatter.format(basePrice)}</div>`;
+  // Update total price based on duration and discount
+  function updateTotalPrice() {
+    const basePrice = parseFloat(basePriceInput.value);
+    const duration = calculateDuration();
+    
+    // Get discount tier based on duration
+    let discountMultiplier = 1.0;
+    if (duration === 2) {
+      discountMultiplier = 0.9; // 10% discount
+    } else if (duration >= 3) {
+      discountMultiplier = 0.8; // 20% discount
     }
+    
+    // Calculate total price
+    const totalPrice = basePrice * duration * discountMultiplier;
+    
+    // Update hidden inputs
+    durationInput.value = duration;
+    discountInput.value = discountMultiplier;
+    totalPriceInput.value = totalPrice.toFixed(2);
+    
+    // Format for display
+    const formatter = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    });
+    
+    // Update price display
+    if (displayedPriceEl) {
+      displayedPriceEl.textContent = formatter.format(totalPrice);
+    }
+    
+    // Update price breakdown
+    if (priceBreakdownEl) {
+      if (duration > 1) {
+        let breakdownHtml = `<div>Duration: ${duration} days</div>`;
+        
+        if (discountMultiplier < 1) {
+          const discount = Math.round((1 - discountMultiplier) * 100);
+          breakdownHtml += `<div>Discount: ${discount}% off</div>`;
+          breakdownHtml += `<div>Base Price: ${formatter.format(basePrice)} × ${duration} days</div>`;
+        }
+        
+        priceBreakdownEl.innerHTML = breakdownHtml;
+      } else {
+        priceBreakdownEl.innerHTML = ''; // Clear breakdown for single day
+      }
+    }
+    
+    // Update the original Shopify price display if present
+    updateShopifyPriceDisplay(totalPrice);
   }
   
   // Update Shopify's price display if present
