@@ -18,9 +18,6 @@
         
         <div class="selected-date-range" id="selected-date-range"></div>
         
-        <!-- Pricing Information -->
-        <div id="booking-total-price" class="booking-price"></div>
-
         <!-- Hidden inputs for Shopify -->
         <input type="hidden" name="properties[Start Date]" id="shopify-date-input">
         <input type="hidden" name="properties[End Date]" id="shopify-end-date-input">
@@ -134,26 +131,6 @@
     .date.in-range {
         background-color: rgba(var(--color-foreground), 0.3);
     }
-
-    .booking-price-summary {
-        margin-top: 20px;
-        padding: 15px;
-        background: #f9fafb;
-        border-radius: 6px;
-        font-size: 14px;
-    }
-
-    .booking-total {
-        margin-top: 10px;
-        font-weight: bold;
-        font-size: 16px;
-    }
-
-    /* Style for highlighting the range of dates */
-    .date.in-range:not(.selected) {
-        background-color: rgba(var(--color-foreground), 0.3);
-        color: rgb(var(--color-foreground));
-    }
     
     .selection-status {
         text-align: center;
@@ -183,19 +160,13 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Simple DateTimePicker class
+    // Simple DateTimePicker class with minimal overhead
     class DateTimePicker {
         constructor() {
-            // Initialize date variables
+            // Initialize basic properties
             this.currentDate = new Date();
             this.selectedDates = [];
             this.selectionMode = 'start';
-            
-            // Set initial base price to 0 - will be updated during initialization
-            this.currentBasePrice = 0;
-            
-            // Add debug mode
-            this.debug = true;
             
             // Get DOM elements
             this.calendarEl = document.getElementById('calendar');
@@ -209,128 +180,20 @@ document.addEventListener('DOMContentLoaded', function() {
             this.shopifyDurationInput = document.getElementById('shopify-duration-input');
             this.shopifyDiscountInput = document.getElementById('shopify-discount-input');
             
-            // Initialize with a small delay to ensure Shopify has setup the page
-            setTimeout(() => {
-                // Get initial base price
-                this.currentBasePrice = this.getBasePrice();
-                if (this.debug) console.log('Initial base price:', this.currentBasePrice);
-                
-                // Set up event listeners
-                this.setupButtonListeners();
-                this.setupVariantChangeListeners();
-                
-                // Render the calendar
-                this.renderCalendar();
-            }, 500);
-        }
-        
-        // Debug log helper
-        log(...args) {
-            if (this.debug) {
-                console.log(...args);
-            }
-        }
-        
-        // Setup button listeners
-        setupButtonListeners() {
+            // Set up event listeners for navigation
             const prevButton = document.getElementById('prev-month');
             const nextButton = document.getElementById('next-month');
             
             if (prevButton) {
-                prevButton.addEventListener('click', () => {
-                    this.prevMonth();
-                });
+                prevButton.addEventListener('click', () => this.prevMonth());
             }
             
             if (nextButton) {
-                nextButton.addEventListener('click', () => {
-                    this.nextMonth();
-                });
-            }
-        }
-        
-        // Set up listeners for variant selection changes
-        setupVariantChangeListeners() {
-            // Create a MutationObserver to monitor price changes on the page
-            this.priceObserver = new MutationObserver((mutations) => {
-                for (const mutation of mutations) {
-                    if (mutation.type === 'childList' || mutation.type === 'characterData') {
-                        const newPrice = this.getBasePrice();
-                        if (newPrice !== this.currentBasePrice) {
-                            console.log('Price changed from', this.currentBasePrice, 'to', newPrice);
-                            this.currentBasePrice = newPrice;
-                            
-                            // Update price display if dates are selected
-                            if (this.selectedDates.length === 1) {
-                                this.updateSingleDatePricing();
-                            } else if (this.selectedDates.length === 2) {
-                                this.updatePricing();
-                            }
-                        }
-                    }
-                }
-            });
-            
-            // Start observing price elements
-            const priceContainers = document.querySelectorAll('.price, [id^="price-template"], .product__price');
-            priceContainers.forEach(container => {
-                if (container) {
-                    this.priceObserver.observe(container, { 
-                        childList: true, 
-                        characterData: true,
-                        subtree: true
-                    });
-                }
-            });
-            
-            // Also observe the entire product section for changes
-            const productSection = document.querySelector('.product, .product-section, main');
-            if (productSection) {
-                this.priceObserver.observe(productSection, { 
-                    childList: true,
-                    subtree: true 
-                });
+                nextButton.addEventListener('click', () => this.nextMonth());
             }
             
-            // Listen for click events on variant buttons/options
-            document.addEventListener('click', (event) => {
-                // Check if clicked element is a variant selection element
-                const variantElement = event.target.closest('[data-value], .single-option-selector, input[name^="options"], .swatch, .swatch-element, .variant-input label');
-                
-                if (variantElement) {
-                    // Wait a moment for Shopify to update the DOM with the new price
-                    setTimeout(() => {
-                        const newPrice = this.getBasePrice();
-                        if (newPrice !== this.currentBasePrice) {
-                            console.log('Price changed after variant click from', this.currentBasePrice, 'to', newPrice);
-                            this.currentBasePrice = newPrice;
-                            
-                            // Update price display if dates are selected
-                            if (this.selectedDates.length === 1) {
-                                this.updateSingleDatePricing();
-                            } else if (this.selectedDates.length === 2) {
-                                this.updatePricing();
-                            }
-                        }
-                    }, 300); // Longer timeout to ensure DOM updates complete
-                }
-            });
-            
-            // Listen for standard variant change events
-            document.addEventListener('variant:change', (event) => {
-                setTimeout(() => {
-                    const newPrice = this.getBasePrice();
-                    console.log('Variant change event detected, price:', newPrice);
-                    this.currentBasePrice = newPrice;
-                    
-                    // Update pricing displays
-                    if (this.selectedDates.length === 1) {
-                        this.updateSingleDatePricing();
-                    } else if (this.selectedDates.length === 2) {
-                        this.updatePricing();
-                    }
-                }, 100);
-            });
+            // Initial render
+            this.renderCalendar();
         }
         
         // Render the calendar grid
@@ -478,34 +341,66 @@ document.addEventListener('DOMContentLoaded', function() {
                    date1.getFullYear() === date2.getFullYear();
         }
         
-        // Force a refresh of the current price
-        refreshPrice() {
-            // Clear any cached price
-            this.currentBasePrice = 0;
+        // Get the current displayed price from the page
+        getCurrentPrice() {
+            try {
+                // First attempt: direct price at top of product page
+                const priceAmount = document.querySelector('.price__container .price__regular .price-item--regular');
+                if (priceAmount) {
+                    const priceText = priceAmount.textContent.trim();
+                    const priceMatch = priceText.match(/[\d,.]+/);
+                    if (priceMatch) {
+                        return parseFloat(priceMatch[0].replace(/,/g, ''));
+                    }
+                }
+                
+                // Second attempt: look for price in USD format
+                const priceUSD = document.body.textContent.match(/\$([\d,.]+)\s*USD/);
+                if (priceUSD && priceUSD[1]) {
+                    return parseFloat(priceUSD[1].replace(/,/g, ''));
+                }
+                
+                // Third attempt: any price element
+                const anyPrice = document.querySelector('.price__regular .price-item, .price__sale .price-item, .price-item--regular');
+                if (anyPrice) {
+                    const priceText = anyPrice.textContent.trim();
+                    const priceMatch = priceText.match(/[\d,.]+/);
+                    if (priceMatch) {
+                        return parseFloat(priceMatch[0].replace(/,/g, ''));
+                    }
+                }
+                
+                // Last resort: main heading with price
+                const mainHeading = document.querySelector('h1, h2');
+                if (mainHeading) {
+                    const siblingElements = mainHeading.parentElement.children;
+                    for (let i = 0; i < siblingElements.length; i++) {
+                        const priceMatch = siblingElements[i].textContent.match(/\$([\d,.]+)/);
+                        if (priceMatch && priceMatch[1]) {
+                            return parseFloat(priceMatch[1].replace(/,/g, ''));
+                        }
+                    }
+                }
+            } catch (e) {
+                console.log('Price detection error:', e);
+            }
             
-            // Get fresh price from the page
-            const freshPrice = this.getBasePrice();
-            this.log('Refreshed price:', freshPrice);
-            
-            // Update cached price
-            this.currentBasePrice = freshPrice;
-            
-            return freshPrice;
+            // Fallback value
+            return 100;
         }
         
         // Select a date
         selectDate(date) {
-            // Always get fresh price when selecting dates
-            this.refreshPrice();
-            
             if (this.selectionMode === 'start') {
                 // Start new selection
                 this.selectedDates = [date];
                 this.selectionMode = 'end';
-                this.selectionStatusEl.textContent = 'Now select your end date';
+                if (this.selectionStatusEl) {
+                    this.selectionStatusEl.textContent = 'Now select your end date';
+                }
                 
-                // Even with just one date, update pricing for 1 day
-                this.updateSingleDatePricing();
+                // Update hidden inputs for single date
+                this.updateHiddenInputs(1);
             } else {
                 // Complete the selection
                 this.selectedDates.push(date);
@@ -515,63 +410,52 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Reset for next selection
                 this.selectionMode = 'start';
-                this.selectionStatusEl.textContent = 'Select your start date, then end date';
+                if (this.selectionStatusEl) {
+                    this.selectionStatusEl.textContent = 'Select your start date, then end date';
+                }
                 
-                // Update pricing with full date range
-                this.updatePricing();
+                // Calculate duration
+                const duration = this.calculateDuration();
+                
+                // Calculate discount
+                const discountMultiplier = duration === 2 ? 0.9 : (duration >= 3 ? 0.8 : 1.0);
+                
+                // Update hidden inputs
+                this.updateHiddenInputs(duration, discountMultiplier);
+                
+                // Update Shopify price - modify price display code to use current price
+                this.updateShopifyPrice(duration, discountMultiplier);
             }
             
             // Update date display
             this.updateDateDisplay();
             
-            // Update hidden inputs
-            this.updateHiddenInputs();
-            
             // Re-render calendar to show selection
             this.renderCalendar();
         }
         
-        // Update pricing when only one date is selected
-        updateSingleDatePricing() {
-            // Get the current base price
-            const basePrice = this.currentBasePrice || this.getBasePrice();
-            if (!basePrice) return;
+        // Update Shopify's price based on duration and discount
+        updateShopifyPrice(duration, discountMultiplier) {
+            const basePrice = this.getCurrentPrice();
+            const totalPrice = basePrice * duration * discountMultiplier;
             
-            // For a single day, there's no discount
-            const totalPrice = basePrice;
+            // Format for display
+            const formatter = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+            });
             
-            // Update pricing display
-            const totalPriceEl = document.getElementById('booking-total-price');
-            if (totalPriceEl) {
-                const formatter = new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'USD',
-                });
-                
-                let priceHtml = `<div class="booking-price-summary">`;
-                priceHtml += `<div>Duration: 1 day</div>`;
-                priceHtml += `<div class="booking-total">Total: ${formatter.format(totalPrice)}</div>`;
-                priceHtml += `</div>`;
-                
-                totalPriceEl.innerHTML = priceHtml;
-            }
-            
-            // Update duration input
-            if (this.shopifyDurationInput) {
-                this.shopifyDurationInput.value = 1;
-            }
-            
-            // Update discount input (no discount for 1 day)
-            if (this.shopifyDiscountInput) {
-                this.shopifyDiscountInput.value = 1.0;
-            }
-            
-            // Update product price display
-            this.updateProductPriceDisplay(totalPrice);
+            // Find the main price element on the Shopify page
+            const priceElements = document.querySelectorAll('.price__regular .price-item--regular, .price-item--regular');
+            priceElements.forEach(el => {
+                el.textContent = formatter.format(totalPrice);
+            });
         }
         
         // Update the selected date range display
         updateDateDisplay() {
+            if (!this.selectedDateRangeEl) return;
+            
             if (this.selectedDates.length === 0) {
                 this.selectedDateRangeEl.textContent = '';
                 return;
@@ -597,7 +481,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Update Shopify hidden input fields
-        updateHiddenInputs() {
+        updateHiddenInputs(duration, discountMultiplier) {
             if (this.selectedDates[0] && this.shopifyDateInput) {
                 this.shopifyDateInput.value = this.formatDateForShopify(this.selectedDates[0]);
             }
@@ -607,6 +491,14 @@ document.addEventListener('DOMContentLoaded', function() {
             } else if (this.selectedDates[0] && this.shopifyEndDateInput) {
                 this.shopifyEndDateInput.value = this.formatDateForShopify(this.selectedDates[0]);
             }
+            
+            if (duration && this.shopifyDurationInput) {
+                this.shopifyDurationInput.value = duration;
+            }
+            
+            if (discountMultiplier && this.shopifyDiscountInput) {
+                this.shopifyDiscountInput.value = discountMultiplier;
+            }
         }
         
         // Format date for Shopify (YYYY-MM-DD)
@@ -615,215 +507,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const month = (date.getMonth() + 1).toString().padStart(2, '0');
             const day = date.getDate().toString().padStart(2, '0');
             return `${year}-${month}-${day}`;
-        }
-        
-        // Update pricing based on selected dates
-        updatePricing() {
-            const totalPriceEl = document.getElementById('booking-total-price');
-            if (!totalPriceEl || this.selectedDates.length < 2) return;
-            
-            // Get base price from page (using cached price if available)
-            const basePrice = this.currentBasePrice || this.getBasePrice();
-            if (!basePrice) return;
-            
-            // Calculate duration
-            const duration = this.calculateDuration();
-            
-            // Apply discount tiers - Updated to 10% and 20% discounts
-            const discountTiers = {
-                1: 1.00, // 100% of price (no discount)
-                2: 0.90, // 90% per day (10% discount)
-                3: 0.80  // 80% per day (20% discount) for 3+ days
-            };
-            
-            // Get applicable discount
-            const discountMultiplier = this.getDiscountMultiplier(duration, discountTiers);
-            
-            // Calculate total price
-            const totalPrice = basePrice * duration * discountMultiplier;
-            
-            // Format the price
-            const formatter = new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'USD',
-            });
-            
-            // Build HTML for price display
-            let priceHtml = `<div class="booking-price-summary">`;
-            priceHtml += `<div>Duration: ${duration} day${duration !== 1 ? 's' : ''}</div>`;
-            
-            if (discountMultiplier < 1) {
-                const discount = Math.round((1 - discountMultiplier) * 100);
-                priceHtml += `<div>Discount: ${discount}% off</div>`;
-                priceHtml += `<div>Base Price: ${formatter.format(basePrice)} × ${duration} days</div>`;
-            }
-            
-            priceHtml += `<div class="booking-total">Total: ${formatter.format(totalPrice)}</div>`;
-            priceHtml += `</div>`;
-            
-            totalPriceEl.innerHTML = priceHtml;
-            
-            // Update duration input
-            if (this.shopifyDurationInput) {
-                this.shopifyDurationInput.value = duration;
-            }
-            
-            // Update discount input
-            if (this.shopifyDiscountInput) {
-                this.shopifyDiscountInput.value = discountMultiplier;
-            }
-            
-            // Update the actual product price displayed on the page
-            this.updateProductPriceDisplay(totalPrice);
-        }
-        
-        // Update the actual Shopify product price display
-        updateProductPriceDisplay(newPrice) {
-            // Format price for display
-            const formatter = new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'USD',
-            });
-            const formattedPrice = formatter.format(newPrice);
-            
-            // Target the specific price element shown in the screenshot
-            const priceLargeShowBadge = document.querySelector('.price.price--large.price--show-badge');
-            if (priceLargeShowBadge) {
-                // Update this element directly
-                const priceItems = priceLargeShowBadge.querySelectorAll('.price-item');
-                if (priceItems && priceItems.length > 0) {
-                    priceItems.forEach(item => {
-                        item.textContent = formattedPrice;
-                    });
-                } else {
-                    // If no price-item found, update the element directly
-                    priceLargeShowBadge.textContent = formattedPrice;
-                }
-            }
-            
-            // Target the main pricing div from the screenshot
-            const priceTemplate = document.getElementById('price-template--17831724679222__main');
-            if (priceTemplate) {
-                const priceElements = priceTemplate.querySelectorAll('.price-item');
-                if (priceElements && priceElements.length > 0) {
-                    priceElements.forEach(element => {
-                        element.textContent = formattedPrice;
-                    });
-                }
-            }
-            
-            // Update more generic price elements as backup
-            const regularPriceElements = document.querySelectorAll('.price__regular .price-item--regular');
-            regularPriceElements.forEach(element => {
-                element.textContent = formattedPrice;
-            });
-            
-            // Also try by direct price value elements
-            const allPriceItems = document.querySelectorAll('.price-item');
-            allPriceItems.forEach(item => {
-                item.textContent = formattedPrice;
-            });
-            
-            // Update any hidden price inputs (used for form submission)
-            const priceInputs = document.querySelectorAll('input[data-price]');
-            priceInputs.forEach(input => {
-                input.value = newPrice;
-                input.setAttribute('data-price', newPrice);
-            });
-            
-            // Update the price in the data layer for analytics
-            if (window.dataLayer) {
-                window.dataLayer.push({
-                    'event': 'price_update',
-                    'product_price': newPrice
-                });
-            }
-            
-            // Add a custom event to notify Shopify that price was updated
-            document.dispatchEvent(new CustomEvent('product:price:update', { 
-                detail: { price: newPrice } 
-            }));
-            
-            // If all else fails, try updating via DOM manipulation
-            try {
-                // Find the exact element from the screenshot
-                const exactPriceElement = document.querySelector('div.price.price--large.price--show-badge');
-                if (exactPriceElement) {
-                    // Direct update as a last resort
-                    exactPriceElement.innerHTML = formattedPrice;
-                }
-            } catch (e) {
-                console.log('Failed to update price directly:', e);
-            }
-        }
-        
-        // Get base price from product page - completely revised method
-        getBasePrice() {
-            // First, try to get the visible price element at the top of the page
-            const visiblePriceElement = document.querySelector('.price__regular .price-item--regular, .price--large, .price-item');
-            
-            if (visiblePriceElement) {
-                // Directly get price text content
-                const priceText = visiblePriceElement.textContent.trim();
-                // Extract price value from string containing "$XX.XX USD" format
-                const priceMatch = priceText.match(/[\d,.]+/);
-                
-                if (priceMatch) {
-                    const price = parseFloat(priceMatch[0].replace(/,/g, ''));
-                    console.log('Found visible price:', price);
-                    return price;
-                }
-            }
-            
-            // If no visible price element found, try to find it at the top of the page by selector
-            const displayPrice = document.querySelector('[id^="price-template"] .price-item, .price.price--large.price--show-badge');
-            if (displayPrice) {
-                const priceText = displayPrice.textContent.trim();
-                const priceMatch = priceText.match(/[\d,.]+/);
-                
-                if (priceMatch) {
-                    const price = parseFloat(priceMatch[0].replace(/,/g, ''));
-                    console.log('Found display price:', price);
-                    return price;
-                }
-            }
-            
-            // Look for the main product price that appears at the top of the page
-            const mainPriceElement = document.querySelector('h1, h2, .product__title, .product-single__title')?.closest('div')?.querySelector('[data-price], .price-item');
-            if (mainPriceElement) {
-                const priceText = mainPriceElement.textContent.trim();
-                const priceMatch = priceText.match(/[\d,.]+/);
-                
-                if (priceMatch) {
-                    const price = parseFloat(priceMatch[0].replace(/,/g, ''));
-                    console.log('Found main price:', price);
-                    return price;
-                }
-            }
-            
-            // If all else fails, look for any currency symbol followed by a number on the page
-            const headingElements = document.querySelectorAll('h1, h2, h3, .product__price, .price');
-            for (const element of headingElements) {
-                // Check if element contains a price
-                const match = element.textContent.match(/\$\s*([\d,.]+)/);
-                if (match && match[1]) {
-                    const price = parseFloat(match[1].replace(/,/g, ''));
-                    console.log('Found price in heading:', price);
-                    return price;
-                }
-            }
-            
-            // Last resort: find any price on the page
-            const pageContent = document.body.textContent;
-            const priceMatches = pageContent.match(/\$\s*([\d,.]+)\s*USD/);
-            if (priceMatches && priceMatches[1]) {
-                const price = parseFloat(priceMatches[1].replace(/,/g, ''));
-                console.log('Found price in page content:', price);
-                return price;
-            }
-            
-            console.error('Failed to find product price, using default');
-            return 100; // Default if price can't be found
         }
         
         // Calculate duration between selected dates
@@ -843,16 +526,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Add 1 to include both start and end dates
             return diffDays + 1;
-        }
-        
-        // Get discount multiplier based on duration
-        getDiscountMultiplier(duration, discountTiers) {
-            for (let tier = Math.min(duration, Object.keys(discountTiers).length); tier > 0; tier--) {
-                if (discountTiers[tier]) {
-                    return discountTiers[tier];
-                }
-            }
-            return 1; // Default: no discount
         }
     }
     
