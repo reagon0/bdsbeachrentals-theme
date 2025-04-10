@@ -299,54 +299,61 @@
     
     <!-- Product Image Display Fix CSS -->
     <style>
-      /* Main product images - balanced approach */
-      .product-image-no-zoom,
-      .product__media-item img {
-        object-fit: contain !important;
-        max-height: 100% !important;
-        max-width: 100% !important;
-        height: auto !important;
-        width: 100% !important; /* Use full width */
-        margin: 0 auto;
+      /* Target main product image specifically */
+      .product__media-item.grid__item.is-active {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: auto;
+        min-height: 600px;
+        padding: 0;
       }
 
-      /* Ensure the container has proper dimensions */
+      .product__media-item.grid__item.is-active img {
+        width: auto !important;
+        height: auto !important;
+        max-width: 100% !important;
+        max-height: 600px !important;
+        object-fit: contain !important;
+      }
+
+      /* This targets the first image shown when page loads */
+      .product__media-item.grid__item:first-child img,
+      .slider__slide.is-active img {
+        width: auto !important;
+        height: auto !important;
+        max-width: 100% !important;
+        max-height: 600px !important;
+        object-fit: contain !important;
+      }
+
+      /* Adjust main container */
+      .product__media-wrapper, 
+      .product__info-wrapper {
+        padding: 0;
+      }
+
+      /* Grid items in the carousel */
       .product__media-list .product__media-item {
+        min-height: 450px;
         display: flex;
         align-items: center;
         justify-content: center;
-        min-height: 500px; /* Taller container to avoid small images */
       }
 
-      /* For active image */
-      .is-active .product__media img {
-        width: 100% !important;
+      /* All product images */
+      .product__media img {
+        max-height: 600px;
+        width: auto !important;
+        margin: 0 auto;
         object-fit: contain !important;
       }
 
-      /* Thumbnail fixes */
+      /* Fix thumbnail images */
       .thumbnail-list__item .thumbnail img {
-        object-fit: cover !important; /* Cover works better for thumbnails */
+        object-fit: cover !important;
         width: 100%;
         height: 100%;
-      }
-
-      /* Remove any forced aspect ratio that might be cropping the image */
-      .product__media-item .global-media-settings {
-        padding-top: 0 !important;
-      }
-
-      .product__modal-opener .global-media-settings {
-        padding-top: 0 !important;
-      }
-
-      /* Disable image zoom functionality */
-      .product__media-wrapper .product__media img,
-      .product__media-item img,
-      .product-featured-media,
-      .product__media-toggle,
-      .product-image {
-        cursor: default !important;
       }
 
       /* Hide zoom elements */
@@ -360,16 +367,21 @@
         display: none !important;
       }
 
-      /* For grid layouts */
-      .product__media-list.grid {
-        align-items: center;
-        justify-content: center;
+      /* Make sure no crop is happening due to padding */
+      .product__media-item .global-media-settings,
+      .product__modal-opener .global-media-settings {
+        padding-top: 0 !important;
       }
 
-      /* Media query for smaller screens */
       @media screen and (max-width: 749px) {
+        .product__media-item.grid__item.is-active,
         .product__media-list .product__media-item {
           min-height: 350px;
+        }
+        
+        .product__media-item.grid__item.is-active img,
+        .product__media img {
+          max-height: 350px;
         }
       }
     </style>
@@ -469,8 +481,8 @@
             // Set proper sizing
             img.style.objectFit = 'contain';
             img.style.maxWidth = '100%';
-            img.style.maxHeight = '100%';
-            img.style.width = '100%';
+            img.style.maxHeight = '600px';
+            img.style.width = 'auto';
             img.style.margin = '0 auto';
           });
           
@@ -484,24 +496,46 @@
             if (el) el.style.display = 'none';
           });
           
-          // Ensure proper aspect ratio for images
+          // Fix main active image
+          const mainImage = document.querySelector('.product__media-item.grid__item.is-active img');
+          if (mainImage) {
+            mainImage.style.objectFit = 'contain';
+            mainImage.style.width = 'auto';
+            mainImage.style.height = 'auto';
+            mainImage.style.maxWidth = '100%';
+            mainImage.style.maxHeight = '600px';
+            mainImage.style.margin = '0 auto';
+            
+            // Make sure parent container is properly sized
+            const mediaItem = mainImage.closest('.product__media-item');
+            if (mediaItem) {
+              mediaItem.style.display = 'flex';
+              mediaItem.style.alignItems = 'center';
+              mediaItem.style.justifyContent = 'center';
+              mediaItem.style.minHeight = window.innerWidth < 750 ? '350px' : '600px';
+              
+              // Remove any padding that might be affecting position
+              mediaItem.style.padding = '0';
+            }
+          }
+          
+          // Fix all product images
           const mediaItems = document.querySelectorAll('.product__media-item');
           mediaItems.forEach(item => {
-            // Make the container taller
-            item.style.minHeight = window.innerWidth < 750 ? '350px' : '500px';
-            
-            // Add flex properties for centering
+            // Make the container taller and properly centered
             item.style.display = 'flex';
             item.style.alignItems = 'center';
             item.style.justifyContent = 'center';
+            item.style.minHeight = window.innerWidth < 750 ? '350px' : '450px';
             
             const img = item.querySelector('img');
             if (img) {
               // Ensure image has proper dimensions while maintaining aspect ratio
               img.style.objectFit = 'contain';
               img.style.maxWidth = '100%';
-              img.style.maxHeight = '100%';
-              img.style.width = '100%';
+              img.style.maxHeight = window.innerWidth < 750 ? '350px' : '600px';
+              img.style.width = 'auto';
+              img.style.margin = '0 auto';
             }
           });
           
@@ -518,29 +552,52 @@
         fixProductImages();
         
         // Run after a delay to catch any images loaded later
-        setTimeout(fixProductImages, 1000);
+        setTimeout(fixProductImages, 500);
         
-        // Apply fixes whenever the active image changes
+        // Run again after everything is fully loaded
+        window.addEventListener('load', fixProductImages);
+        
+        // Handle thumbnail clicks
         const thumbnailButtons = document.querySelectorAll('.thumbnail');
-        if (thumbnailButtons) {
-          thumbnailButtons.forEach(button => {
-            button.addEventListener('click', () => {
-              // Give time for the new image to load
-              setTimeout(fixProductImages, 100);
+        thumbnailButtons.forEach(button => {
+          button.addEventListener('click', () => {
+            // Need to wait for the slide change to complete
+            setTimeout(fixProductImages, 100);
+            setTimeout(fixProductImages, 500); // Run again after a longer delay to be sure
+          });
+        });
+        
+        // Create a mutation observer to watch for DOM changes
+        const observer = new MutationObserver(mutations => {
+          // Check if any mutations affected product images
+          const needsUpdate = mutations.some(mutation => {
+            return Array.from(mutation.addedNodes).some(node => {
+              return node.nodeType === 1 && (
+                node.classList && (
+                  node.classList.contains('product__media-item') ||
+                  node.classList.contains('product__media') ||
+                  node.classList.contains('is-active')
+                ) || 
+                node.querySelector && node.querySelector('.product__media-item, .product__media, .is-active')
+              );
             });
           });
-        }
-        
-        // Monitor for any changes that might add new zoom elements
-        const observer = new MutationObserver(mutations => {
-          fixProductImages();
+          
+          if (needsUpdate) {
+            fixProductImages();
+          }
         });
         
-        // Start observing the document with the configured parameters
+        // Start observing the document
         observer.observe(document.body, { 
           childList: true, 
-          subtree: true 
+          subtree: true,
+          attributes: true,
+          attributeFilter: ['class']
         });
+        
+        // Also handle window resize events
+        window.addEventListener('resize', fixProductImages);
       });
     </script>
   </body>
