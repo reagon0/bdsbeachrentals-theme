@@ -18,18 +18,12 @@
         
         <div class="selected-date-range" id="selected-date-range"></div>
         
-        <div class="time-selector-label form__label">Pickup Time</div>
-        <div class="time-selector">
-            <select id="time-select"></select>
-        </div>
-        
         <!-- Pricing Information -->
         <div id="booking-total-price" class="booking-price"></div>
 
         <!-- Hidden inputs for Shopify -->
         <input type="hidden" name="properties[Start Date]" id="shopify-date-input">
         <input type="hidden" name="properties[End Date]" id="shopify-end-date-input">
-        <input type="hidden" name="properties[Pickup Time]" id="shopify-time-input">
         <input type="hidden" name="properties[Duration]" id="shopify-duration-input">
         <input type="hidden" name="properties[Discount]" id="shopify-discount-input">
     </div>
@@ -136,25 +130,6 @@
         cursor: not-allowed;
     }
 
-    .time-selector {
-        margin-top: 10px;
-    }
-
-    .time-selector select {
-        width: 100%;
-        padding: 8px;
-        border: 1px solid #d1d5db;
-        border-radius: 4px;
-        font-size: 14px;
-        background: white;
-    }
-
-    .time-selector select:focus {
-        outline: none;
-        border-color: rgb(var(--color-foreground));
-        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
-    }
-
     /* Add these styles for multi-day selection */
     .date.in-range {
         background-color: rgba(var(--color-foreground), 0.3);
@@ -215,19 +190,18 @@ document.addEventListener('DOMContentLoaded', function() {
             this.currentDate = new Date();
             this.selectedDates = [];
             this.selectionMode = 'start';
-            this.selectedTime = null;
             
             // Get DOM elements
             this.calendarEl = document.getElementById('calendar');
             this.currentMonthEl = document.getElementById('current-month');
-            this.timeSelectEl = document.getElementById('time-select');
             this.selectionStatusEl = document.getElementById('selection-status');
             this.selectedDateRangeEl = document.getElementById('selected-date-range');
             
             // Hidden Shopify inputs
             this.shopifyDateInput = document.getElementById('shopify-date-input');
             this.shopifyEndDateInput = document.getElementById('shopify-end-date-input');
-            this.shopifyTimeInput = document.getElementById('shopify-time-input');
+            this.shopifyDurationInput = document.getElementById('shopify-duration-input');
+            this.shopifyDiscountInput = document.getElementById('shopify-discount-input');
             
             // Set up event listeners
             document.getElementById('prev-month').addEventListener('click', () => {
@@ -238,8 +212,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.nextMonth();
             });
             
-            // Populate time dropdown and calendar
-            this.populateTimeDropdown();
+            // Render the calendar
             this.renderCalendar();
         }
         
@@ -307,10 +280,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     dateEl.classList.add('in-range');
                 }
                 
-                // Add click event to selectable dates
-                dateEl.addEventListener('click', () => {
-                    this.selectDate(dateObj);
-                });
+                // Disable past dates
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                
+                if (dateObj < today) {
+                    dateEl.classList.add('disabled');
+                } else {
+                    // Add click event to selectable dates
+                    dateEl.addEventListener('click', () => {
+                        this.selectDate(dateObj);
+                    });
+                }
                 
                 this.calendarEl.appendChild(dateEl);
             }
@@ -441,15 +422,13 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // Update duration input
-            const durationInput = document.getElementById('shopify-duration-input');
-            if (durationInput) {
-                durationInput.value = 1;
+            if (this.shopifyDurationInput) {
+                this.shopifyDurationInput.value = 1;
             }
             
             // Update discount input (no discount for 1 day)
-            const discountInput = document.getElementById('shopify-discount-input');
-            if (discountInput) {
-                discountInput.value = 1.0;
+            if (this.shopifyDiscountInput) {
+                this.shopifyDiscountInput.value = 1.0;
             }
             
             // Update product price display
@@ -493,10 +472,6 @@ document.addEventListener('DOMContentLoaded', function() {
             } else if (this.selectedDates[0] && this.shopifyEndDateInput) {
                 this.shopifyEndDateInput.value = this.formatDateForShopify(this.selectedDates[0]);
             }
-            
-            if (this.selectedTime && this.shopifyTimeInput) {
-                this.shopifyTimeInput.value = this.selectedTime;
-            }
         }
         
         // Format date for Shopify (YYYY-MM-DD)
@@ -505,51 +480,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const month = (date.getMonth() + 1).toString().padStart(2, '0');
             const day = date.getDate().toString().padStart(2, '0');
             return `${year}-${month}-${day}`;
-        }
-        
-        // Populate time dropdown with available times
-        populateTimeDropdown() {
-            if (!this.timeSelectEl) return;
-            
-            const times = [];
-            const hourStart = 8; // 8:00 AM
-            const hourEnd = 18; // 6:00 PM
-            
-            for (let hour = hourStart; hour <= hourEnd; hour++) {
-                const hour12 = hour > 12 ? hour - 12 : hour;
-                const period = hour >= 12 ? 'PM' : 'AM';
-                
-                // Add :00 slot
-                times.push({
-                    value: `${hour}:00`,
-                    label: `${hour12}:00 ${period}`
-                });
-                
-                // Add :30 slot
-                times.push({
-                    value: `${hour}:30`,
-                    label: `${hour12}:30 ${period}`
-                });
-            }
-            
-            // Add times to dropdown
-            times.forEach(time => {
-                const option = document.createElement('option');
-                option.value = time.value;
-                option.textContent = time.label;
-                this.timeSelectEl.appendChild(option);
-            });
-            
-            // Set initial selection
-            if (this.timeSelectEl.options.length > 0) {
-                this.selectedTime = this.timeSelectEl.options[0].value;
-                
-                // Add change listener
-                this.timeSelectEl.addEventListener('change', (e) => {
-                    this.selectedTime = e.target.value;
-                    this.updateHiddenInputs();
-                });
-            }
         }
         
         // Update pricing based on selected dates
@@ -564,11 +494,11 @@ document.addEventListener('DOMContentLoaded', function() {
             // Calculate duration
             const duration = this.calculateDuration();
             
-            // Apply discount tiers
+            // Apply discount tiers - Updated to 10% and 20% discounts
             const discountTiers = {
                 1: 1.00, // 100% of price (no discount)
-                2: 0.80, // 80% per day (20% discount)
-                3: 0.70  // 70% per day (30% discount) for 3+ days
+                2: 0.90, // 90% per day (10% discount)
+                3: 0.80  // 80% per day (20% discount) for 3+ days
             };
             
             // Get applicable discount
@@ -599,15 +529,13 @@ document.addEventListener('DOMContentLoaded', function() {
             totalPriceEl.innerHTML = priceHtml;
             
             // Update duration input
-            const durationInput = document.getElementById('shopify-duration-input');
-            if (durationInput) {
-                durationInput.value = duration;
+            if (this.shopifyDurationInput) {
+                this.shopifyDurationInput.value = duration;
             }
             
             // Update discount input
-            const discountInput = document.getElementById('shopify-discount-input');
-            if (discountInput) {
-                discountInput.value = discountMultiplier;
+            if (this.shopifyDiscountInput) {
+                this.shopifyDiscountInput.value = discountMultiplier;
             }
             
             // Update the actual product price displayed on the page
