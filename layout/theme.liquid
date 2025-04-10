@@ -296,6 +296,79 @@
         document.documentElement.classList.add('shopify-design-mode');
       }
     </script>
+    
+    <!-- Product Image Display Fix CSS -->
+    <style>
+      /* Fix product image zoom/crop issues */
+      .product-image-no-zoom {
+        object-fit: contain !important;
+        width: auto !important;
+        height: auto !important;
+        max-height: 100% !important;
+        max-width: 100% !important;
+      }
+
+      .product__media-list .product__media-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .product__media-item img {
+        object-fit: contain !important;
+        max-height: 100%;
+        width: auto;
+        margin: 0 auto;
+      }
+
+      /* Remove any forced aspect ratio that might be cropping the image */
+      .product__media-item .global-media-settings {
+        padding-top: 0 !important;
+      }
+
+      .product__modal-opener .global-media-settings {
+        padding-top: 0 !important;
+      }
+
+      /* Disable image zoom functionality */
+      .product__media-wrapper .product__media img,
+      .product__media-item img,
+      .product-featured-media,
+      .product__media-toggle,
+      .product-image {
+        cursor: default !important;
+      }
+
+      /* Hide zoom elements */
+      .product-zoom,
+      .image-zoom-button,
+      .zoom-lightbox,
+      [data-image-zoom="true"],
+      [data-action="zoom"],
+      .product__zoom-button,
+      .product-image-zoom {
+        display: none !important;
+      }
+
+      /* Fix for thumbnail image display */
+      .thumbnail-list__item .thumbnail img {
+        object-fit: contain !important;
+        max-height: 100%;
+        width: auto;
+      }
+
+      /* Fix for first image loading */
+      .is-active .product__media img {
+        object-fit: contain !important;
+        max-width: 100%;
+        max-height: 100%;
+      }
+
+      /* Ensure image container has enough height */
+      .product__media-list .product__media-item.grid__item {
+        min-height: 400px;
+      }
+    </style>
   </head>
 
   <body class="gradient{% if settings.animations_hover_elements != 'none' %} animate--hover-{{ settings.animations_hover_elements }}{% endif %}">
@@ -372,5 +445,65 @@
     {%- if settings.cart_type == 'drawer' -%}
       <script src="{{ 'cart-drawer.js' | asset_url }}" defer="defer"></script>
     {%- endif -%}
+    
+    <!-- Product Image Fix Script -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // Disable image zoom functionality
+        function disableImageZoom() {
+          // Remove zoom-related attributes
+          const productImages = document.querySelectorAll('.product__media img, .product-featured-media');
+          productImages.forEach(img => {
+            img.removeAttribute('data-zoom');
+            img.removeAttribute('data-image-zoom');
+            img.removeAttribute('data-action');
+            img.style.cursor = 'default';
+            
+            // Add our no-zoom class
+            img.classList.add('product-image-no-zoom');
+          });
+          
+          // Hide zoom elements
+          const zoomElements = document.querySelectorAll(
+            '.product-zoom, .zoom-lightbox, .product__zoom-button, .product-image-zoom, ' +
+            '[data-image-zoom="true"], [data-action="zoom"], .image-zoom-button'
+          );
+          
+          zoomElements.forEach(el => {
+            if (el) el.style.display = 'none';
+          });
+          
+          // Ensure proper aspect ratio for images
+          const mediaItems = document.querySelectorAll('.product__media-item');
+          mediaItems.forEach(item => {
+            const img = item.querySelector('img');
+            if (img) {
+              img.style.objectFit = 'contain';
+              img.style.maxWidth = '100%';
+              img.style.maxHeight = '100%';
+              img.style.width = 'auto';
+              img.style.margin = '0 auto';
+            }
+          });
+        }
+        
+        // Run initially
+        disableImageZoom();
+        
+        // Run after a delay to catch elements that load dynamically
+        setTimeout(disableImageZoom, 1000);
+        
+        // Monitor for any changes that might add new zoom elements
+        const observer = new MutationObserver(function(mutations) {
+          disableImageZoom();
+        });
+        
+        // Start observing the document with the configured parameters
+        observer.observe(document.body, { 
+          childList: true, 
+          subtree: true 
+        });
+      });
+    </script>
   </body>
 </html>
