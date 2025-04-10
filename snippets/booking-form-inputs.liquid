@@ -724,69 +724,90 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   }
-  
- // Update the updateProductImage function in your booking-form-inputs.liquid file
+    
+    // Update the updateProductImage function in your booking-form-inputs.liquid file
 
-function updateProductImage() {
-  // Get selected equipment and cooler options
-  const equipmentCode = selectedEquipment; // e.g. "1U2C", "2C", "1C", "1U", "None"
-  const coolerOption = selectedCooler;     // e.g. "Yes", "No"
-  
-  // Construct the image filename based on selection
-  let imageName;
-  
-  // Map equipment codes to image naming format
-  const equipmentMap = {
-    "1U2C": "2C1U",  // Convert to match your image filename format
-    "1U1C": "1C1U",  // Convert to match your image filename format
-    "2C": "2C",      // Already matches
-    "1C": "1C",      // Already matches
-    "1U": "1U",      // Already matches
-    "None": "None"   // Already matches
-  };
-  
-  // Map equipment+cooler to final image name
-  if (coolerOption === "Yes") {
-    if (equipmentMap[equipmentCode] === "None") {
-      imageName = "Yes"; // Just cooler, no equipment
+    function updateProductImage() {
+    // Get selected equipment and cooler options
+    const equipmentCode = selectedEquipment; // e.g. "1U2C", "2C", "1C", "1U", "None"
+    const coolerOption = selectedCooler;     // e.g. "Yes", "No"
+    
+    // Construct the image filename based on selection
+    let imageName;
+    
+    // Map equipment codes to image naming format with pluralization
+    const equipmentMap = {
+        "1U2C": "2C1U",  // Convert to match your image filename format (2 Chairs 1 Umbrella)
+        "1U1C": "1C1U",  // Convert to match your image filename format (1 Chair 1 Umbrella)
+        "2C": "2C",      // Already matches (2 Chairs)
+        "1C": "1C",      // Already matches (1 Chair)
+        "1U": "1U",      // Already matches (1 Umbrella)
+        "None": "None"   // Already matches (Just the cart)
+    };
+    
+    // Handle special cases for combinations that don't have images
+    const missingCombinations = {
+        "2C-Yes": true,    // 2 Chairs with Cooler doesn't have an image
+        "1U1C-No": true    // 1 Umbrella 1 Chair No Cooler doesn't have an image
+    };
+    
+    // Generate combination key to check if it's missing
+    const combinationKey = `${equipmentCode}-${coolerOption}`;
+    
+    // Handle special cases for missing images
+    if (missingCombinations[combinationKey]) {
+        // Use a fallback image for missing combinations
+        if (combinationKey === "2C-Yes") {
+        // For 2 Chairs with Cooler, use 2C (no cooler) as fallback
+        imageName = "2C";
+        } else if (combinationKey === "1U1C-No") {
+        // For 1 Umbrella 1 Chair No Cooler, use 1C1UYes (with cooler) as fallback
+        imageName = "1C1UYes";
+        }
     } else {
-      imageName = equipmentMap[equipmentCode] + "Yes"; // Equipment with cooler
-    }
-  } else {
-    imageName = equipmentMap[equipmentCode]; // Just equipment, no cooler
-  }
-  
-  console.log(`Updating image to: ${imageName}`);
-  
-  // Find the main product image using a direct selector
-  const mainImage = document.querySelector('.product-single__image');
-  
-  if (mainImage) {
-    // Get current image URL
-    const currentSrc = mainImage.src;
-    
-    // Replace the current image filename with our new one
-    // This works by finding the last segment of the URL path and replacing it
-    const newSrc = currentSrc.replace(/([^\/]+)(\.\w+)(?=[^\/]*$)/, imageName + "$2");
-    
-    // Update the main image src
-    mainImage.src = newSrc;
-    
-    // If srcset exists, update it as well
-    if (mainImage.srcset) {
-      const srcsetEntries = mainImage.srcset.split(',');
-      const updatedSrcset = srcsetEntries.map(entry => {
-        return entry.replace(/([^\/]+)(\.\w+)(?=[^\/]*\s)/, imageName + "$2");
-      }).join(',');
-      
-      mainImage.srcset = updatedSrcset;
+        // Standard case - map equipment+cooler to final image name
+        if (coolerOption === "Yes") {
+        if (equipmentMap[equipmentCode] === "None") {
+            imageName = "Yes"; // Just cooler, no equipment
+        } else {
+            imageName = equipmentMap[equipmentCode] + "Yes"; // Equipment with cooler
+        }
+        } else {
+        imageName = equipmentMap[equipmentCode]; // Just equipment, no cooler
+        }
     }
     
-    console.log('Image updated successfully');
-  } else {
-    console.log('Main product image not found');
-  }
-}
+    console.log(`Updating image to: ${imageName}`);
+    
+    // Find the main product image using a direct selector
+    const mainImage = document.querySelector('.product-single__image');
+    
+    if (mainImage) {
+        // Get current image URL
+        const currentSrc = mainImage.src;
+        
+        // Replace the current image filename with our new one
+        // This works by finding the last segment of the URL path and replacing it
+        const newSrc = currentSrc.replace(/([^\/]+)(\.\w+)(?=[^\/]*$)/, imageName + "$2");
+        
+        // Update the main image src
+        mainImage.src = newSrc;
+        
+        // If srcset exists, update it as well
+        if (mainImage.srcset) {
+        const srcsetEntries = mainImage.srcset.split(',');
+        const updatedSrcset = srcsetEntries.map(entry => {
+            return entry.replace(/([^\/]+)(\.\w+)(?=[^\/]*\s)/, imageName + "$2");
+        }).join(',');
+        
+        mainImage.srcset = updatedSrcset;
+        }
+        
+        console.log('Image updated successfully');
+    } else {
+        console.log('Main product image not found');
+    }
+    }
 
   
   // Run on initial load
