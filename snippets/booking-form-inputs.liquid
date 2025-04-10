@@ -285,6 +285,46 @@
       font-size: 12px;
     }
   }
+
+    /* Add these styles to your booking-form-inputs.liquid file in the <style> section */
+
+    /* Make selected date text white for better contrast on dark blue background */
+    .date.selected {
+    background: #0a3b5c !important;
+    color: white !important; /* Ensure text is white and override any other styles */
+    font-weight: 500; /* Make it slightly bolder */
+    }
+
+    /* Style the in-range dates for better visibility */
+    .date.in-range {
+    background-color: rgba(10, 59, 92, 0.3);
+    color: #0a3b5c;
+    font-weight: 500;  /* Make text more visible */
+    }
+
+    /* Improve today's date styling */
+    .date.today {
+    font-weight: 700;
+    color: #000;
+    text-decoration: underline;
+    }
+
+    /* Add a subtle outline to selected dates for better focus */
+    .date.selected, .date.in-range {
+    position: relative;
+    }
+
+    .date.selected::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 4px;
+    pointer-events: none;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+    }
 </style>
 
 <script>
