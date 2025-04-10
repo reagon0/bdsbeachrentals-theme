@@ -387,6 +387,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.selectedDates = [date];
                 this.selectionMode = 'end';
                 this.selectionStatusEl.textContent = 'Now select your end date';
+                
+                // Even with just one date, update pricing for 1 day
+                this.updateSingleDatePricing();
             } else {
                 // Complete the selection
                 this.selectedDates.push(date);
@@ -398,7 +401,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.selectionMode = 'start';
                 this.selectionStatusEl.textContent = 'Select your start date, then end date';
                 
-                // Update pricing
+                // Update pricing with full date range
                 this.updatePricing();
             }
             
@@ -410,6 +413,47 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Re-render calendar to show selection
             this.renderCalendar();
+        }
+        
+        // Update pricing when only one date is selected
+        updateSingleDatePricing() {
+            // Default to 1-day pricing
+            const basePrice = this.getBasePrice();
+            if (!basePrice) return;
+            
+            // For a single day, there's no discount
+            const totalPrice = basePrice;
+            
+            // Update pricing display
+            const totalPriceEl = document.getElementById('booking-total-price');
+            if (totalPriceEl) {
+                const formatter = new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                });
+                
+                let priceHtml = `<div class="booking-price-summary">`;
+                priceHtml += `<div>Duration: 1 day</div>`;
+                priceHtml += `<div class="booking-total">Total: ${formatter.format(totalPrice)}</div>`;
+                priceHtml += `</div>`;
+                
+                totalPriceEl.innerHTML = priceHtml;
+            }
+            
+            // Update duration input
+            const durationInput = document.getElementById('shopify-duration-input');
+            if (durationInput) {
+                durationInput.value = 1;
+            }
+            
+            // Update discount input (no discount for 1 day)
+            const discountInput = document.getElementById('shopify-discount-input');
+            if (discountInput) {
+                discountInput.value = 1.0;
+            }
+            
+            // Update product price display
+            this.updateProductPriceDisplay(totalPrice);
         }
         
         // Update the selected date range display
@@ -564,6 +608,89 @@ document.addEventListener('DOMContentLoaded', function() {
             const discountInput = document.getElementById('shopify-discount-input');
             if (discountInput) {
                 discountInput.value = discountMultiplier;
+            }
+            
+            // Update the actual product price displayed on the page
+            this.updateProductPriceDisplay(totalPrice);
+        }
+        
+        // Update the actual Shopify product price display
+        updateProductPriceDisplay(newPrice) {
+            // Format price for display
+            const formatter = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+            });
+            const formattedPrice = formatter.format(newPrice);
+            
+            // Target the specific price element shown in the screenshot
+            const priceLargeShowBadge = document.querySelector('.price.price--large.price--show-badge');
+            if (priceLargeShowBadge) {
+                // Update this element directly
+                const priceItems = priceLargeShowBadge.querySelectorAll('.price-item');
+                if (priceItems && priceItems.length > 0) {
+                    priceItems.forEach(item => {
+                        item.textContent = formattedPrice;
+                    });
+                } else {
+                    // If no price-item found, update the element directly
+                    priceLargeShowBadge.textContent = formattedPrice;
+                }
+            }
+            
+            // Target the main pricing div from the screenshot
+            const priceTemplate = document.getElementById('price-template--17831724679222__main');
+            if (priceTemplate) {
+                const priceElements = priceTemplate.querySelectorAll('.price-item');
+                if (priceElements && priceElements.length > 0) {
+                    priceElements.forEach(element => {
+                        element.textContent = formattedPrice;
+                    });
+                }
+            }
+            
+            // Update more generic price elements as backup
+            const regularPriceElements = document.querySelectorAll('.price__regular .price-item--regular');
+            regularPriceElements.forEach(element => {
+                element.textContent = formattedPrice;
+            });
+            
+            // Also try by direct price value elements
+            const allPriceItems = document.querySelectorAll('.price-item');
+            allPriceItems.forEach(item => {
+                item.textContent = formattedPrice;
+            });
+            
+            // Update any hidden price inputs (used for form submission)
+            const priceInputs = document.querySelectorAll('input[data-price]');
+            priceInputs.forEach(input => {
+                input.value = newPrice;
+                input.setAttribute('data-price', newPrice);
+            });
+            
+            // Update the price in the data layer for analytics
+            if (window.dataLayer) {
+                window.dataLayer.push({
+                    'event': 'price_update',
+                    'product_price': newPrice
+                });
+            }
+            
+            // Add a custom event to notify Shopify that price was updated
+            document.dispatchEvent(new CustomEvent('product:price:update', { 
+                detail: { price: newPrice } 
+            }));
+            
+            // If all else fails, try updating via DOM manipulation
+            try {
+                // Find the exact element from the screenshot
+                const exactPriceElement = document.querySelector('div.price.price--large.price--show-badge');
+                if (exactPriceElement) {
+                    // Direct update as a last resort
+                    exactPriceElement.innerHTML = formattedPrice;
+                }
+            } catch (e) {
+                console.log('Failed to update price directly:', e);
             }
         }
         
