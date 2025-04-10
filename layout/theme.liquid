@@ -299,26 +299,36 @@
     
     <!-- Product Image Display Fix CSS -->
     <style>
-      /* Fix product image zoom/crop issues */
-      .product-image-no-zoom {
+      /* Main product images - balanced approach */
+      .product-image-no-zoom,
+      .product__media-item img {
         object-fit: contain !important;
-        width: auto !important;
-        height: auto !important;
         max-height: 100% !important;
         max-width: 100% !important;
+        height: auto !important;
+        width: 100% !important; /* Use full width */
+        margin: 0 auto;
       }
 
+      /* Ensure the container has proper dimensions */
       .product__media-list .product__media-item {
         display: flex;
         align-items: center;
         justify-content: center;
+        min-height: 500px; /* Taller container to avoid small images */
       }
 
-      .product__media-item img {
+      /* For active image */
+      .is-active .product__media img {
+        width: 100% !important;
         object-fit: contain !important;
-        max-height: 100%;
-        width: auto;
-        margin: 0 auto;
+      }
+
+      /* Thumbnail fixes */
+      .thumbnail-list__item .thumbnail img {
+        object-fit: cover !important; /* Cover works better for thumbnails */
+        width: 100%;
+        height: 100%;
       }
 
       /* Remove any forced aspect ratio that might be cropping the image */
@@ -350,23 +360,17 @@
         display: none !important;
       }
 
-      /* Fix for thumbnail image display */
-      .thumbnail-list__item .thumbnail img {
-        object-fit: contain !important;
-        max-height: 100%;
-        width: auto;
+      /* For grid layouts */
+      .product__media-list.grid {
+        align-items: center;
+        justify-content: center;
       }
 
-      /* Fix for first image loading */
-      .is-active .product__media img {
-        object-fit: contain !important;
-        max-width: 100%;
-        max-height: 100%;
-      }
-
-      /* Ensure image container has enough height */
-      .product__media-list .product__media-item.grid__item {
-        min-height: 400px;
+      /* Media query for smaller screens */
+      @media screen and (max-width: 749px) {
+        .product__media-list .product__media-item {
+          min-height: 350px;
+        }
       }
     </style>
   </head>
@@ -449,8 +453,8 @@
     <!-- Product Image Fix Script -->
     <script>
       document.addEventListener('DOMContentLoaded', function() {
-        // Disable image zoom functionality
-        function disableImageZoom() {
+        // Disable image zoom functionality and fix image sizing
+        function fixProductImages() {
           // Remove zoom-related attributes
           const productImages = document.querySelectorAll('.product__media img, .product-featured-media');
           productImages.forEach(img => {
@@ -461,6 +465,13 @@
             
             // Add our no-zoom class
             img.classList.add('product-image-no-zoom');
+            
+            // Set proper sizing
+            img.style.objectFit = 'contain';
+            img.style.maxWidth = '100%';
+            img.style.maxHeight = '100%';
+            img.style.width = '100%';
+            img.style.margin = '0 auto';
           });
           
           // Hide zoom elements
@@ -476,26 +487,53 @@
           // Ensure proper aspect ratio for images
           const mediaItems = document.querySelectorAll('.product__media-item');
           mediaItems.forEach(item => {
+            // Make the container taller
+            item.style.minHeight = window.innerWidth < 750 ? '350px' : '500px';
+            
+            // Add flex properties for centering
+            item.style.display = 'flex';
+            item.style.alignItems = 'center';
+            item.style.justifyContent = 'center';
+            
             const img = item.querySelector('img');
             if (img) {
+              // Ensure image has proper dimensions while maintaining aspect ratio
               img.style.objectFit = 'contain';
               img.style.maxWidth = '100%';
               img.style.maxHeight = '100%';
-              img.style.width = 'auto';
-              img.style.margin = '0 auto';
+              img.style.width = '100%';
             }
+          });
+          
+          // Ensure thumbnails still look good
+          const thumbnails = document.querySelectorAll('.thumbnail-list__item .thumbnail img');
+          thumbnails.forEach(thumb => {
+            thumb.style.objectFit = 'cover';
+            thumb.style.width = '100%';
+            thumb.style.height = '100%';
           });
         }
         
         // Run initially
-        disableImageZoom();
+        fixProductImages();
         
-        // Run after a delay to catch elements that load dynamically
-        setTimeout(disableImageZoom, 1000);
+        // Run after a delay to catch any images loaded later
+        setTimeout(fixProductImages, 1000);
+        
+        // Apply fixes whenever the active image changes
+        const thumbnailButtons = document.querySelectorAll('.thumbnail');
+        if (thumbnailButtons) {
+          thumbnailButtons.forEach(button => {
+            button.addEventListener('click', () => {
+              // Give time for the new image to load
+              setTimeout(fixProductImages, 100);
+            });
+          });
+        }
         
         // Monitor for any changes that might add new zoom elements
-        const observer = new MutationObserver(function(mutations) {
-          disableImageZoom();
+        const observer = new MutationObserver(mutations => {
+          fixProductImages();
         });
         
         // Start observing the document with the configured parameters
