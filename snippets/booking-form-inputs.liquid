@@ -1,535 +1,760 @@
-<!-- HTML structure -->
-<fieldset class="product-form__input product-form__input--pill">
+<!-- Beach Cart Booking System with Line Item Properties -->
+<div class="booking-system-container">
+  <!-- Equipment Selection -->
+  <fieldset class="product-form__input product-form__input--pill">
+    <legend class="form__label">Equipment</legend>
+    <div class="equipment-options">
+      <button type="button" class="option-button" data-equipment="1U2C" data-image-key="2C1UYes" data-price="110.00">1x Umbrella 2x Chair</button>
+      <button type="button" class="option-button" data-equipment="1U1C" data-image-key="1C1UYes" data-price="96.00">1x Umbrella 1x Chair</button>
+      <button type="button" class="option-button" data-equipment="2C" data-image-key="2C" data-price="96.00">2x Chair</button>
+      <button type="button" class="option-button" data-equipment="1C" data-image-key="1C" data-price="89.00">1x Chair</button>
+      <button type="button" class="option-button" data-equipment="1U" data-image-key="1U" data-price="89.00">1x Umbrella</button>
+      <button type="button" class="option-button" data-equipment="None" data-image-key="None" data-price="82.00">Just the cart</button>
+    </div>
+  </fieldset>
+
+  <!-- Cooler Option -->
+  <fieldset class="product-form__input product-form__input--pill">
+    <legend class="form__label">Include 25qt Cooler</legend>
+    <div class="cooler-options">
+      <button type="button" class="option-button cooler-button" data-cooler="Yes" data-price-add="7.00">Yes</button>
+      <button type="button" class="option-button cooler-button" data-cooler="No" data-price-add="0.00">No</button>
+    </div>
+  </fieldset>
+
+  <!-- Booking Dates -->
+  <fieldset class="product-form__input product-form__input--pill">
     <legend class="form__label">Booking Dates</legend>
     <div class="datetime-picker">
-        <div class="calendar-header">
-            <button id="prev-month" type="button"><svg class="icon icon-caret" viewBox="0 0 10 6"><path fill="currentColor" fill-rule="evenodd" d="M9.354.646a.5.5 0 0 0-.708 0L5 4.293 1.354.646a.5.5 0 0 0-.708.708l4 4a.5.5 0 0 0 .708 0l4-4a.5.5 0 0 0 0-.708" clip-rule="evenodd"></path></svg></button>
-            <span id="current-month"></span>
-            <button id="next-month" type="button"><svg class="icon icon-caret" viewBox="0 0 10 6"><path fill="currentColor" fill-rule="evenodd" d="M9.354.646a.5.5 0 0 0-.708 0L5 4.293 1.354.646a.5.5 0 0 0-.708.708l4 4a.5.5 0 0 0 .708 0l4-4a.5.5 0 0 0 0-.708" clip-rule="evenodd"></path></svg></button>
-        </div>
-        
-        <div class="selection-status" id="selection-status">
-            Select your start date, then end date
-        </div>
-        
-        <div class="calendar-grid" id="calendar">
-            <!-- Calendar will be generated here -->
-        </div>
-        
-        <div class="selected-date-range" id="selected-date-range"></div>
-        
-        <!-- Hidden inputs for Shopify -->
-        <input type="hidden" name="properties[Start Date]" id="shopify-date-input">
-        <input type="hidden" name="properties[End Date]" id="shopify-end-date-input">
-        <input type="hidden" name="properties[Duration]" id="shopify-duration-input">
-        <input type="hidden" name="properties[Discount]" id="shopify-discount-input">
+      <div class="calendar-header">
+        <button id="prev-month" type="button"><svg class="icon icon-caret" viewBox="0 0 10 6"><path fill="currentColor" fill-rule="evenodd" d="M9.354.646a.5.5 0 0 0-.708 0L5 4.293 1.354.646a.5.5 0 0 0-.708.708l4 4a.5.5 0 0 0 .708 0l4-4a.5.5 0 0 0 0-.708" clip-rule="evenodd"></path></svg></button>
+        <span id="current-month"></span>
+        <button id="next-month" type="button"><svg class="icon icon-caret" viewBox="0 0 10 6"><path fill="currentColor" fill-rule="evenodd" d="M9.354.646a.5.5 0 0 0-.708 0L5 4.293 1.354.646a.5.5 0 0 0-.708.708l4 4a.5.5 0 0 0 .708 0l4-4a.5.5 0 0 0 0-.708" clip-rule="evenodd"></path></svg></button>
+      </div>
+      
+      <div class="selection-status" id="selection-status">
+        Select your start date, then end date
+      </div>
+      
+      <div class="calendar-grid" id="calendar">
+        <!-- Calendar will be generated here -->
+      </div>
+      
+      <div class="selected-date-range" id="selected-date-range"></div>
     </div>
-</fieldset>
+  </fieldset>
 
-<fieldset class="product-form__input product-form__input--pill">
+  <!-- Pickup/Dropoff Locations -->
+  <fieldset class="product-form__input product-form__input--pill">
     <legend class="form__label"><label for="preferred_pickup_location">Preferred Pickup Location</label></legend>
     <input type="text" id="preferred_pickup_location" class="select__select" name="properties[Preferred Pickup Location]" placeholder="Include full address"/>
-</fieldset>
+  </fieldset>
 
-<fieldset class="product-form__input product-form__input--pill">
+  <fieldset class="product-form__input product-form__input--pill">
     <legend class="form__label"><label for="preferred_drop_off_location">Preferred Drop-off Location</label></legend>
     <input type="text" id="preferred_drop_off_location" class="select__select" name="properties[Preferred Drop-off Location]" placeholder="Include full address"></input>
-</fieldset>
+  </fieldset>
 
-<fieldset class="product-form__input product-form__input--pill">
+  <fieldset class="product-form__input product-form__input--pill">
     <legend class="form__label"><label for="special_requirements">Additional Rental Details</label></legend>
     <textarea id="special_requirements" class="select__select" name="properties[Special Requests]" placeholder="Let us know how we can help"></textarea>
-</fieldset>
+  </fieldset>
+
+  <!-- Price Display -->
+  <div class="price-display">
+    <div class="current-price">
+      <span class="price-label">Price:</span>
+      <span id="displayed-price" class="price-amount">$82.00</span>
+    </div>
+    <div id="price-breakdown" class="price-breakdown"></div>
+  </div>
+
+  <!-- Hidden inputs for Shopify -->
+  <div style="display:none;">
+    <input type="hidden" name="properties[Equipment]" id="equipment-input" value="None">
+    <input type="hidden" name="properties[Cooler]" id="cooler-input" value="No">
+    <input type="hidden" name="properties[Start Date]" id="start-date-input">
+    <input type="hidden" name="properties[End Date]" id="end-date-input">
+    <input type="hidden" name="properties[Duration]" id="duration-input" value="1">
+    <input type="hidden" name="properties[Discount]" id="discount-input" value="0">
+    <input type="hidden" name="properties[Base Price]" id="base-price-input" value="82.00">
+    <input type="hidden" name="properties[Total Price]" id="total-price-input" value="82.00">
+  </div>
+</div>
 
 <style>
-    .datetime-picker {
-        font-family: system-ui, -apple-system, sans-serif;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        background: white;
-        border: 1px solid rgb(var(--color-foreground));
-        margin-bottom: 20px;
-        margin-top: 1rem;
-    }
+  .booking-system-container {
+    font-family: system-ui, -apple-system, sans-serif;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .product-form__input {
+    margin-bottom: 20px;
+  }
+  
+  .form__label {
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: block;
+  }
+  
+  .equipment-options, .cooler-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+  
+  .option-button {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+  }
+  
+  .option-button:hover {
+    background-color: #f9f9f9;
+  }
+  
+  .option-button.selected {
+    background-color: #0a3b5c;
+    color: white;
+    border-color: #0a3b5c;
+  }
+  
+  .datetime-picker {
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: white;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+  }
 
-    .calendar-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 15px;
-    }
+  .calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+  }
 
-    .calendar-header button {
-        background: none;
-        border: none;
-        cursor: pointer;
-        font-size: 16px;
-        padding: 8px;
-    }
+  .calendar-header button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 8px;
+  }
 
-    .calendar-header button svg {
-        width: 12px;
-    }
-    .calendar-header button#prev-month svg {
-        transform: rotate(90deg);
-    }
-    .calendar-header button#next-month svg {
-        transform: rotate(-90deg);
-    }
+  .calendar-header button svg {
+    width: 12px;
+  }
+  
+  .calendar-header button#prev-month svg {
+    transform: rotate(90deg);
+  }
+  
+  .calendar-header button#next-month svg {
+    transform: rotate(-90deg);
+  }
 
-    .calendar-header button:hover {
-        background: #f3f4f6;
-        border-radius: 4px;
-    }
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
 
+  .weekday {
+    font-weight: 500;
+    color: #6b7280;
+    padding: 5px;
+    font-size: 12px;
+  }
+
+  .date {
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+
+  .date:hover:not(.disabled) {
+    background: #f3f4f6;
+  }
+
+  .date.selected {
+    background: #0a3b5c !important;
+    color: white;
+  }
+
+  .date.today {
+    font-weight: bold;
+    color: #000;
+  }
+  
+  .date.today.selected {
+    color: #FFF;
+  }
+
+  .date.disabled {
+    color: #d1d5db;
+    cursor: not-allowed;
+  }
+
+  .date.in-range {
+    background-color: rgba(10, 59, 92, 0.3);
+    color: #0a3b5c;
+  }
+  
+  .selection-status {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #6b7280;
+  }
+  
+  .selected-date-range {
+    margin-top: 15px;
+    text-align: center;
+    font-weight: 500;
+  }
+  
+  .price-display {
+    background-color: #f9fafb;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .current-price {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+  
+  .price-breakdown {
+    font-size: 14px;
+    color: #6b7280;
+  }
+  
+  .select__select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+
+  @media screen and (max-width: 768px) {
+    .equipment-options, .cooler-options {
+      flex-direction: column;
+    }
+    
     .calendar-grid {
-        display: grid;
-        grid-template-columns: repeat(7, 1fr);
-        gap: 2px;
-        text-align: center;
-        margin-bottom: 20px;
+      gap: 1px;
     }
-
-    .weekday {
-        font-weight: 500;
-        color: #6b7280;
-        padding: 5px;
-        font-size: 12px;
-    }
-
+    
     .date {
-        padding: 8px;
-        cursor: pointer;
-        border-radius: 4px;
-        font-size: 14px;
+      padding: 6px;
+      font-size: 12px;
     }
-
-    .date:hover:not(.disabled) {
-        background: #f3f4f6;
-    }
-
-    .date.selected {
-        background: rgb(var(--color-foreground)) !important;
-        color: white;
-    }
-
-    .date.today {
-        font-weight: bold;
-        color: #000;
-    }
-    .date.today.selected {
-        color: #FFF;
-    }
-
-    .date.disabled {
-        color: #d1d5db;
-        cursor: not-allowed;
-    }
-
-    /* Add these styles for multi-day selection */
-    .date.in-range {
-        background-color: rgba(var(--color-foreground), 0.3);
-    }
-    
-    .selection-status {
-        text-align: center;
-        margin-bottom: 10px;
-        font-size: 14px;
-        color: #6b7280;
-    }
-    
-    .selected-date-range {
-        margin-top: 15px;
-        text-align: center;
-        font-weight: 500;
-    }
-
-    /* Make the calendar responsive */
-    @media screen and (max-width: 768px) {
-        .calendar-grid {
-            gap: 1px;
-        }
-        
-        .date {
-            padding: 6px;
-            font-size: 12px;
-        }
-    }
+  }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Simple DateTimePicker class with minimal overhead
-    class DateTimePicker {
-        constructor() {
-            // Initialize basic properties
-            this.currentDate = new Date();
-            this.selectedDates = [];
-            this.selectionMode = 'start';
-            
-            // Get DOM elements
-            this.calendarEl = document.getElementById('calendar');
-            this.currentMonthEl = document.getElementById('current-month');
-            this.selectionStatusEl = document.getElementById('selection-status');
-            this.selectedDateRangeEl = document.getElementById('selected-date-range');
-            
-            // Hidden Shopify inputs
-            this.shopifyDateInput = document.getElementById('shopify-date-input');
-            this.shopifyEndDateInput = document.getElementById('shopify-end-date-input');
-            this.shopifyDurationInput = document.getElementById('shopify-duration-input');
-            this.shopifyDiscountInput = document.getElementById('shopify-discount-input');
-            
-            // Set up event listeners for navigation
-            const prevButton = document.getElementById('prev-month');
-            const nextButton = document.getElementById('next-month');
-            
-            if (prevButton) {
-                prevButton.addEventListener('click', () => this.prevMonth());
-            }
-            
-            if (nextButton) {
-                nextButton.addEventListener('click', () => this.nextMonth());
-            }
-            
-            // Initial render
-            this.renderCalendar();
-        }
-        
-        // Render the calendar grid
-        renderCalendar() {
-            if (!this.calendarEl) return;
-            
-            const year = this.currentDate.getFullYear();
-            const month = this.currentDate.getMonth();
-            
-            // Set month header
-            if (this.currentMonthEl) {
-                this.currentMonthEl.textContent = new Date(year, month).toLocaleDateString(undefined, { 
-                    month: 'long', 
-                    year: 'numeric' 
-                });
-            }
-            
-            // Clear existing calendar
-            this.calendarEl.innerHTML = '';
-            
-            // Add weekday headers
-            const weekdays = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-            weekdays.forEach(day => {
-                const dayEl = document.createElement('div');
-                dayEl.className = 'weekday';
-                dayEl.textContent = day;
-                this.calendarEl.appendChild(dayEl);
-            });
-            
-            // Calculate calendar days
-            const firstDayOfMonth = new Date(year, month, 1);
-            const daysFromPrevMonth = firstDayOfMonth.getDay(); // 0 (Sunday) to 6 (Saturday)
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-            const prevMonthLastDay = new Date(year, month, 0).getDate();
-            
-            // Add previous month's days
-            for (let i = daysFromPrevMonth - 1; i >= 0; i--) {
-                const dateEl = document.createElement('div');
-                dateEl.className = 'date disabled';
-                dateEl.textContent = prevMonthLastDay - i;
-                this.calendarEl.appendChild(dateEl);
-            }
-            
-            // Add current month's days
-            for (let day = 1; day <= daysInMonth; day++) {
-                const dateEl = document.createElement('div');
-                dateEl.className = 'date';
-                dateEl.textContent = day;
-                
-                const dateObj = new Date(year, month, day);
-                
-                // Check if date is today
-                if (this.isToday(dateObj)) {
-                    dateEl.classList.add('today');
-                }
-                
-                // Check if date is selected
-                if (this.isDateSelected(dateObj)) {
-                    dateEl.classList.add('selected');
-                }
-                
-                // Check if date is in selected range
-                if (this.isInRange(dateObj)) {
-                    dateEl.classList.add('in-range');
-                }
-                
-                // Disable past dates
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                
-                if (dateObj < today) {
-                    dateEl.classList.add('disabled');
-                } else {
-                    // Add click event to selectable dates
-                    dateEl.addEventListener('click', () => {
-                        this.selectDate(dateObj);
-                    });
-                }
-                
-                this.calendarEl.appendChild(dateEl);
-            }
-            
-            // Add next month's days to fill the grid
-            const totalCells = this.calendarEl.childElementCount;
-            const remainingCells = 7 - (totalCells % 7);
-            
-            if (remainingCells < 7) {
-                for (let i = 1; i <= remainingCells; i++) {
-                    const dateEl = document.createElement('div');
-                    dateEl.className = 'date disabled';
-                    dateEl.textContent = i;
-                    this.calendarEl.appendChild(dateEl);
-                }
-            }
-        }
-        
-        // Navigate to previous month
-        prevMonth() {
-            this.currentDate.setMonth(this.currentDate.getMonth() - 1);
-            this.renderCalendar();
-        }
-        
-        // Navigate to next month
-        nextMonth() {
-            this.currentDate.setMonth(this.currentDate.getMonth() + 1);
-            this.renderCalendar();
-        }
-        
-        // Check if date is today
-        isToday(date) {
-            const today = new Date();
-            return date.getDate() === today.getDate() && 
-                   date.getMonth() === today.getMonth() && 
-                   date.getFullYear() === today.getFullYear();
-        }
-        
-        // Check if date is one of the selected dates
-        isDateSelected(date) {
-            return this.selectedDates.some(selectedDate => 
-                this.isSameDay(selectedDate, date)
-            );
-        }
-        
-        // Check if date is in the selected range
-        isInRange(date) {
-            if (this.selectedDates.length !== 2) return false;
-            
-            const startDate = new Date(Math.min(
-                this.selectedDates[0].getTime(),
-                this.selectedDates[1].getTime()
-            ));
-            
-            const endDate = new Date(Math.max(
-                this.selectedDates[0].getTime(),
-                this.selectedDates[1].getTime()
-            ));
-            
-            return date >= startDate && date <= endDate;
-        }
-        
-        // Compare if two dates are the same day
-        isSameDay(date1, date2) {
-            return date1.getDate() === date2.getDate() && 
-                   date1.getMonth() === date2.getMonth() && 
-                   date1.getFullYear() === date2.getFullYear();
-        }
-        
-        // Get the current displayed price from the page
-        getCurrentPrice() {
-            try {
-                // First attempt: direct price at top of product page
-                const priceAmount = document.querySelector('.price__container .price__regular .price-item--regular');
-                if (priceAmount) {
-                    const priceText = priceAmount.textContent.trim();
-                    const priceMatch = priceText.match(/[\d,.]+/);
-                    if (priceMatch) {
-                        return parseFloat(priceMatch[0].replace(/,/g, ''));
-                    }
-                }
-                
-                // Second attempt: look for price in USD format
-                const priceUSD = document.body.textContent.match(/\$([\d,.]+)\s*USD/);
-                if (priceUSD && priceUSD[1]) {
-                    return parseFloat(priceUSD[1].replace(/,/g, ''));
-                }
-                
-                // Third attempt: any price element
-                const anyPrice = document.querySelector('.price__regular .price-item, .price__sale .price-item, .price-item--regular');
-                if (anyPrice) {
-                    const priceText = anyPrice.textContent.trim();
-                    const priceMatch = priceText.match(/[\d,.]+/);
-                    if (priceMatch) {
-                        return parseFloat(priceMatch[0].replace(/,/g, ''));
-                    }
-                }
-                
-                // Last resort: main heading with price
-                const mainHeading = document.querySelector('h1, h2');
-                if (mainHeading) {
-                    const siblingElements = mainHeading.parentElement.children;
-                    for (let i = 0; i < siblingElements.length; i++) {
-                        const priceMatch = siblingElements[i].textContent.match(/\$([\d,.]+)/);
-                        if (priceMatch && priceMatch[1]) {
-                            return parseFloat(priceMatch[1].replace(/,/g, ''));
-                        }
-                    }
-                }
-            } catch (e) {
-                console.log('Price detection error:', e);
-            }
-            
-            // Fallback value
-            return 100;
-        }
-        
-        // Select a date
-        selectDate(date) {
-            if (this.selectionMode === 'start') {
-                // Start new selection
-                this.selectedDates = [date];
-                this.selectionMode = 'end';
-                if (this.selectionStatusEl) {
-                    this.selectionStatusEl.textContent = 'Now select your end date';
-                }
-                
-                // Update hidden inputs for single date
-                this.updateHiddenInputs(1);
-            } else {
-                // Complete the selection
-                this.selectedDates.push(date);
-                
-                // Sort dates to ensure start date comes first
-                this.selectedDates.sort((a, b) => a - b);
-                
-                // Reset for next selection
-                this.selectionMode = 'start';
-                if (this.selectionStatusEl) {
-                    this.selectionStatusEl.textContent = 'Select your start date, then end date';
-                }
-                
-                // Calculate duration
-                const duration = this.calculateDuration();
-                
-                // Calculate discount
-                const discountMultiplier = duration === 2 ? 0.9 : (duration >= 3 ? 0.8 : 1.0);
-                
-                // Update hidden inputs
-                this.updateHiddenInputs(duration, discountMultiplier);
-                
-                // Update Shopify price - modify price display code to use current price
-                this.updateShopifyPrice(duration, discountMultiplier);
-            }
-            
-            // Update date display
-            this.updateDateDisplay();
-            
-            // Re-render calendar to show selection
-            this.renderCalendar();
-        }
-        
-        // Update Shopify's price based on duration and discount
-        updateShopifyPrice(duration, discountMultiplier) {
-            const basePrice = this.getCurrentPrice();
-            const totalPrice = basePrice * duration * discountMultiplier;
-            
-            // Format for display
-            const formatter = new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'USD',
-            });
-            
-            // Find the main price element on the Shopify page
-            const priceElements = document.querySelectorAll('.price__regular .price-item--regular, .price-item--regular');
-            priceElements.forEach(el => {
-                el.textContent = formatter.format(totalPrice);
-            });
-        }
-        
-        // Update the selected date range display
-        updateDateDisplay() {
-            if (!this.selectedDateRangeEl) return;
-            
-            if (this.selectedDates.length === 0) {
-                this.selectedDateRangeEl.textContent = '';
-                return;
-            }
-            
-            if (this.selectedDates.length === 1) {
-                const formattedDate = this.formatDate(this.selectedDates[0]);
-                this.selectedDateRangeEl.textContent = `Selected: ${formattedDate}`;
-            } else {
-                const startFormatted = this.formatDate(this.selectedDates[0]);
-                const endFormatted = this.formatDate(this.selectedDates[1]);
-                this.selectedDateRangeEl.textContent = `${startFormatted} to ${endFormatted}`;
-            }
-        }
-        
-        // Format date for display
-        formatDate(date) {
-            return date.toLocaleDateString(undefined, {
-                month: 'short',
-                day: 'numeric',
-                year: 'numeric'
-            });
-        }
-        
-        // Update Shopify hidden input fields
-        updateHiddenInputs(duration, discountMultiplier) {
-            if (this.selectedDates[0] && this.shopifyDateInput) {
-                this.shopifyDateInput.value = this.formatDateForShopify(this.selectedDates[0]);
-            }
-            
-            if (this.selectedDates[1] && this.shopifyEndDateInput) {
-                this.shopifyEndDateInput.value = this.formatDateForShopify(this.selectedDates[1]);
-            } else if (this.selectedDates[0] && this.shopifyEndDateInput) {
-                this.shopifyEndDateInput.value = this.formatDateForShopify(this.selectedDates[0]);
-            }
-            
-            if (duration && this.shopifyDurationInput) {
-                this.shopifyDurationInput.value = duration;
-            }
-            
-            if (discountMultiplier && this.shopifyDiscountInput) {
-                this.shopifyDiscountInput.value = discountMultiplier;
-            }
-        }
-        
-        // Format date for Shopify (YYYY-MM-DD)
-        formatDateForShopify(date) {
-            const year = date.getFullYear();
-            const month = (date.getMonth() + 1).toString().padStart(2, '0');
-            const day = date.getDate().toString().padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        }
-        
-        // Calculate duration between selected dates
-        calculateDuration() {
-            if (this.selectedDates.length !== 2) return 1;
-            
-            const startDate = new Date(this.selectedDates[0]);
-            const endDate = new Date(this.selectedDates[1]);
-            
-            // Set both to midnight for accurate day calculation
-            startDate.setHours(0, 0, 0, 0);
-            endDate.setHours(0, 0, 0, 0);
-            
-            // Calculate difference in days
-            const diffTime = Math.abs(endDate - startDate);
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            
-            // Add 1 to include both start and end dates
-            return diffDays + 1;
-        }
+  // Configuration
+  const imageMapping = {
+    // Equipment only
+    "1U2C-No": "2C1UYes", // 1 Umbrella 2 Chair No Cooler
+    "1U1C-No": "1C1UYes", // 1 Umbrella 1 Chair No Cooler
+    "2C-No": "2C",        // 2 Chair No Cooler
+    "1C-No": "1C",        // 1 Chair No Cooler
+    "1U-No": "1U",        // 1 Umbrella No Cooler
+    "None-No": "None",    // Just Cart No Cooler
+    
+    // With cooler
+    "1U2C-Yes": "2C1UYes", // 1 Umbrella 2 Chair With Cooler
+    "1U1C-Yes": "1C1UYes", // 1 Umbrella 1 Chair With Cooler
+    "2C-Yes": "2CYes",     // 2 Chair With Cooler
+    "1C-Yes": "1CYes",     // 1 Chair With Cooler
+    "1U-Yes": "1UYes",     // 1 Umbrella With Cooler
+    "None-Yes": "Yes"      // Just Cart With Cooler
+  };
+  
+  // Base prices
+  const basePrices = {
+    "1U2C": 110.00,
+    "1U1C": 96.00,
+    "2C": 96.00,
+    "1C": 89.00,
+    "1U": 89.00,
+    "None": 82.00
+  };
+  
+  // Cooler price addition
+  const coolerAdds = {
+    "Yes": 7.00,
+    "No": 0.00
+  };
+  
+  // Discount tiers based on duration
+  const discountTiers = {
+    1: 1.00, // No discount
+    2: 0.90, // 10% discount
+    3: 0.80  // 20% discount
+  };
+  
+  // State variables
+  let selectedEquipment = "None";
+  let selectedCooler = "No";
+  let selectedDates = [];
+  let selectionMode = 'start';
+  let currentDate = new Date();
+  
+  // DOM elements
+  const calendarEl = document.getElementById('calendar');
+  const currentMonthEl = document.getElementById('current-month');
+  const selectionStatusEl = document.getElementById('selection-status');
+  const selectedDateRangeEl = document.getElementById('selected-date-range');
+  const displayedPriceEl = document.getElementById('displayed-price');
+  const priceBreakdownEl = document.getElementById('price-breakdown');
+  
+  // Hidden inputs
+  const equipmentInput = document.getElementById('equipment-input');
+  const coolerInput = document.getElementById('cooler-input');
+  const startDateInput = document.getElementById('start-date-input');
+  const endDateInput = document.getElementById('end-date-input');
+  const durationInput = document.getElementById('duration-input');
+  const discountInput = document.getElementById('discount-input');
+  const basePriceInput = document.getElementById('base-price-input');
+  const totalPriceInput = document.getElementById('total-price-input');
+  
+  // Setup equipment selection
+  const equipmentButtons = document.querySelectorAll('.equipment-options .option-button');
+  equipmentButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      equipmentButtons.forEach(btn => btn.classList.remove('selected'));
+      this.classList.add('selected');
+      selectedEquipment = this.getAttribute('data-equipment');
+      equipmentInput.value = selectedEquipment;
+      updateBasePrice();
+      updateProductImage();
+    });
+  });
+  
+  // Setup cooler selection
+  const coolerButtons = document.querySelectorAll('.cooler-options .option-button');
+  coolerButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      coolerButtons.forEach(btn => btn.classList.remove('selected'));
+      this.classList.add('selected');
+      selectedCooler = this.getAttribute('data-cooler');
+      coolerInput.value = selectedCooler;
+      updateBasePrice();
+      updateProductImage();
+    });
+  });
+  
+  // Setup calendar navigation
+  document.getElementById('prev-month').addEventListener('click', () => {
+    currentDate.setMonth(currentDate.getMonth() - 1);
+    renderCalendar();
+  });
+  
+  document.getElementById('next-month').addEventListener('click', () => {
+    currentDate.setMonth(currentDate.getMonth() + 1);
+    renderCalendar();
+  });
+  
+  // Initialize with first options selected
+  if (equipmentButtons.length > 0) {
+    equipmentButtons[0].click();
+  }
+  
+  if (coolerButtons.length > 0) {
+    coolerButtons[1].click(); // Default to "No" cooler
+  }
+  
+  // Render initial calendar
+  renderCalendar();
+  
+  // Functions
+  
+  // Render the calendar
+  function renderCalendar() {
+    if (!calendarEl) return;
+    
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    
+    // Set month header
+    if (currentMonthEl) {
+      currentMonthEl.textContent = new Date(year, month).toLocaleDateString(undefined, { 
+        month: 'long', 
+        year: 'numeric' 
+      });
     }
     
-    // Initialize the date picker
-    const datePicker = new DateTimePicker();
+    // Clear existing calendar
+    calendarEl.innerHTML = '';
+    
+    // Add weekday headers
+    const weekdays = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+    weekdays.forEach(day => {
+      const dayEl = document.createElement('div');
+      dayEl.className = 'weekday';
+      dayEl.textContent = day;
+      calendarEl.appendChild(dayEl);
+    });
+    
+    // Calculate calendar days
+    const firstDayOfMonth = new Date(year, month, 1);
+    const daysFromPrevMonth = firstDayOfMonth.getDay(); // 0 (Sunday) to 6 (Saturday)
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const prevMonthLastDay = new Date(year, month, 0).getDate();
+    
+    // Add previous month's days
+    for (let i = daysFromPrevMonth - 1; i >= 0; i--) {
+      const dateEl = document.createElement('div');
+      dateEl.className = 'date disabled';
+      dateEl.textContent = prevMonthLastDay - i;
+      calendarEl.appendChild(dateEl);
+    }
+    
+    // Add current month's days
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dateEl = document.createElement('div');
+      dateEl.className = 'date';
+      dateEl.textContent = day;
+      
+      const dateObj = new Date(year, month, day);
+      
+      // Check if date is today
+      if (isToday(dateObj)) {
+        dateEl.classList.add('today');
+      }
+      
+      // Check if date is selected
+      if (isDateSelected(dateObj)) {
+        dateEl.classList.add('selected');
+      }
+      
+      // Check if date is in selected range
+      if (isInRange(dateObj)) {
+        dateEl.classList.add('in-range');
+      }
+      
+      // Disable past dates
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      if (dateObj < today) {
+        dateEl.classList.add('disabled');
+      } else {
+        // Add click event to selectable dates
+        dateEl.addEventListener('click', () => {
+          selectDate(dateObj);
+        });
+      }
+      
+      calendarEl.appendChild(dateEl);
+    }
+    
+    // Add next month's days to fill the grid
+    const totalCells = calendarEl.childElementCount;
+    const remainingCells = 7 - (totalCells % 7);
+    
+    if (remainingCells < 7) {
+      for (let i = 1; i <= remainingCells; i++) {
+        const dateEl = document.createElement('div');
+        dateEl.className = 'date disabled';
+        dateEl.textContent = i;
+        calendarEl.appendChild(dateEl);
+      }
+    }
+  }
+  
+  // Select a date
+  function selectDate(date) {
+    if (selectionMode === 'start') {
+      // Start new selection
+      selectedDates = [date];
+      selectionMode = 'end';
+      if (selectionStatusEl) {
+        selectionStatusEl.textContent = 'Now select your end date';
+      }
+    } else {
+      // Complete the selection
+      selectedDates.push(date);
+      
+      // Sort dates to ensure start date comes first
+      selectedDates.sort((a, b) => a - b);
+      
+      // Reset for next selection
+      selectionMode = 'start';
+      if (selectionStatusEl) {
+        selectionStatusEl.textContent = 'Select your start date, then end date';
+      }
+    }
+    
+    // Update date display
+    updateDateDisplay();
+    
+    // Update hidden inputs
+    updateHiddenDateInputs();
+    
+    // Update price based on duration
+    updateTotalPrice();
+    
+    // Re-render calendar to show selection
+    renderCalendar();
+  }
+  
+  // Check if date is today
+  function isToday(date) {
+    const today = new Date();
+    return date.getDate() === today.getDate() && 
+           date.getMonth() === today.getMonth() && 
+           date.getFullYear() === today.getFullYear();
+  }
+  
+  // Check if date is one of the selected dates
+  function isDateSelected(date) {
+    return selectedDates.some(selectedDate => 
+      isSameDay(selectedDate, date)
+    );
+  }
+  
+  // Check if date is in the selected range
+  function isInRange(date) {
+    if (selectedDates.length !== 2) return false;
+    
+    const startDate = new Date(Math.min(
+      selectedDates[0].getTime(),
+      selectedDates[1].getTime()
+    ));
+    
+    const endDate = new Date(Math.max(
+      selectedDates[0].getTime(),
+      selectedDates[1].getTime()
+    ));
+    
+    return date >= startDate && date <= endDate;
+  }
+  
+  // Compare if two dates are the same day
+  function isSameDay(date1, date2) {
+    return date1.getDate() === date2.getDate() && 
+           date1.getMonth() === date2.getMonth() && 
+           date1.getFullYear() === date2.getFullYear();
+  }
+  
+  // Update the selected date range display
+  function updateDateDisplay() {
+    if (!selectedDateRangeEl) return;
+    
+    if (selectedDates.length === 0) {
+      selectedDateRangeEl.textContent = '';
+      return;
+    }
+    
+    if (selectedDates.length === 1) {
+      const formattedDate = formatDate(selectedDates[0]);
+      selectedDateRangeEl.textContent = `Selected: ${formattedDate}`;
+    } else {
+      const startFormatted = formatDate(selectedDates[0]);
+      const endFormatted = formatDate(selectedDates[1]);
+      selectedDateRangeEl.textContent = `${startFormatted} to ${endFormatted}`;
+    }
+  }
+  
+  // Format date for display
+  function formatDate(date) {
+    return date.toLocaleDateString(undefined, {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    });
+  }
+  
+  // Format date for Shopify (YYYY-MM-DD)
+  function formatDateForShopify(date) {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+  
+  // Update hidden date inputs
+  function updateHiddenDateInputs() {
+    if (selectedDates[0] && startDateInput) {
+      startDateInput.value = formatDateForShopify(selectedDates[0]);
+    }
+    
+    if (selectedDates[1] && endDateInput) {
+      endDateInput.value = formatDateForShopify(selectedDates[1]);
+    } else if (selectedDates[0] && endDateInput) {
+      endDateInput.value = formatDateForShopify(selectedDates[0]);
+    }
+  }
+  
+  // Calculate duration between selected dates
+  function calculateDuration() {
+    if (selectedDates.length !== 2) return 1;
+    
+    const startDate = new Date(selectedDates[0]);
+    const endDate = new Date(selectedDates[1]);
+    
+    // Set both to midnight for accurate day calculation
+    startDate.setHours(0, 0, 0, 0);
+    endDate.setHours(0, 0, 0, 0);
+    
+    // Calculate difference in days
+    const diffTime = Math.abs(endDate - startDate);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    // Add 1 to include both start and end dates
+    return diffDays + 1;
+  }
+  
+  // Update base price based on equipment and cooler selection
+  function updateBasePrice() {
+    const equipmentPrice = basePrices[selectedEquipment] || 82.00; // Default to cheapest if not found
+    const coolerAddition = coolerAdds[selectedCooler] || 0.00;
+    
+    const basePrice = equipmentPrice + coolerAddition;
+    basePriceInput.value = basePrice.toFixed(2);
+    
+    // Update total price
+    updateTotalPrice();
+  }
+  
+  // Update total price based on duration and discount
+  function updateTotalPrice() {
+    const basePrice = parseFloat(basePriceInput.value);
+    const duration = calculateDuration();
+    
+    // Get discount tier based on duration
+    let discountMultiplier = 1.0;
+    if (duration === 2) {
+      discountMultiplier = 0.9; // 10% discount
+    } else if (duration >= 3) {
+      discountMultiplier = 0.8; // 20% discount
+    }
+    
+    // Calculate total price
+    const totalPrice = basePrice * duration * discountMultiplier;
+    
+    // Update hidden inputs
+    durationInput.value = duration;
+    discountInput.value = discountMultiplier;
+    totalPriceInput.value = totalPrice.toFixed(2);
+    
+    // Format for display
+    const formatter = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    });
+    
+    // Update price display
+    if (displayedPriceEl) {
+      displayedPriceEl.textContent = formatter.format(totalPrice);
+    }
+    
+    // Update price breakdown
+    if (priceBreakdownEl) {
+      if (duration > 1) {
+        let breakdownHtml = `<div>Duration: ${duration} days</div>`;
+        
+        if (discountMultiplier < 1) {
+          const discount = Math.round((1 - discountMultiplier) * 100);
+          breakdownHtml += `<div>Discount: ${discount}% off</div>`;
+          breakdownHtml += `<div>Base Price: ${formatter.format(basePrice)} × ${duration} days</div>`;
+        }
+        
+        priceBreakdownEl.innerHTML = breakdownHtml;
+      } else {
+        priceBreakdownEl.innerHTML = ''; // Clear breakdown for single day
+      }
+    }
+    
+    // Update the original Shopify price display if present
+    updateShopifyPriceDisplay(totalPrice);
+  }
+  
+  // Update Shopify's price display if present
+  function updateShopifyPriceDisplay(price) {
+    const formatter = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    });
+    
+    // Try to find and update Shopify's price elements
+    const priceElements = document.querySelectorAll('.price__regular .price-item--regular, .price-item--regular');
+    priceElements.forEach(el => {
+      if (el && !el.closest('.booking-system-container')) { // Don't update our own price elements
+        el.textContent = formatter.format(price);
+      }
+    });
+  }
+  
+  // Update product image based on equipment and cooler selection
+  function updateProductImage() {
+    const imageKey = `${selectedEquipment}-${selectedCooler}`;
+    const imageMapping = {
+      "1U2C-Yes": "2C1UYes",
+      "1U1C-Yes": "1C1UYes", 
+      "2C-Yes": "2CYes",
+      "1C-Yes": "1CYes",
+      "1U-Yes": "1UYes",
+      "None-Yes": "Yes",
+      "1U2C-No": "2C1U",
+      "1U1C-No": "1C1U",
+      "2C-No": "2C",
+      "1C-No": "1C",
+      "1U-No": "1U",
+      "None-No": "None"
+    };
+    
+    const imageName = imageMapping[imageKey] || "None";
+    
+    // Find Shopify product image
+    const productImage = document.querySelector('.product__media img');
+    if (productImage) {
+      // Get the current src
+      const currentSrc = productImage.src;
+      
+      // Find the image with the corresponding name in the product gallery
+      const allProductImages = document.querySelectorAll('.product__media-list .product__media img');
+      
+      for (let img of allProductImages) {
+        const imgUrl = img.getAttribute('src') || '';
+        if (imgUrl.includes(imageName)) {
+          productImage.src = imgUrl;
+          break;
+        }
+      }
+    }
+    
+    // Find and click on the correct thumbnail if available
+    const thumbnails = document.querySelectorAll('.product__media-list .product__media-item');
+    for (let i = 0; i < thumbnails.length; i++) {
+      const thumbnail = thumbnails[i];
+      const thumbnailImg = thumbnail.querySelector('img');
+      if (thumbnailImg && thumbnailImg.src && thumbnailImg.src.includes(imageName)) {
+        // Either click the thumbnail or its child link/button
+        const clickableElement = thumbnail.querySelector('a, button') || thumbnail;
+        clickableElement.click();
+        break;
+      }
+    }
+  }
 });
 </script>
