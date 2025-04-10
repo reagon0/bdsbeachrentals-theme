@@ -787,5 +787,102 @@ function updateProductImage() {
     console.log('Main product image not found');
   }
 }
-
+  
+  // Disable any image magnification/zoom features
+  function disableImageZoom() {
+    // Target zoom-related elements
+    const zoomElements = document.querySelectorAll(
+      '.product-zoom, .zoom-lightbox, .product__zoom-button, .product-image-zoom, ' +
+      '[data-image-zoom="true"], [data-action="zoom"], .image-zoom-button'
+    );
+    
+    // Hide zoom elements
+    zoomElements.forEach(el => {
+      el.style.display = 'none';
+    });
+    
+    // Remove zoom functionality from product images
+    const productImages = document.querySelectorAll('.product__media img, .product-featured-media');
+    productImages.forEach(img => {
+      img.removeAttribute('data-zoom');
+      img.removeAttribute('data-image-zoom');
+      img.removeAttribute('data-action');
+      img.style.cursor = 'default';
+    });
+    
+    // Also target parent containers that might have zoom functionality
+    const zoomContainers = document.querySelectorAll(
+      '[data-zoom="true"], [data-image-zoom="true"], .product__media-toggle'
+    );
+    
+    zoomContainers.forEach(container => {
+      container.removeAttribute('data-zoom');
+      container.removeAttribute('data-image-zoom');
+    });
+    
+    // Disable any click handlers that might trigger zoom
+    const clickTargets = document.querySelectorAll('.product__media-toggle, .product__media');
+    clickTargets.forEach(target => {
+      const clone = target.cloneNode(true);
+      if (target.parentNode) {
+        target.parentNode.replaceChild(clone, target);
+      }
+    });
+  }
+  
+  // Run on initial load
+  disableImageZoom();
+  
+  // Also run after a delay to catch any dynamically loaded elements
+  setTimeout(disableImageZoom, 1000);
+  
+  // And periodically check for new zoom elements
+  setInterval(disableImageZoom, 3000);
+  
+  // Add styles to head
+  const noZoomStyles = document.createElement('style');
+  noZoomStyles.textContent = `
+    /* Prevent image zoom/magnification */
+    .no-zoom {
+      pointer-events: none !important;
+    }
+    
+    .product__media-wrapper .product__media img,
+    .product__media-wrapper img,
+    .product__media img,
+    .product-featured-media,
+    .product__media-toggle,
+    .product-image {
+      cursor: default !important;
+      pointer-events: none !important;
+    }
+    
+    /* Hide modal opener elements */
+    .product__modal-opener,
+    [data-modal-opener],
+    .product__media-toggle {
+      pointer-events: none !important;
+    }
+    
+    /* Prevent zoom functionality */
+    .js-zoom-enabled .product__media img,
+    .js-zoom-enabled .image-magnify-none {
+      cursor: default !important;
+      pointer-events: none !important;
+    }
+    
+    /* Hide zoom-related elements */
+    .product-zoom,
+    .zoom-lightbox,
+    .product__zoom-button,
+    .product-image-zoom,
+    [data-image-zoom="true"],
+    [data-action="zoom"],
+    .image-zoom-button {
+      display: none !important;
+    }
+  `;
+  
+  document.head.appendChild(noZoomStyles);
+});
 </script>
