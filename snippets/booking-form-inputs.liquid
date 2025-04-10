@@ -190,6 +190,7 @@ document.addEventListener('DOMContentLoaded', function() {
             this.currentDate = new Date();
             this.selectedDates = [];
             this.selectionMode = 'start';
+            this.currentBasePrice = 0;
             
             // Get DOM elements
             this.calendarEl = document.getElementById('calendar');
@@ -212,8 +213,74 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.nextMonth();
             });
             
+            // Add event listener for variant selection changes
+            this.setupVariantChangeListeners();
+            
+            // Get initial base price
+            this.currentBasePrice = this.getBasePrice();
+            
             // Render the calendar
             this.renderCalendar();
+        }
+        
+        // Setup listeners for variant selection changes
+        setupVariantChangeListeners() {
+            // Listen for variant change events
+            document.addEventListener('variant:change', (event) => {
+                // Get new base price and update pricing if dates are selected
+                this.currentBasePrice = this.getBasePrice();
+                if (this.selectedDates.length === 1) {
+                    this.updateSingleDatePricing();
+                } else if (this.selectedDates.length === 2) {
+                    this.updatePricing();
+                }
+            });
+            
+            // Listen for radio button or select changes for variants
+            const variantRadios = document.querySelectorAll('input[type="radio"][name^="options"]');
+            variantRadios.forEach(radio => {
+                radio.addEventListener('change', () => {
+                    setTimeout(() => {
+                        this.currentBasePrice = this.getBasePrice();
+                        if (this.selectedDates.length === 1) {
+                            this.updateSingleDatePricing();
+                        } else if (this.selectedDates.length === 2) {
+                            this.updatePricing();
+                        }
+                    }, 100); // Small timeout to allow Shopify to update the price first
+                });
+            });
+            
+            // Also listen for variant selectors (dropdown)
+            const variantSelects = document.querySelectorAll('select[name^="options"]');
+            variantSelects.forEach(select => {
+                select.addEventListener('change', () => {
+                    setTimeout(() => {
+                        this.currentBasePrice = this.getBasePrice();
+                        if (this.selectedDates.length === 1) {
+                            this.updateSingleDatePricing();
+                        } else if (this.selectedDates.length === 2) {
+                            this.updatePricing();
+                        }
+                    }, 100);
+                });
+            });
+            
+            // Listen for click events on variant buttons
+            document.addEventListener('click', (event) => {
+                // Check if clicked element is a variant button or within a variant button
+                const variantButton = event.target.closest('.variant-input label, .single-option-selector__radio + label');
+                if (variantButton) {
+                    setTimeout(() => {
+                        this.currentBasePrice = this.getBasePrice();
+                        if (this.selectedDates.length === 1) {
+                            this.updateSingleDatePricing();
+                        } else if (this.selectedDates.length === 2) {
+                            this.updatePricing();
+                        }
+                    }, 200); // Slightly longer timeout
+                }
+            });
         }
         
         // Render the calendar grid
@@ -398,8 +465,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Update pricing when only one date is selected
         updateSingleDatePricing() {
-            // Default to 1-day pricing
-            const basePrice = this.getBasePrice();
+            // Get the current base price
+            const basePrice = this.currentBasePrice || this.getBasePrice();
             if (!basePrice) return;
             
             // For a single day, there's no discount
@@ -487,8 +554,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const totalPriceEl = document.getElementById('booking-total-price');
             if (!totalPriceEl || this.selectedDates.length < 2) return;
             
-            // Get base price from page
-            const basePrice = this.getBasePrice();
+            // Get base price from page (using cached price if available)
+            const basePrice = this.currentBasePrice || this.getBasePrice();
             if (!basePrice) return;
             
             // Calculate duration
@@ -624,15 +691,82 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Get base price from product page
         getBasePrice() {
-            const priceElement = document.querySelector('.price .price__regular .price-item--regular');
-            if (priceElement) {
-                const priceText = priceElement.textContent.trim();
-                const priceMatch = priceText.match(/[\d,.]+/);
-                if (priceMatch) {
-                    return parseFloat(priceMatch[0].replace(/,/g, ''));
+            // First, try to get the price from the selected variant
+            let selectedPrice = null;
+            
+            // Check for currently selected variant ID
+            const selectedVariantId = this.getSelectedVariantId();
+            if (selectedVariantId) {
+                const variantElement = document.querySelector(`[data-variant-id="${selectedVariantId}"] .price-item--regular`);
+                if (variantElement) {
+                    const priceText = variantElement.textContent.trim();
+                    const priceMatch = priceText.match(/[\d,.]+/);
+                    if (priceMatch) {
+                        selectedPrice = parseFloat(priceMatch[0].replace(/,/g, ''));
+                    }
                 }
             }
+            
+            if (selectedPrice) {
+                return selectedPrice;
+            }
+            
+            // Fallback: try different price selectors
+            const priceSelectors = [
+                '.price__regular .price-item--regular',
+                '.price-item--regular',
+                '.price .price__sale .price-item--sale',
+                '.price .price-item',
+                '.price.price--large'
+            ];
+            
+            for (const selector of priceSelectors) {
+                const priceElement = document.querySelector(selector);
+                if (priceElement) {
+                    const priceText = priceElement.textContent.trim();
+                    const priceMatch = priceText.match(/[\d,.]+/);
+                    if (priceMatch) {
+                        return parseFloat(priceMatch[0].replace(/,/g, ''));
+                    }
+                }
+            }
+            
+            // Last resort: try to find any price on the page
+            const priceContentMatch = document.body.textContent.match(/\$\s*([\d,.]+)/);
+            if (priceContentMatch && priceContentMatch[1]) {
+                return parseFloat(priceContentMatch[1].replace(/,/g, ''));
+            }
+            
+            console.log('Failed to find product price, using default');
             return 100; // Default if price can't be found
+        }
+        
+        // Get the currently selected variant ID
+        getSelectedVariantId() {
+            // Check for Shopify's selected variant
+            const selectedVariantInput = document.querySelector('input[name="id"]:checked, select[name="id"]');
+            if (selectedVariantInput) {
+                return selectedVariantInput.value;
+            }
+            
+            // Check for data attributes that might contain the selected variant
+            const productForm = document.querySelector('form[action*="/cart/add"]');
+            if (productForm && productForm.dataset.productId) {
+                const variantSelector = `#ProductSelect-${productForm.dataset.productId}`;
+                const variantSelect = document.querySelector(variantSelector);
+                if (variantSelect) {
+                    return variantSelect.value;
+                }
+            }
+            
+            // Check for variant selectors
+            const variantSelectors = document.querySelectorAll('.single-option-selector__radio:checked, .single-option-selector option:checked');
+            if (variantSelectors.length > 0) {
+                // This doesn't give us the ID directly but indicates a selection
+                return true;
+            }
+            
+            return null;
         }
         
         // Calculate duration between selected dates
