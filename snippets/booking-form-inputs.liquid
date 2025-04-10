@@ -725,34 +725,58 @@ document.addEventListener('DOMContentLoaded', function() {
     
     const imageName = imageMapping[imageKey] || "None";
     
-    // Find Shopify product image
-    const productImage = document.querySelector('.product__media img');
-    if (productImage) {
-      // Get the current src
-      const currentSrc = productImage.src;
+    // Try to find thumbnails without triggering the modal
+    const thumbnails = document.querySelectorAll('.product__media-list .product__media-item, .product--thumbnail');
+    
+    let thumbnailFound = false;
+    
+    // First try to find and use data attributes instead of clicking
+    for (let i = 0; i < thumbnails.length; i++) {
+      const thumbnail = thumbnails[i];
+      const thumbnailImg = thumbnail.querySelector('img');
       
-      // Find the image with the corresponding name in the product gallery
-      const allProductImages = document.querySelectorAll('.product__media-list .product__media img');
-      
-      for (let img of allProductImages) {
-        const imgUrl = img.getAttribute('src') || '';
-        if (imgUrl.includes(imageName)) {
-          productImage.src = imgUrl;
+      if (thumbnailImg && thumbnailImg.src && thumbnailImg.src.includes(imageName)) {
+        // Try to find the main image container
+        const mainImageContainer = document.querySelector('.product__media-item--selected, .product__media--featured');
+        const mainImage = document.querySelector('.product__media img, .product-featured-media');
+        
+        if (mainImageContainer && thumbnailImg.dataset.src) {
+          // Use data attributes if available
+          mainImageContainer.dataset.mediaId = thumbnail.dataset.mediaId;
+          thumbnailFound = true;
+          break;
+        } else if (mainImage && thumbnailImg.src) {
+          // Direct image swap without clicking (to avoid modal)
+          const newSrc = thumbnailImg.src;
+          mainImage.src = newSrc;
+          
+          // Also update srcset if it exists
+          if (thumbnailImg.srcset && mainImage.srcset) {
+            mainImage.srcset = thumbnailImg.srcset;
+          }
+          
+          thumbnailFound = true;
           break;
         }
       }
     }
     
-    // Find and click on the correct thumbnail if available
-    const thumbnails = document.querySelectorAll('.product__media-list .product__media-item');
-    for (let i = 0; i < thumbnails.length; i++) {
-      const thumbnail = thumbnails[i];
-      const thumbnailImg = thumbnail.querySelector('img');
-      if (thumbnailImg && thumbnailImg.src && thumbnailImg.src.includes(imageName)) {
-        // Either click the thumbnail or its child link/button
-        const clickableElement = thumbnail.querySelector('a, button') || thumbnail;
-        clickableElement.click();
-        break;
+    // If we couldn't update via direct manipulation, try a different approach
+    if (!thumbnailFound) {
+      // This is a fallback that tries to find the correct media ID
+      const mediaItems = document.querySelectorAll('[data-media-id]');
+      for (let i = 0; i < mediaItems.length; i++) {
+        const mediaItem = mediaItems[i];
+        const mediaImg = mediaItem.querySelector('img');
+        
+        if (mediaImg && mediaImg.src && mediaImg.src.includes(imageName)) {
+          // Try to update active media ID on the product section
+          const productSection = document.querySelector('[data-section-type="product-template"], [data-section-id*="product-template"]');
+          if (productSection) {
+            productSection.dataset.mediaId = mediaItem.dataset.mediaId;
+          }
+          break;
+        }
       }
     }
   }
