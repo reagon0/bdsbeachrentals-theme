@@ -259,6 +259,13 @@
   .product-image {
     cursor: default !important;
   }
+
+    /* Add this to your existing style block in booking-form-inputs.liquid */
+  .price-display {
+    width: 100%; /* Make it full width of its container */
+    box-sizing: border-box; /* Include padding in width calculation */
+    max-width: none; /* Override any max-width */
+  }
   
   /* Hide zoom elements */
   .product-zoom,
