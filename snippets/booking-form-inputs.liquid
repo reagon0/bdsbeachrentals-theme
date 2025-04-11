@@ -1,7 +1,7 @@
 <!-- Beach Cart Booking System with Line Item Properties -->
 <div class="booking-system-container">
   <!-- Equipment Selection -->
-  <fieldset class="product-form__input">
+  <fieldset class="product-form__input product-form__input--pill">
     <legend class="form__label">Equipment</legend>
     <div class="equipment-options">
       <button type="button" class="option-button" data-equipment="1U2C" data-image-key="2C1UYes" data-price="110.00">1x Umbrella 2x Chair</button>
@@ -14,7 +14,7 @@
   </fieldset>
 
   <!-- Cooler Option -->
-  <fieldset class="product-form__input">
+  <fieldset class="product-form__input product-form__input--pill">
     <legend class="form__label">Include 25qt Cooler</legend>
     <div class="cooler-options">
       <button type="button" class="option-button cooler-button" data-cooler="Yes" data-price-add="7.00">Yes</button>
@@ -23,7 +23,7 @@
   </fieldset>
 
   <!-- Booking Dates -->
-  <fieldset class="product-form__input">
+  <fieldset class="product-form__input product-form__input--pill">
     <legend class="form__label">Booking Dates</legend>
     <div class="datetime-picker">
       <div class="calendar-header">
@@ -45,19 +45,19 @@
   </fieldset>
 
   <!-- Pickup/Dropoff Locations -->
-  <fieldset class="product-form__input">
-    <legend class="form__label">Preferred Pickup Location</legend>
-    <input type="text" id="preferred_pickup_location" class="input-field" name="properties[Preferred Pickup Location]" placeholder="Include full address"/>
+  <fieldset class="product-form__input product-form__input--pill">
+    <legend class="form__label"><label for="preferred_pickup_location">Preferred Pickup Location</label></legend>
+    <input type="text" id="preferred_pickup_location" class="select__select" name="properties[Preferred Pickup Location]" placeholder="Include full address"/>
   </fieldset>
 
-  <fieldset class="product-form__input">
-    <legend class="form__label">Preferred Drop-off Location</legend>
-    <input type="text" id="preferred_drop_off_location" class="input-field" name="properties[Preferred Drop-off Location]" placeholder="Include full address">
+  <fieldset class="product-form__input product-form__input--pill">
+    <legend class="form__label"><label for="preferred_drop_off_location">Preferred Drop-off Location</label></legend>
+    <input type="text" id="preferred_drop_off_location" class="select__select" name="properties[Preferred Drop-off Location]" placeholder="Include full address"></input>
   </fieldset>
 
-  <fieldset class="product-form__input">
-    <legend class="form__label">Additional Rental Details</legend>
-    <textarea id="special_requirements" class="input-field" name="properties[Special Requests]" placeholder="Let us know how we can help"></textarea>
+  <fieldset class="product-form__input product-form__input--pill">
+    <legend class="form__label"><label for="special_requirements">Additional Rental Details</label></legend>
+    <textarea id="special_requirements" class="select__select" name="properties[Special Requests]" placeholder="Let us know how we can help"></textarea>
   </fieldset>
 
   <!-- Price Display -->
@@ -68,11 +68,6 @@
     </div>
     <div id="price-breakdown" class="price-breakdown"></div>
   </div>
-
-  <!-- Add to Cart Button -->
-  <button type="submit" name="add" class="add-to-cart-button">
-    Add to cart
-  </button>
 
   <!-- Hidden inputs for Shopify -->
   <div style="display:none;">
@@ -85,60 +80,37 @@
     <input type="hidden" name="properties[Base Price]" id="base-price-input" value="82.00">
     <input type="hidden" name="properties[Total Price]" id="total-price-input" value="82.00">
   </div>
-  
-  <!-- Product Features -->
-  <div class="product-features">
-    <ul>
-      <li>2 Hour Continuous Run Time</li>
-      <li>4 Wheel Drive & Steering</li>
-      <li>All Terrain Vehicle</li>
-      <li>Fits an umbrella, two chairs, and more.</li>
-    </ul>
-    <p class="tagline">Haul your beach going equipment in style.</p>
-  </div>
 </div>
 
 <style>
   .booking-system-container {
     font-family: system-ui, -apple-system, sans-serif;
     max-width: 600px;
-    width: 100%;
     margin: 0 auto;
-    padding: 0;
-    box-sizing: border-box;
-    color: #061733;
   }
   
   .product-form__input {
     margin-bottom: 20px;
-    width: 100%;
-    background-color: white;
-    border-radius: 8px;
-    padding: 15px 20px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e5e5e5;
-    box-sizing: border-box;
   }
   
   .form__label {
     font-weight: 600;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     display: block;
-    font-size: 16px;
   }
   
   .equipment-options, .cooler-options {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    margin-bottom: 5px;
+    margin-bottom: 15px;
   }
   
   .option-button {
     background-color: white;
     border: 1px solid #ddd;
     border-radius: 30px;
-    padding: 10px 16px;
+    padding: 8px 16px;
     cursor: pointer;
     font-size: 14px;
     transition: all 0.2s ease;
@@ -146,7 +118,6 @@
   
   .option-button:hover {
     background-color: #f9f9f9;
-    border-color: #bbb;
   }
   
   .option-button.selected {
@@ -156,10 +127,12 @@
   }
   
   .datetime-picker {
-    padding: 15px;
-    border-radius: 6px;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     background: white;
-    border: 1px solid #e5e5e5;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
   }
 
   .calendar-header {
@@ -175,7 +148,6 @@
     cursor: pointer;
     font-size: 16px;
     padding: 8px;
-    color: #0a3b5c;
   }
 
   .calendar-header button svg {
@@ -218,14 +190,12 @@
 
   .date.selected {
     background: #0a3b5c !important;
-    color: white !important;
-    font-weight: 500;
+    color: white;
   }
 
   .date.today {
-    font-weight: 700;
+    font-weight: bold;
     color: #000;
-    text-decoration: underline;
   }
   
   .date.today.selected {
@@ -240,7 +210,6 @@
   .date.in-range {
     background-color: rgba(10, 59, 92, 0.3);
     color: #0a3b5c;
-    font-weight: 500;
   }
   
   .selection-status {
@@ -256,99 +225,30 @@
     font-weight: 500;
   }
   
-  .input-field {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    font-size: 16px;
-    background-color: #fff;
-    box-sizing: border-box;
-  }
-  
-  textarea.input-field {
-    min-height: 100px;
-    resize: vertical;
-  }
-  
   .price-display {
-    background-color: white;
+    background-color: #f9fafb;
     border-radius: 8px;
-    padding: 15px 20px;
+    padding: 15px;
     margin-bottom: 20px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e5e5e5;
-    width: 100%;
-    box-sizing: border-box;
   }
   
   .current-price {
-    font-size: 22px;
+    font-size: 18px;
     font-weight: 600;
-    margin-bottom: 10px;
-    color: #0a3b5c;
+    margin-bottom: 5px;
   }
   
   .price-breakdown {
-    font-size: 15px;
-    color: #505050;
-    line-height: 1.6;
+    font-size: 14px;
+    color: #6b7280;
   }
   
-  .price-breakdown div {
-    margin-bottom: 4px;
-  }
-  
-  .discount-row {
-    background-color: rgba(107, 144, 192, 0.2);
-    padding: 5px 8px;
-    border-radius: 4px;
-    margin: 8px 0;
-  }
-  
-  .add-to-cart-button {
-    display: block;
+  .select__select {
     width: 100%;
-    padding: 15px 20px;
-    background-color: #0a3b5c;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 18px;
-    font-weight: 600;
-    cursor: pointer;
-    text-align: center;
-    transition: background-color 0.2s ease;
-    margin-bottom: 25px;
-  }
-  
-  .add-to-cart-button:hover {
-    background-color: #072b45;
-  }
-  
-  .product-features {
-    margin-top: 30px;
-    border-top: 1px solid #e5e5e5;
-    padding-top: 20px;
-  }
-  
-  .product-features ul {
-    padding-left: 20px;
-    margin-bottom: 15px;
-  }
-  
-  .product-features li {
-    margin-bottom: 8px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
     font-size: 16px;
-    color: #333;
-  }
-  
-  .tagline {
-    font-size: 18px;
-    font-weight: 500;
-    color: #0a3b5c;
-    text-align: center;
-    margin-top: 15px;
   }
 
   /* Disable image magnification */
@@ -371,24 +271,8 @@
     display: none !important;
   }
 
-  .date.selected::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-radius: 4px;
-    pointer-events: none;
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
-  }
-
   @media screen and (max-width: 768px) {
-    .booking-system-container {
-      padding: 0 15px;
-    }
-    
-    .equipment-options {
+    .equipment-options, .cooler-options {
       flex-direction: column;
     }
     
@@ -400,23 +284,115 @@
       padding: 6px;
       font-size: 12px;
     }
-    
-    .product-form__input, 
+  }
+
+    /* Add these styles to your booking-form-inputs.liquid file in the <style> section */
+
+      /* Enhanced Price Display */
     .price-display {
-      padding: 12px 15px;
+      background-color: #f0f7ff !important;
+      border-radius: 8px !important;
+      padding: 15px 20px !important;
+      margin-bottom: 20px !important;
+      box-shadow: 0 2px 6px rgba(10, 59, 92, 0.15) !important;
+      border: 2px solid #0a3b5c !important;
+      max-width: 100% !important;
     }
-    
+
+    /* Make the main price more prominent */
     .current-price {
-      font-size: 20px;
+      font-size: 22px !important;
+      font-weight: 600 !important;
+      margin-bottom: 12px !important;
+      color: #0a3b5c !important;
     }
-  }
-  
-  @media screen and (min-width: 769px) {
-    .equipment-options {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
+
+    /* Add this to your CSS to make the add to cart button match width */
+    .booking-system-container + .product-form__buttons button[type="submit"],
+    .booking-system-container ~ .product-form__buttons button[type="submit"],
+    .product-form__buttons button[type="submit"] {
+      width: 100% !important;
+      max-width: 600px !important;
+      margin: 0 auto !important;
+      display: block !important;
     }
-  }
+
+    /* Make selected date text white for better contrast on dark blue background */
+    .date.selected {
+    background: #0a3b5c !important;
+    color: white !important; /* Ensure text is white and override any other styles */
+    font-weight: 500; /* Make it slightly bolder */
+    }
+
+    /* Style the in-range dates for better visibility */
+    .date.in-range {
+    background-color: rgba(10, 59, 92, 0.3);
+    color: #0a3b5c;
+    font-weight: 500;  /* Make text more visible */
+    }
+
+    /* Improve today's date styling */
+    .date.today {
+    font-weight: 700;
+    color: #000;
+    text-decoration: underline;
+    }
+
+    /* Add a subtle outline to selected dates for better focus */
+    .date.selected, .date.in-range {
+    position: relative;
+    }
+
+    .date.selected::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 4px;
+    pointer-events: none;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+    }
+    /* Add these styles to your booking-form-inputs.liquid file in the <style> section */
+
+    /* Style the price display to match other input fields */
+    .price-display {
+    background-color: white !important;
+    border-radius: 8px !important;
+    padding: 15px 20px !important;
+    margin-bottom: 20px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+    border: 1px solid #e5e5e5 !important;
+    }
+
+    /* Make the main price font size and weight match other headings */
+    .current-price {
+    font-size: 20px !important;
+    font-weight: 500 !important;
+    margin-bottom: 12px !important;
+    }
+
+    /* Style for price breakdown items */
+    .price-breakdown div {
+    font-size: 15px !important;
+    color: #505050 !important;
+    line-height: 1.6 !important;
+    margin-bottom: 4px !important;
+    }
+
+    /* Add some space between breakdown sections */
+    .price-breakdown {
+    margin-top: 10px !important;
+    }
+
+    /* Highlight discount row */
+    .discount-row {
+    background-color: rgba(107, 144, 192, 0.2) !important;
+    padding: 5px 8px !important;
+    border-radius: 4px !important;
+    margin: 8px 0 !important;
+    }
 </style>
 
 <script>
@@ -856,30 +832,31 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   }
-  
-  // Update product image based on selection
-  function updateProductImage() {
+    
+    // Update the updateProductImage function in your booking-form-inputs.liquid file
+
+    function updateProductImage() {
     // Get selected equipment and cooler options
-    const equipmentCode = selectedEquipment;
-    const coolerOption = selectedCooler;
+    const equipmentCode = selectedEquipment; // e.g. "1U2C", "2C", "1C", "1U", "None"
+    const coolerOption = selectedCooler;     // e.g. "Yes", "No"
     
     // Construct the image filename based on selection
     let imageName;
     
-    // Map equipment codes to image naming format
+    // Map equipment codes to image naming format with pluralization
     const equipmentMap = {
-      "1U2C": "2C1U",
-      "1U1C": "1C1U",
-      "2C": "2C",
-      "1C": "1C",
-      "1U": "1U",
-      "None": "None"
+        "1U2C": "2C1U",  // Convert to match your image filename format (2 Chairs 1 Umbrella)
+        "1U1C": "1C1U",  // Convert to match your image filename format (1 Chair 1 Umbrella)
+        "2C": "2C",      // Already matches (2 Chairs)
+        "1C": "1C",      // Already matches (1 Chair)
+        "1U": "1U",      // Already matches (1 Umbrella)
+        "None": "None"   // Already matches (Just the cart)
     };
     
     // Handle special cases for combinations that don't have images
     const missingCombinations = {
-      "2C-Yes": true,
-      "1U1C-No": true
+        "2C-Yes": true,    // 2 Chairs with Cooler doesn't have an image
+        "1U1C-No": true    // 1 Umbrella 1 Chair No Cooler doesn't have an image
     };
     
     // Generate combination key to check if it's missing
@@ -887,69 +864,59 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Handle special cases for missing images
     if (missingCombinations[combinationKey]) {
-      if (combinationKey === "2C-Yes") {
+        // Use a fallback image for missing combinations
+        if (combinationKey === "2C-Yes") {
+        // For 2 Chairs with Cooler, use 2C (no cooler) as fallback
         imageName = "2C";
-      } else if (combinationKey === "1U1C-No") {
+        } else if (combinationKey === "1U1C-No") {
+        // For 1 Umbrella 1 Chair No Cooler, use 1C1UYes (with cooler) as fallback
         imageName = "1C1UYes";
-      }
-    } else {
-      // Standard case - map equipment+cooler to final image name
-      if (coolerOption === "Yes") {
-        if (equipmentMap[equipmentCode] === "None") {
-          imageName = "Yes"; // Just cooler, no equipment
-        } else {
-          imageName = equipmentMap[equipmentCode] + "Yes"; // Equipment with cooler
         }
-      } else {
+    } else {
+        // Standard case - map equipment+cooler to final image name
+        if (coolerOption === "Yes") {
+        if (equipmentMap[equipmentCode] === "None") {
+            imageName = "Yes"; // Just cooler, no equipment
+        } else {
+            imageName = equipmentMap[equipmentCode] + "Yes"; // Equipment with cooler
+        }
+        } else {
         imageName = equipmentMap[equipmentCode]; // Just equipment, no cooler
-      }
+        }
     }
     
     console.log(`Updating image to: ${imageName}`);
     
-    // Find the main product image
+    // Find the main product image using a direct selector
     const mainImage = document.querySelector('.product-single__image');
     
     if (mainImage) {
-      // Get current image URL
-      const currentSrc = mainImage.src;
-      
-      // Replace the current image filename with our new one
-      const newSrc = currentSrc.replace(/([^\/]+)(\.\w+)(?=[^\/]*$)/, imageName + "$2");
-      
-      // Update the main image src
-      mainImage.src = newSrc;
-      
-      // If srcset exists, update it as well
-      if (mainImage.srcset) {
+        // Get current image URL
+        const currentSrc = mainImage.src;
+        
+        // Replace the current image filename with our new one
+        // This works by finding the last segment of the URL path and replacing it
+        const newSrc = currentSrc.replace(/([^\/]+)(\.\w+)(?=[^\/]*$)/, imageName + "$2");
+        
+        // Update the main image src
+        mainImage.src = newSrc;
+        
+        // If srcset exists, update it as well
+        if (mainImage.srcset) {
         const srcsetEntries = mainImage.srcset.split(',');
         const updatedSrcset = srcsetEntries.map(entry => {
-          return entry.replace(/([^\/]+)(\.\w+)(?=[^\/]*\s)/, imageName + "$2");
+            return entry.replace(/([^\/]+)(\.\w+)(?=[^\/]*\s)/, imageName + "$2");
         }).join(',');
         
         mainImage.srcset = updatedSrcset;
-      }
+        }
+        
+        console.log('Image updated successfully');
+    } else {
+        console.log('Main product image not found');
     }
-  }
-  
-  // Disable image zoom function
-  function disableImageZoom() {
-    // Add no-zoom class to all product images
-    const productImages = document.querySelectorAll('.product__media img, .product-featured-media, .product-image');
-    productImages.forEach(img => {
-      img.classList.add('no-zoom');
-      img.style.pointerEvents = 'none';
-      img.style.cursor = 'default';
-    });
-    
-    // Disable any zoom-related elements
-    const zoomElements = document.querySelectorAll(
-      '.product-zoom, .image-zoom-button, .zoom-lightbox, [data-image-zoom="true"], [data-action="zoom"], .product__zoom-button, .product-image-zoom'
-    );
-    zoomElements.forEach(el => {
-      el.style.display = 'none';
-    });
-  }
+    }
+
   
   // Run on initial load
   disableImageZoom();
@@ -959,5 +926,42 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // And periodically check for new zoom elements
   setInterval(disableImageZoom, 3000);
+  
+  // Add styles to head
+  const noZoomStyles = document.createElement('style');
+  noZoomStyles.textContent = `
+    /* Prevent image zoom/magnification */
+    .no-zoom {
+      pointer-events: none !important;
+    }
+    
+    .product__media-wrapper .product__media img,
+    .product__media-wrapper img,
+    .product__media img,
+    .product-featured-media,
+    .product__media-toggle,
+    .product-image {
+      cursor: default !important;
+      pointer-events: none !important;
+    }
+    
+    /* Hide modal opener elements */
+    .product__modal-opener,
+    [data-modal-opener],
+    .product__media-toggle {
+      pointer-events: none !important;
+    }
+    
+    /* Prevent zoom functionality */
+    .js-zoom-enabled .product__media img,
+    .js-zoom-enabled .image-magnify-none {
+      cursor: default !important;
+      pointer-events: none !important;
+    }
+    
+
+  `;
+  
+  document.head.appendChild(noZoomStyles);
 });
 </script>
