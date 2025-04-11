@@ -1,1 +1,267 @@
-{"sections":{"image_banner_mTbhtJ":{"type":"image-banner","blocks":{"heading_edKBaj":{"type":"heading","settings":{"heading":"Beach in luxury.","heading_size":"h0"}},"buttons_yX3Lf6":{"type":"buttons","settings":{"booking_popup_button":true,"button_label_1":"Reserve Now","button_link_1":"shopify:\/\/products\/b-wagon","button_style_secondary_1":true,"button_label_2":"","button_link_2":"","button_style_secondary_2":false}}},"block_order":["heading_edKBaj","buttons_yX3Lf6"],"disabled":true,"settings":{"image":"shopify:\/\/shop_images\/56173202-d8b4-4d43-83aa-910cf68b77ea.jpg","image_overlay_opacity":0,"image_height":"small","desktop_content_position":"top-center","show_text_box":false,"desktop_content_alignment":"center","color_scheme":"scheme-3","image_behavior":"none","mobile_content_alignment":"center","stack_images_on_mobile":false,"show_text_below":false}},"rich_text_hRFthA":{"type":"rich-text","blocks":{"heading_L3Xkig":{"type":"heading","settings":{"heading":"Introducing the Remote-Controlled EV Beach Cart","heading_size":"h1"}},"text_6NxUC8":{"type":"text","settings":{"text":"<p>The B-Wagon is available for rent at Alabama Locations: Orange Beach, Gulf Shores, Perdido Keys, and Fort Morgan. Please see rental instructions below.<\/p>"}}},"block_order":["heading_L3Xkig","text_6NxUC8"],"settings":{"desktop_content_position":"center","content_alignment":"center","color_scheme":"scheme-296d77c0-ca93-4e26-8f27-2413c21d303b","full_width":true,"padding_top":48,"padding_bottom":48}},"main":{"type":"main-product","blocks":{"vendor":{"type":"text","settings":{"text":"{{ product.vendor }}","text_style":"uppercase"}},"title":{"type":"title","settings":{}},"price":{"type":"price","settings":{}},"variant_picker":{"type":"variant_picker","settings":{"picker_type":"button","swatch_shape":"circle"}},"quantity_selector":{"type":"quantity_selector","disabled":true,"settings":{}},"buy_buttons":{"type":"buy_buttons","settings":{"show_dynamic_checkout":false,"show_gift_card_recipient":false,"dt_monday":"09:00am-11:00pm","dt_tuesday":"08:00am-05:00pm","dt_wednesday":"08:00am-05:00pm","dt_thursday":"08:00am-05:00pm","dt_friday":"08:00am-05:00pm","dt_saturday":"08:00am-05:00pm","dt_sunday":"08:00am-05:00pm","preferred_pickup_location_options":"Orange Beach\nFort Morgan\nGulf Shores","preferred_drop_off_location_options":"Orange Beach\nFort Morgan\nGulf Shores"}},"description":{"type":"description","settings":{}},"share":{"type":"share","settings":{"share_label":"Share"}}},"block_order":["vendor","title","price","variant_picker","quantity_selector","buy_buttons","description","share"],"settings":{"enable_sticky_info":true,"color_scheme":"scheme-296d77c0-ca93-4e26-8f27-2413c21d303b","media_size":"small","constrain_to_viewport":true,"media_fit":"contain","gallery_layout":"thumbnail","media_position":"left","image_zoom":"none","mobile_thumbnails":"hide","hide_variants":true,"enable_video_looping":false,"padding_top":8,"padding_bottom":12}},"related-products":{"type":"related-products","disabled":true,"settings":{"heading":"You may also like","heading_size":"h2","products_to_show":4,"columns_desktop":4,"color_scheme":"scheme-1","image_ratio":"square","image_shape":"default","show_secondary_image":true,"show_vendor":false,"show_rating":false,"columns_mobile":"2","padding_top":36,"padding_bottom":28}},"rich_text_bqRizB":{"type":"rich-text","blocks":{"heading_k3t4Y7":{"type":"heading","settings":{"heading":"Rental Instructions","heading_size":"h1"}},"text_dqyycF":{"type":"text","settings":{"text":"<ol><li>The B-Wagon is available at Orange Beach, Fort Morgan. Perdido Keys, and Gulf Shores in Alabama. <\/li><li>Select the if you want to rent it for a half day (4 hours) or a full day (8+ hours).<\/li><li>Select the combination of additional gear that you may need for the rental.<\/li><li>Pick a date and time you wish to start the rental.<\/li><li>Input a location where you would like us to drop off and pickup the B-Wagon.<\/li><li>Provide any additional details that may help us support you. <\/li><li>Once this is information is completed, select add to cart and continue to the checkout and payment page. <\/li><li>Once we receive the order, our rental manager will reach out by phone to confirm and coordinate the rental.<\/li><li>Note that the payment will not be collected until the cart has been delivered.<\/li><li>Note that we may charge a security deposit at the time of delivery, this will be refunded upon return of the B-Wagon.<\/li><li>If you have any additional requests or would wish to rent overnight give us a call at 715-292-3414.<\/li><li>Please see the Quick Reminder and Terms of Service below.<\/li><li>Get out there and enjoy life!<\/li><\/ol><p><\/p>"}}},"block_order":["heading_k3t4Y7","text_dqyycF"],"settings":{"desktop_content_position":"center","content_alignment":"center","color_scheme":"scheme-296d77c0-ca93-4e26-8f27-2413c21d303b","full_width":true,"padding_top":40,"padding_bottom":40}},"rich_text_hHAU6y":{"type":"rich-text","blocks":{"heading_ww6iGN":{"type":"heading","settings":{"heading":"Quick Reminder","heading_size":"h1"}},"text_VkHpzL":{"type":"text","settings":{"text":"<p>Hey there! I’m your friendly beach wagon, and I’m here to make your day on the sand a breeze! But before we get rolling, I’ve got a few important things to share with you, so we can have a smooth and safe day together:<\/p><ol><li><strong>Please don’t ride me.<\/strong> I know I look fun, but I’m built to carry your stuff, not you. We don’t want anyone getting hurt!<\/li><li><strong>Keep an eye on me.<\/strong> Don’t leave me unattended for too long. I’m pretty helpful, and we wouldn’t want me wandering off or getting borrowed by someone else.<\/li><li><strong>Watch your surroundings.<\/strong> I know you're excited to get that perfect spot on the beach, but be mindful of others. I don’t want to bump into anyone or accidentally knock over someone’s beach umbrella!<\/li><li><strong>Keep me clean and dry please.<\/strong> Sand’s okay, but water isn’t my thing. Please don’t drive me into the ocean, and give me a quick wipe-down if I get too sandy.<\/li><\/ol><p>I can’t wait to help you enjoy your day out here! Let’s get where you want to go! 🌞🌊<\/p>"}},"button_6yBP8f":{"type":"button","settings":{"button_label":"Terms of Service","button_link":"","button_style_secondary":false,"button_label_2":"","button_link_2":"","button_style_secondary_2":false}}},"block_order":["heading_ww6iGN","text_VkHpzL","button_6yBP8f"],"settings":{"desktop_content_position":"center","content_alignment":"center","color_scheme":"scheme-296d77c0-ca93-4e26-8f27-2413c21d303b","full_width":true,"padding_top":40,"padding_bottom":52}}},"order":["image_banner_mTbhtJ","rich_text_hRFthA","main","related-products","rich_text_bqRizB","rich_text_hHAU6y"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "image_banner_mTbhtJ": {
+      "type": "image-banner",
+      "blocks": {
+        "heading_edKBaj": {
+          "type": "heading",
+          "settings": {
+            "heading": "Beach in luxury.",
+            "heading_size": "h0"
+          }
+        },
+        "buttons_yX3Lf6": {
+          "type": "buttons",
+          "settings": {
+            "booking_popup_button": true,
+            "button_label_1": "Reserve Now",
+            "button_link_1": "shopify://products/b-wagon",
+            "button_style_secondary_1": true,
+            "button_label_2": "",
+            "button_link_2": "",
+            "button_style_secondary_2": false
+          }
+        }
+      },
+      "block_order": [
+        "heading_edKBaj",
+        "buttons_yX3Lf6"
+      ],
+      "disabled": true,
+      "settings": {
+        "image": "shopify://shop_images/56173202-d8b4-4d43-83aa-910cf68b77ea.jpg",
+        "image_overlay_opacity": 0,
+        "image_height": "small",
+        "desktop_content_position": "top-center",
+        "show_text_box": false,
+        "desktop_content_alignment": "center",
+        "color_scheme": "scheme-3",
+        "image_behavior": "none",
+        "mobile_content_alignment": "center",
+        "stack_images_on_mobile": false,
+        "show_text_below": false
+      }
+    },
+    "rich_text_hRFthA": {
+      "type": "rich-text",
+      "blocks": {
+        "heading_L3Xkig": {
+          "type": "heading",
+          "settings": {
+            "heading": "Introducing the Remote-Controlled EV Beach Cart",
+            "heading_size": "h1"
+          }
+        },
+        "text_6NxUC8": {
+          "type": "text",
+          "settings": {
+            "text": "<p>The B-Wagon is available for rent at Alabama Locations: Orange Beach, Gulf Shores, Perdido Keys, and Fort Morgan. Please see rental instructions below.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "heading_L3Xkig",
+        "text_6NxUC8"
+      ],
+      "settings": {
+        "desktop_content_position": "center",
+        "content_alignment": "center",
+        "color_scheme": "scheme-296d77c0-ca93-4e26-8f27-2413c21d303b",
+        "full_width": true,
+        "padding_top": 48,
+        "padding_bottom": 48
+      }
+    },
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "vendor": {
+          "type": "text",
+          "settings": {
+            "text": "{{ product.vendor }}",
+            "text_style": "uppercase"
+          }
+        },
+        "title": {
+          "type": "title",
+          "settings": {}
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "variant_picker": {
+          "type": "variant_picker",
+          "settings": {
+            "picker_type": "button",
+            "swatch_shape": "circle"
+          }
+        },
+        "quantity_selector": {
+          "type": "quantity_selector",
+          "disabled": true,
+          "settings": {}
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_dynamic_checkout": false,
+            "show_gift_card_recipient": false,
+            "dt_monday": "09:00am-11:00pm",
+            "dt_tuesday": "08:00am-05:00pm",
+            "dt_wednesday": "08:00am-05:00pm",
+            "dt_thursday": "08:00am-05:00pm",
+            "dt_friday": "08:00am-05:00pm",
+            "dt_saturday": "08:00am-05:00pm",
+            "dt_sunday": "08:00am-05:00pm",
+            "preferred_pickup_location_options": "Orange Beach\nFort Morgan\nGulf Shores",
+            "preferred_drop_off_location_options": "Orange Beach\nFort Morgan\nGulf Shores"
+          }
+        },
+        "description": {
+          "type": "description",
+          "settings": {}
+        },
+        "share": {
+          "type": "share",
+          "settings": {
+            "share_label": "Share"
+          }
+        }
+      },
+      "block_order": [
+        "vendor",
+        "title",
+        "price",
+        "variant_picker",
+        "quantity_selector",
+        "buy_buttons",
+        "description",
+        "share"
+      ],
+      "settings": {
+        "enable_sticky_info": true,
+        "color_scheme": "scheme-296d77c0-ca93-4e26-8f27-2413c21d303b",
+        "media_size": "small",
+        "constrain_to_viewport": true,
+        "media_fit": "contain",
+        "gallery_layout": "thumbnail",
+        "media_position": "left",
+        "image_zoom": "none",
+        "mobile_thumbnails": "hide",
+        "hide_variants": true,
+        "enable_video_looping": false,
+        "padding_top": 8,
+        "padding_bottom": 12
+      }
+    },
+    "related-products": {
+      "type": "related-products",
+      "disabled": true,
+      "settings": {
+        "heading": "You may also like",
+        "heading_size": "h2",
+        "products_to_show": 4,
+        "columns_desktop": 4,
+        "color_scheme": "scheme-1",
+        "image_ratio": "square",
+        "image_shape": "default",
+        "show_secondary_image": true,
+        "show_vendor": false,
+        "show_rating": false,
+        "columns_mobile": "2",
+        "padding_top": 36,
+        "padding_bottom": 28
+      }
+    },
+    "rich_text_bqRizB": {
+      "type": "rich-text",
+      "blocks": {
+        "heading_k3t4Y7": {
+          "type": "heading",
+          "settings": {
+            "heading": "Rental Instructions",
+            "heading_size": "h1"
+          }
+        },
+        "text_dqyycF": {
+          "type": "text",
+          "settings": {
+            "text": "<ol><li>The B-Wagon is available at Orange Beach, Fort Morgan, and Gulf Shores in Alabama. </li><li>Select the combination of additional gear that you may need for the rental.</li><li>Pick the days you want the rental. </li><li>Input a location and times where you would like us to drop off and pickup the B-Wagon.</li><li>Provide any additional details that may help us support you. </li><li>Once this is information is completed, select add to cart and continue to the checkout and payment page. </li><li>Once we receive the order, our rental manager will reach out by phone to confirm and coordinate the rental.</li><li>Note that the payment will not be collected until the cart has been delivered.</li><li>Note that we may charge a security deposit at the time of delivery, this will be refunded upon return of the B-Wagon.</li><li>If you have any additional requests or concerns give us a call at 715-292-3414.</li><li>Please see the Quick Reminder and Terms of Service below.</li><li>Get out there and enjoy life!</li></ol><p></p>"
+          }
+        }
+      },
+      "block_order": [
+        "heading_k3t4Y7",
+        "text_dqyycF"
+      ],
+      "settings": {
+        "desktop_content_position": "center",
+        "content_alignment": "center",
+        "color_scheme": "scheme-296d77c0-ca93-4e26-8f27-2413c21d303b",
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
+    },
+    "rich_text_hHAU6y": {
+      "type": "rich-text",
+      "blocks": {
+        "heading_ww6iGN": {
+          "type": "heading",
+          "settings": {
+            "heading": "Quick Reminder",
+            "heading_size": "h1"
+          }
+        },
+        "text_VkHpzL": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Hey there! I’m your friendly beach wagon, and I’m here to make your day on the sand a breeze! But before we get rolling, I’ve got a few important things to share with you, so we can have a smooth and safe day together:</p><ol><li><strong>Please don’t ride me.</strong> I know I look fun, but I’m built to carry your stuff, not you. We don’t want anyone getting hurt!</li><li><strong>Keep an eye on me.</strong> Don’t leave me unattended for too long. I’m pretty helpful, and we wouldn’t want me wandering off or getting borrowed by someone else.</li><li><strong>Watch your surroundings.</strong> I know you're excited to get that perfect spot on the beach, but be mindful of others. I don’t want to bump into anyone or accidentally knock over someone’s beach umbrella!</li><li><strong>Keep me clean and dry please.</strong> Sand’s okay, but water isn’t my thing. Please don’t drive me into the ocean, and give me a quick wipe-down if I get too sandy.</li></ol><p>I can’t wait to help you enjoy your day out here! Let’s get where you want to go! 🌞🌊</p>"
+          }
+        },
+        "button_6yBP8f": {
+          "type": "button",
+          "settings": {
+            "button_label": "Terms of Service",
+            "button_link": "https://bdsbeachrentals.com/policies/terms-of-service",
+            "button_style_secondary": false,
+            "button_label_2": "",
+            "button_link_2": "",
+            "button_style_secondary_2": false
+          }
+        }
+      },
+      "block_order": [
+        "heading_ww6iGN",
+        "text_VkHpzL",
+        "button_6yBP8f"
+      ],
+      "settings": {
+        "desktop_content_position": "center",
+        "content_alignment": "center",
+        "color_scheme": "scheme-296d77c0-ca93-4e26-8f27-2413c21d303b",
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
+    }
+  },
+  "order": [
+    "image_banner_mTbhtJ",
+    "rich_text_hRFthA",
+    "main",
+    "related-products",
+    "rich_text_bqRizB",
+    "rich_text_hHAU6y"
+  ]
+}
