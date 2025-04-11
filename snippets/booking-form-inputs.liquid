@@ -307,7 +307,15 @@
       color: #0a3b5c !important;
     }
 
-
+    /* Add this to your CSS to make the add to cart button match width */
+    .booking-system-container + .product-form__buttons button[type="submit"],
+    .booking-system-container ~ .product-form__buttons button[type="submit"],
+    .product-form__buttons button[type="submit"] {
+      width: 100% !important;
+      max-width: 600px !important;
+      margin: 0 auto !important;
+      display: block !important;
+    }
 
     /* Make selected date text white for better contrast on dark blue background */
     .date.selected {
