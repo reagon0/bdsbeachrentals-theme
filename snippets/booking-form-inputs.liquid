@@ -261,10 +261,12 @@
   }
 
   .booking-system-container {
-    max-width: 450px; /* Match current price display width */
     width: 100%; /* Allow responsiveness */
     margin-left: auto;
     margin-right: auto;
+    max-width: 100%; /* Use full available width */
+    padding: 0 20px; /* Add some side padding */
+    box-sizing: border-box;
   }
 
   /* Ensure child elements respect container width */
@@ -272,7 +274,17 @@
     width: 100%;
     box-sizing: border-box;
   }
+
+  @media screen and (min-width: 768px) {
+  .booking-system-container {
+    max-width: 600px; /* Match the product content width */
+    margin: 0 auto; /* Center the container */
+  }
+}
   
+
+
+
   /* Hide zoom elements */
   .product-zoom,
   .image-zoom-button,
