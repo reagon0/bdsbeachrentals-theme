@@ -261,16 +261,17 @@
   }
 
     /* Add this to your existing style block in booking-form-inputs.liquid */
-  .price-display {
-    width: 100%; /* Make it full width of its container */
-    box-sizing: border-box; /* Include padding in width calculation */
-    max-width: none; /* Override any max-width */
+  .booking-system-container {
+    width: 370px; /* Match the width from the inspector (370px) */
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
   }
 
-    /* If the above doesn't work completely, you might need this */
-  .booking-system-container > .price-display {
+  /* Ensure all children respect this width */
+  .booking-system-container > * {
     width: 100%;
-    display: block;
+    box-sizing: border-box;
   }
   
   /* Hide zoom elements */
