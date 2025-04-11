@@ -286,36 +286,50 @@
     }
   }
 
-    /* Add these styles to your booking-form-inputs.liquid file in the <style> section */
+    /* Enhanced Price Display - Directly target the elements based on screenshot */
+  .price-display {
+    background-color: #f0f7ff !important;
+    border-radius: 8px !important;
+    padding: 20px !important;
+    margin-bottom: 20px !important;
+    box-shadow: 0 2px 6px rgba(10, 59, 92, 0.2) !important;
+    border: 2px solid #0a3b5c !important;
+    width: 100% !important;
+  }
 
-      /* Enhanced Price Display */
-    .price-display {
-      background-color: #f0f7ff !important;
-      border-radius: 0px !important;
-      padding: 15px 20px !important;
-      margin-bottom: 20px !important;
-      box-shadow: 0 2px 6px rgba(10, 59, 92, 0.15) !important;
-      border: 2px solid #0a3b5c !important;
-      max-width: 100% !important;
-    }
+  /* Make the main price more prominent */
+  .current-price, .price-label, .price-amount {
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    color: #0a3b5c !important;
+  }
 
-    /* Make the main price more prominent */
-    .current-price {
-      font-size: 22px !important;
-      font-weight: 600 !important;
-      margin-bottom: 12px !important;
-      color: #0a3b5c !important;
-    }
+  /* Make price breakdown stand out */
+  .price-breakdown div {
+    font-size: 16px !important;
+    margin-top: 8px !important;
+  }
 
-    /* Add this to your CSS to make the add to cart button match width */
-    .booking-system-container + .product-form__buttons button[type="submit"],
-    .booking-system-container ~ .product-form__buttons button[type="submit"],
-    .product-form__buttons button[type="submit"] {
-      width: 100% !important;
-      max-width: 600px !important;
-      margin: 0 auto !important;
-      display: block !important;
-    }
+  /* Style the Add to cart button to match */
+  button[type="submit"], 
+  .add-to-cart, 
+  form [type="submit"],
+  [name="add"] {
+    width: 100% !important;
+    background-color: #0a3b5c !important;
+    color: white !important;
+    padding: 15px !important;
+    font-size: 18px !important;
+    border: none !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    margin-top: 15px !important;
+  }
+
+  /* Apply gradient background to price display */
+  .price-display {
+    background: linear-gradient(135deg, #f0f7ff 0%, #e0eeff 100%) !important;
+  }
 
     /* Make selected date text white for better contrast on dark blue background */
     .date.selected {
