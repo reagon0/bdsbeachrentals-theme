@@ -1,1 +1,229 @@
-{"sections":{"image_banner":{"type":"image-banner","blocks":{"heading":{"type":"heading","settings":{"heading":"Get where you want to go.","heading_size":"h1"}},"button":{"type":"buttons","settings":{"booking_popup_button":false,"button_label_1":"Rent now.","button_link_1":"https:\/\/bdsbeachrentals.com\/products\/b-wagon","button_style_secondary_1":true,"button_label_2":"","button_link_2":"","button_style_secondary_2":false}}},"block_order":["heading","button"],"settings":{"image":"shopify:\/\/shop_images\/56173202-d8b4-4d43-83aa-910cf68b77ea.jpg","image_overlay_opacity":40,"image_height":"medium","desktop_content_position":"bottom-center","show_text_box":false,"desktop_content_alignment":"center","color_scheme":"scheme-3","image_behavior":"none","mobile_content_alignment":"center","stack_images_on_mobile":false,"show_text_below":false}},"rich_text_GjcREb":{"type":"rich-text","blocks":{"heading_y8TFYb":{"type":"heading","settings":{"heading":"Who We Are","heading_size":"h1"}},"text_C3Ejcp":{"type":"text","settings":{"text":"<p>We are a small group of people that have an idea. An Idea to improve beach accessibility. In our shop in Northern Wisconsin, we worked to design and machine the components. <\/p><p>After much effort, we now introduce to you the B-Wagon, the remote-controlled EV beach cart designed to get you where you want to go. <\/p>"}},"button_4e68Hx":{"type":"button","disabled":true,"settings":{"button_label":"Button label","button_link":"","button_style_secondary":false,"button_label_2":"","button_link_2":"","button_style_secondary_2":false}}},"block_order":["heading_y8TFYb","text_C3Ejcp","button_4e68Hx"],"settings":{"desktop_content_position":"center","content_alignment":"center","color_scheme":"scheme-296d77c0-ca93-4e26-8f27-2413c21d303b","full_width":true,"padding_top":40,"padding_bottom":52}},"image_banner_wTLNVH":{"type":"image-banner","settings":{"image":"shopify:\/\/shop_images\/8cc11e8e-053a-49a2-ba41-9646372f70a1.jpg","image_overlay_opacity":0,"image_height":"medium","desktop_content_position":"middle-center","show_text_box":true,"desktop_content_alignment":"center","color_scheme":"scheme-296d77c0-ca93-4e26-8f27-2413c21d303b","image_behavior":"none","mobile_content_alignment":"center","stack_images_on_mobile":false,"show_text_below":false}}},"order":["image_banner","rich_text_GjcREb","image_banner_wTLNVH"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "image_banner": {
+      "type": "image-banner",
+      "blocks": {
+        "heading": {
+          "type": "heading",
+          "settings": {
+            "heading": "Get where you want to go.",
+            "heading_size": "h1"
+          }
+        },
+        "button": {
+          "type": "buttons",
+          "settings": {
+            "booking_popup_button": false,
+            "button_label_1": "Rent now.",
+            "button_link_1": "https://bdsbeachrentals.com/products/b-wagon",
+            "button_style_secondary_1": true,
+            "button_label_2": "",
+            "button_link_2": "",
+            "button_style_secondary_2": false
+          }
+        }
+      },
+      "block_order": [
+        "heading",
+        "button"
+      ],
+      "settings": {
+        "image": "shopify://shop_images/56173202-d8b4-4d43-83aa-910cf68b77ea.jpg",
+        "image_overlay_opacity": 40,
+        "image_height": "medium",
+        "desktop_content_position": "bottom-center",
+        "show_text_box": false,
+        "desktop_content_alignment": "center",
+        "color_scheme": "scheme-3",
+        "image_behavior": "none",
+        "mobile_content_alignment": "center",
+        "stack_images_on_mobile": false,
+        "show_text_below": false
+      }
+    },
+    "rich_text_GjcREb": {
+      "type": "rich-text",
+      "blocks": {
+        "heading_y8TFYb": {
+          "type": "heading",
+          "settings": {
+            "heading": "Who We Are",
+            "heading_size": "h1"
+          }
+        },
+        "text_C3Ejcp": {
+          "type": "text",
+          "settings": {
+            "text": "<p>We are a small group of people that have an idea. An Idea to improve beach accessibility. In our shop in Northern Wisconsin, we worked to design and machine the components. </p><p>After much effort, we now introduce to you the B-Wagon, the remote-controlled EV beach cart designed to get you where you want to go. </p>"
+          }
+        },
+        "button_4e68Hx": {
+          "type": "button",
+          "disabled": true,
+          "settings": {
+            "button_label": "Button label",
+            "button_link": "",
+            "button_style_secondary": false,
+            "button_label_2": "",
+            "button_link_2": "",
+            "button_style_secondary_2": false
+          }
+        }
+      },
+      "block_order": [
+        "heading_y8TFYb",
+        "text_C3Ejcp",
+        "button_4e68Hx"
+      ],
+      "settings": {
+        "desktop_content_position": "center",
+        "content_alignment": "center",
+        "color_scheme": "scheme-296d77c0-ca93-4e26-8f27-2413c21d303b",
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
+    },
+    "collection_list_JCLErE": {
+      "type": "collection-list",
+      "blocks": {
+        "featured_collection_6d9WfL": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": ""
+          }
+        },
+        "featured_collection_8yjNAw": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": ""
+          }
+        },
+        "featured_collection_mtxb7f": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": ""
+          }
+        }
+      },
+      "block_order": [
+        "featured_collection_6d9WfL",
+        "featured_collection_8yjNAw",
+        "featured_collection_mtxb7f"
+      ],
+      "settings": {
+        "title": "Collections",
+        "heading_size": "h1",
+        "image_ratio": "square",
+        "columns_desktop": 3,
+        "color_scheme": "",
+        "show_view_all": false,
+        "columns_mobile": "1",
+        "swipe_on_mobile": false,
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "featured_product_NeVKwN": {
+      "type": "featured-product",
+      "blocks": {
+        "text_qM9k4B": {
+          "type": "text",
+          "settings": {
+            "text": "{{ section.settings.product.vendor }}",
+            "text_style": "uppercase"
+          }
+        },
+        "title_4hcnDP": {
+          "type": "title",
+          "settings": {
+            "heading_size": "h1"
+          }
+        },
+        "price_mwKht8": {
+          "type": "price",
+          "settings": {}
+        },
+        "variant_picker_i8HrG7": {
+          "type": "variant_picker",
+          "settings": {
+            "picker_type": "button",
+            "swatch_shape": "circle"
+          }
+        },
+        "quantity_selector_THMHxW": {
+          "type": "quantity_selector",
+          "settings": {}
+        },
+        "buy_buttons_D4Yt97": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_dynamic_checkout": true,
+            "show_gift_card_recipient": true
+          }
+        },
+        "share_6H377f": {
+          "type": "share",
+          "settings": {
+            "share_label": "Share"
+          }
+        }
+      },
+      "block_order": [
+        "text_qM9k4B",
+        "title_4hcnDP",
+        "price_mwKht8",
+        "variant_picker_i8HrG7",
+        "quantity_selector_THMHxW",
+        "buy_buttons_D4Yt97",
+        "share_6H377f"
+      ],
+      "settings": {
+        "product": "",
+        "color_scheme": "",
+        "secondary_background": false,
+        "media_size": "medium",
+        "constrain_to_viewport": true,
+        "media_fit": "contain",
+        "media_position": "left",
+        "image_zoom": "lightbox",
+        "hide_variants": false,
+        "enable_video_looping": false,
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "image_banner_wTLNVH": {
+      "type": "image-banner",
+      "settings": {
+        "image": "shopify://shop_images/8cc11e8e-053a-49a2-ba41-9646372f70a1.jpg",
+        "image_overlay_opacity": 0,
+        "image_height": "medium",
+        "desktop_content_position": "middle-center",
+        "show_text_box": true,
+        "desktop_content_alignment": "center",
+        "color_scheme": "scheme-296d77c0-ca93-4e26-8f27-2413c21d303b",
+        "image_behavior": "none",
+        "mobile_content_alignment": "center",
+        "stack_images_on_mobile": false,
+        "show_text_below": false
+      }
+    }
+  },
+  "order": [
+    "image_banner",
+    "rich_text_GjcREb",
+    "collection_list_JCLErE",
+    "featured_product_NeVKwN",
+    "image_banner_wTLNVH"
+  ]
+}
