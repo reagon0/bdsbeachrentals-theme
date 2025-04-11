@@ -260,15 +260,14 @@
     cursor: default !important;
   }
 
-    /* Add this to your existing style block in booking-form-inputs.liquid */
   .booking-system-container {
-    width: 370px; /* Match the width from the inspector (370px) */
+    max-width: 500px; /* Match current price display width */
+    width: 100%; /* Allow responsiveness */
     margin-left: auto;
     margin-right: auto;
-    box-sizing: border-box;
   }
 
-  /* Ensure all children respect this width */
+  /* Ensure child elements respect container width */
   .booking-system-container > * {
     width: 100%;
     box-sizing: border-box;
