@@ -1,0 +1,4 @@
+/* Fix spacing between adjacent sections */
+#shopify-section-template-1783172435154_image_banner_wTLNVH + #shopify-section-template-1783172435154_image_gallery {
+    margin-top: 0;
+  }
