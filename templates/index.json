@@ -7,9 +7,7 @@
  * made to this file may be overwritten.
  * ------------------------------------------------------------
  */
-
-
- {
+{
   "sections": {
     "image_banner": {
       "type": "image-banner",
@@ -151,43 +149,27 @@
         "padding_bottom": 36
       }
     },
-    "image_banner_wTLNVH": {
-      "type": "image-banner",
-      "settings": {
-        "image": "shopify://shop_images/8cc11e8e-053a-49a2-ba41-9646372f70a1.jpg",
-        "image_overlay_opacity": 0,
-        "image_height": "small",
-        "desktop_content_position": "middle-center",
-        "show_text_box": true,
-        "desktop_content_alignment": "center",
-        "color_scheme": "scheme-296d77c0-ca93-4e26-8f27-2413c21d303b",
-        "image_behavior": "none",
-        "mobile_content_alignment": "center",
-        "stack_images_on_mobile": false,
-        "show_text_below": false
-      }
-    },
     "image_gallery": {
       "type": "image-gallery",
       "blocks": {
         "gallery-1": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/your_image_here.jpg",
+            "image": "shopify://shop_images/e9ba83ef-af7e-4a3a-82b5-8837743e6c8d.jpg",
             "caption": "Beach Cart Demo"
           }
         },
         "gallery-2": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/your_image_here.jpg",
+            "image": "shopify://shop_images/d6e6dca3-b096-4373-ae2d-6c7086c8f920.jpg",
             "caption": "B-Wagon Setup"
           }
         },
         "gallery-3": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/your_image_here.jpg",
+            "image": "shopify://shop_images/imagejpeg_0.jpg",
             "caption": "Beach Day"
           }
         }
@@ -203,6 +185,22 @@
         "color_scheme": "scheme-296d77c0-ca93-4e26-8f27-2413c21d303b",
         "padding_top": 36,
         "padding_bottom": 36
+      }
+    },
+    "image_banner_wTLNVH": {
+      "type": "image-banner",
+      "settings": {
+        "image": "shopify://shop_images/8cc11e8e-053a-49a2-ba41-9646372f70a1.jpg",
+        "image_overlay_opacity": 0,
+        "image_height": "small",
+        "desktop_content_position": "middle-center",
+        "show_text_box": true,
+        "desktop_content_alignment": "center",
+        "color_scheme": "scheme-296d77c0-ca93-4e26-8f27-2413c21d303b",
+        "image_behavior": "none",
+        "mobile_content_alignment": "center",
+        "stack_images_on_mobile": false,
+        "show_text_below": false
       }
     }
   },
