@@ -80,6 +80,21 @@
         "padding_bottom": 52
       }
     },
+    "video_W8RPVg": {
+      "type": "video",
+      "settings": {
+        "heading": "See the Beach Cart in Action",
+        "heading_size": "h1",
+        "enable_video_looping": false,
+        "video": "shopify://files/videos/235bdf0e-78ce-42d6-a862-286ca8e29870.mp4",
+        "video_url": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
+        "description": "Beach Cart. B-Wagon. Alabama Beaches. Gulf Shores, Fort Morgan, Orange Beach. Automatic Electric Beach Cart",
+        "full_width": false,
+        "color_scheme": "scheme-296d77c0-ca93-4e26-8f27-2413c21d303b",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
     "featured_product_rdhGN7": {
       "type": "featured-product",
       "blocks": {
@@ -134,6 +149,7 @@
         "buy_buttons_eHjJiq",
         "share_inrHQe"
       ],
+      "disabled": true,
       "settings": {
         "product": "b-wagon-single",
         "color_scheme": "scheme-296d77c0-ca93-4e26-8f27-2413c21d303b",
@@ -179,6 +195,7 @@
         "gallery-2",
         "gallery-3"
       ],
+      "disabled": true,
       "custom_css": [],
       "settings": {
         "title": "See the B-Wagon in Action",
@@ -208,6 +225,7 @@
   "order": [
     "image_banner",
     "rich_text_GjcREb",
+    "video_W8RPVg",
     "featured_product_rdhGN7",
     "image_gallery",
     "image_banner_wTLNVH"
