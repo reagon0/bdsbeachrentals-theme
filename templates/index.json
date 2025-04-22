@@ -156,26 +156,20 @@
           "type": "image",
           "settings": {
             "image": "shopify://shop_images/e9ba83ef-af7e-4a3a-82b5-8837743e6c8d.jpg",
-            "caption": "Beach Cart Demo"
+            "caption": ""
           }
         },
         "gallery-2": {
           "type": "image",
           "settings": {
             "image": "shopify://shop_images/d6e6dca3-b096-4373-ae2d-6c7086c8f920.jpg",
-            "caption": "B-Wagon Setup"
+            "caption": ""
           }
         },
         "gallery-3": {
           "type": "image",
           "settings": {
             "image": "shopify://shop_images/imagejpeg_0.jpg",
-            "caption": "Beach Day"
-          }
-        },
-        "image_fVnHny": {
-          "type": "image",
-          "settings": {
             "caption": ""
           }
         }
@@ -183,8 +177,7 @@
       "block_order": [
         "gallery-1",
         "gallery-2",
-        "gallery-3",
-        "image_fVnHny"
+        "gallery-3"
       ],
       "custom_css": [],
       "settings": {
