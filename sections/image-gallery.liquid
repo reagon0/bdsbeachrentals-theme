@@ -13,17 +13,13 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
-  
-  .multicolumn.color-{{ section.settings.color_scheme }} {
-    margin-bottom: -1px;
-  }
 {%- endstyle -%}
 
-<div class="multicolumn color-{{ section.settings.color_scheme }} gradient">
+<div class="multicolumn color-{{ section.settings.color_scheme }} gradient{% unless section.settings.background_style == 'none' and settings.text_boxes_border_thickness > 0 or settings.text_boxes_shadow_opacity > 0 %} background-{{ section.settings.background_style }}{% endunless %}{% if section.settings.title == blank %} no-heading{% endif %}">
   <div class="page-width section-{{ section.id }}-padding isolate">
     {%- unless section.settings.title == blank -%}
-      <div class="title-wrapper-with-link title-wrapper--self-padded-mobile title-wrapper--no-top-margin">
-        <h2 class="title h1">
+      <div class="title-wrapper-with-link title-wrapper--self-padded-mobile title-wrapper--no-top-margin multicolumn__title">
+        <h2 class="title inline-richtext {{ section.settings.heading_size }}">
           {{ section.settings.title }}
         </h2>
       </div>
@@ -73,6 +69,26 @@
     },
     {
       "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "Standard"
+        },
+        {
+          "value": "h1",
+          "label": "Large"
+        },
+        {
+          "value": "h0",
+          "label": "Extra Large"
+        }
+      ],
+      "default": "h1",
+      "label": "Heading size"
+    },
+    {
+      "type": "select",
       "id": "columns_desktop",
       "options": [
         {
@@ -92,6 +108,22 @@
       "label": "Number of columns on desktop"
     },
     {
+      "type": "select",
+      "id": "background_style",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "primary",
+          "label": "Primary"
+        }
+      ],
+      "default": "primary",
+      "label": "Background style"
+    },
+    {
       "type": "color_scheme",
       "id": "color_scheme",
       "label": "Color scheme",
@@ -109,7 +141,7 @@
       "step": 4,
       "unit": "px",
       "label": "Padding top",
-      "default": 36
+      "default": 0
     },
     {
       "type": "range",
@@ -119,7 +151,7 @@
       "step": 4,
       "unit": "px",
       "label": "Padding bottom",
-      "default": 36
+      "default": 0
     }
   ],
   "blocks": [
