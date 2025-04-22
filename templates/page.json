@@ -19,7 +19,6 @@
     },
     "page_fR69ec": {
       "type": "page",
-      "disabled": true,
       "settings": {
         "page": "orange-beach",
         "heading_size": "h0",
@@ -41,6 +40,7 @@
     },
     "page_bQbgYr": {
       "type": "page",
+      "disabled": true,
       "settings": {
         "page": "locations",
         "heading_size": "h1",
