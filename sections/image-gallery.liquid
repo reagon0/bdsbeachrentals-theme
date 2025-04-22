@@ -1,3 +1,4 @@
+{{ 'section-multicolumn.css' | asset_url | stylesheet_tag }}
 {{ 'section-image-gallery.css' | asset_url | stylesheet_tag }}
 
 {%- style -%}
@@ -14,49 +15,50 @@
   }
 {%- endstyle -%}
 
-<div class="isolate{% unless section.settings.full_width %} page-width{% endunless %}">
-  <div class="image-gallery content-container color-{{ section.settings.color_scheme }} gradient{% if section.settings.full_width %} image-gallery--full-width content-container--full-width{% endif %} section-{{ section.id }}-padding">
-    <div class="image-gallery__wrapper{% if section.settings.full_width %} page-width{% endif %}">
-      {%- if section.settings.title != blank -%}
-        <h2 class="image-gallery__heading inline-richtext">{{ section.settings.title }}</h2>
-      {%- endif -%}
-      
-      <div class="image-gallery__grid columns-{{ section.settings.columns_desktop }}">
-        {%- for block in section.blocks -%}
-          <div class="image-gallery__item" {{ block.shopify_attributes }}>
+<div class="multicolumn color-{{ section.settings.color_scheme }} gradient">
+  <div class="page-width section-{{ section.id }}-padding isolate">
+    {%- unless section.settings.title == blank -%}
+      <div class="title-wrapper-with-link title-wrapper--self-padded-mobile title-wrapper--no-top-margin">
+        <h2 class="title h1">
+          {{ section.settings.title }}
+        </h2>
+      </div>
+    {%- endunless -%}
+    
+    <ul class="multicolumn-list contains-content-container grid grid--{{ section.settings.columns_desktop }}-col-desktop" role="list">
+      {%- for block in section.blocks -%}
+        <li class="multicolumn-list__item grid__item center" {{ block.shopify_attributes }}>
+          <div class="multicolumn-card content-container">
             {%- if block.settings.image != blank -%}
-              <img
-                srcset="{%- if block.settings.image.width >= 165 -%}{{ block.settings.image | image_url: width: 165 }} 165w,{%- endif -%}
-                  {%- if block.settings.image.width >= 360 -%}{{ block.settings.image | image_url: width: 360 }} 360w,{%- endif -%}
-                  {%- if block.settings.image.width >= 535 -%}{{ block.settings.image | image_url: width: 535 }} 535w,{%- endif -%}
-                  {%- if block.settings.image.width >= 750 -%}{{ block.settings.image | image_url: width: 750 }} 750w,{%- endif -%}
-                  {{ block.settings.image | image_url }} {{ block.settings.image.width }}w"
-                src="{{ block.settings.image | image_url: width: 535 }}"
-                sizes="(min-width: 990px) calc(33.33vw - 70px), (min-width: 750px) calc(50vw - 30px), calc(100vw - 30px)"
-                alt="{{ block.settings.image.alt | escape }}"
-                loading="lazy"
-                class="image-gallery__image"
-                width="{{ block.settings.image.width }}"
-                height="{{ block.settings.image.height }}"
-              >
-              {%- if block.settings.caption != blank -%}
-                <div class="image-gallery__caption">{{ block.settings.caption }}</div>
-              {%- endif -%}
-            {%- else -%}
-              {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+              <div class="multicolumn-card__image-wrapper multicolumn-card__image-wrapper--full-width">
+                <div class="media media--transparent media--adapt">
+                  {{
+                    block.settings.image
+                    | image_url: width: 1500
+                    | image_tag:
+                      widths: '50, 75, 100, 150, 200, 300, 400, 500, 750, 1000, 1250, 1500',
+                      class: 'multicolumn-card__image'
+                  }}
+                </div>
+              </div>
+            {%- endif -%}
+            {%- if block.settings.caption != blank -%}
+              <div class="multicolumn-card__info">
+                <p>{{ block.settings.caption }}</p>
+              </div>
             {%- endif -%}
           </div>
-        {%- endfor -%}
-      </div>
-    </div>
+        </li>
+      {%- endfor -%}
+    </ul>
   </div>
 </div>
 
 {% schema %}
 {
   "name": "Image Gallery",
-  "tag": "section",
   "class": "section",
+  "tag": "section",
   "settings": [
     {
       "type": "inline_richtext",
@@ -89,12 +91,6 @@
       "id": "color_scheme",
       "label": "Color scheme",
       "default": "scheme-1"
-    },
-    {
-      "type": "checkbox",
-      "id": "full_width",
-      "default": true,
-      "label": "Full width section"
     },
     {
       "type": "header",
