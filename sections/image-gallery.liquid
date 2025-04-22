@@ -27,28 +27,60 @@
     
     <ul class="multicolumn-list contains-content-container grid grid--{{ section.settings.columns_desktop }}-col-desktop" role="list">
       {%- for block in section.blocks -%}
-        <li class="multicolumn-list__item grid__item center" {{ block.shopify_attributes }}>
-          <div class="multicolumn-card content-container">
-            {%- if block.settings.image != blank -%}
-              <div class="multicolumn-card__image-wrapper multicolumn-card__image-wrapper--full-width">
-                <div class="media media--transparent media--adapt">
-                  {{
-                    block.settings.image
-                    | image_url: width: 1500
-                    | image_tag:
-                      widths: '50, 75, 100, 150, 200, 300, 400, 500, 750, 1000, 1250, 1500',
-                      class: 'multicolumn-card__image'
-                  }}
-                </div>
+        {%- case block.type -%}
+          {%- when 'image' -%}
+            <li class="multicolumn-list__item grid__item center" {{ block.shopify_attributes }}>
+              <div class="multicolumn-card content-container">
+                {%- if block.settings.image != blank -%}
+                  <div class="multicolumn-card__image-wrapper multicolumn-card__image-wrapper--full-width">
+                    <div class="media media--transparent media--adapt">
+                      {{
+                        block.settings.image
+                        | image_url: width: 1500
+                        | image_tag:
+                          widths: '50, 75, 100, 150, 200, 300, 400, 500, 750, 1000, 1250, 1500',
+                          loading: 'lazy',
+                          class: 'multicolumn-card__image'
+                      }}
+                    </div>
+                  </div>
+                {%- endif -%}
+                {%- if block.settings.caption != blank -%}
+                  <div class="multicolumn-card__info">
+                    <p>{{ block.settings.caption }}</p>
+                  </div>
+                {%- endif -%}
               </div>
-            {%- endif -%}
-            {%- if block.settings.caption != blank -%}
-              <div class="multicolumn-card__info">
-                <p>{{ block.settings.caption }}</p>
+            </li>
+          {%- when 'column' -%}
+            <li class="multicolumn-list__item grid__item center" {{ block.shopify_attributes }}>
+              <div class="multicolumn-card content-container">
+                {%- if block.settings.image != blank -%}
+                  <div class="multicolumn-card__image-wrapper multicolumn-card__image-wrapper--full-width">
+                    <div class="media media--transparent media--adapt">
+                      {{
+                        block.settings.image
+                        | image_url: width: 1500
+                        | image_tag:
+                          widths: '50, 75, 100, 150, 200, 300, 400, 500, 750, 1000, 1250, 1500',
+                          loading: 'lazy',
+                          class: 'multicolumn-card__image'
+                      }}
+                    </div>
+                  </div>
+                {%- endif -%}
+                {%- if block.settings.caption != blank -%}
+                  <div class="multicolumn-card__info">
+                    <p>{{ block.settings.caption }}</p>
+                  </div>
+                {%- elsif block.settings.title != blank -%}
+                  <div class="multicolumn-card__info">
+                    <p>{{ block.settings.title }}</p>
+                  </div>
+                {%- endif -%}
               </div>
-            {%- endif -%}
-          </div>
-        </li>
+            </li>
+        {%- endcase -%}
       {%- endfor -%}
     </ul>
   </div>
@@ -132,6 +164,23 @@
           "id": "caption",
           "label": "Caption",
           "info": "Leave blank to hide caption"
+        }
+      ]
+    },
+    {
+      "type": "column",
+      "name": "Column",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "title",
+          "default": "Image caption",
+          "label": "Title"
         }
       ]
     }
