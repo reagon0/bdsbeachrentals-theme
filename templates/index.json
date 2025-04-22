@@ -121,6 +121,75 @@
         "padding_bottom": 36
       }
     },
+    "featured_product_rdhGN7": {
+      "type": "featured-product",
+      "blocks": {
+        "text_9eb8fX": {
+          "type": "text",
+          "settings": {
+            "text": "{{ section.settings.product.vendor }}",
+            "text_style": "uppercase"
+          }
+        },
+        "title_fhdtPi": {
+          "type": "title",
+          "settings": {
+            "heading_size": "h1"
+          }
+        },
+        "price_jRLhtg": {
+          "type": "price",
+          "settings": {}
+        },
+        "variant_picker_fQfFAK": {
+          "type": "variant_picker",
+          "settings": {
+            "picker_type": "button",
+            "swatch_shape": "circle"
+          }
+        },
+        "quantity_selector_4aeEBF": {
+          "type": "quantity_selector",
+          "settings": {}
+        },
+        "buy_buttons_eHjJiq": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_dynamic_checkout": true,
+            "show_gift_card_recipient": true
+          }
+        },
+        "share_inrHQe": {
+          "type": "share",
+          "settings": {
+            "share_label": "Share"
+          }
+        }
+      },
+      "block_order": [
+        "text_9eb8fX",
+        "title_fhdtPi",
+        "price_jRLhtg",
+        "variant_picker_fQfFAK",
+        "quantity_selector_4aeEBF",
+        "buy_buttons_eHjJiq",
+        "share_inrHQe"
+      ],
+      "settings": {
+        "product": "b-wagon-single",
+        "color_scheme": "scheme-296d77c0-ca93-4e26-8f27-2413c21d303b",
+        "secondary_background": false,
+        "media_size": "medium",
+        "constrain_to_viewport": true,
+        "media_fit": "contain",
+        "media_position": "left",
+        "image_zoom": "lightbox",
+        "hide_variants": false,
+        "enable_video_looping": false,
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
     "collection_list_JCLErE": {
       "type": "collection-list",
       "blocks": {
@@ -251,6 +320,7 @@
     "image_banner",
     "rich_text_GjcREb",
     "featured_collection_QdJptR",
+    "featured_product_rdhGN7",
     "collection_list_JCLErE",
     "featured_product_NeVKwN",
     "image_banner_wTLNVH"
