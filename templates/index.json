@@ -172,12 +172,19 @@
             "image": "shopify://shop_images/imagejpeg_0.jpg",
             "caption": "Beach Day"
           }
+        },
+        "image_fVnHny": {
+          "type": "image",
+          "settings": {
+            "caption": ""
+          }
         }
       },
       "block_order": [
         "gallery-1",
         "gallery-2",
-        "gallery-3"
+        "gallery-3",
+        "image_fVnHny"
       ],
       "custom_css": [],
       "settings": {
