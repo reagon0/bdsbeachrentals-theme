@@ -8,6 +8,109 @@
   --focused-base-box-shadow: 0 0 0 0.3rem rgb(var(--color-background)), 0 0 0.5rem 0.4rem rgba(var(--color-foreground), 0.3);
 }
 
+/* Global Gradient Background for BDS Beach Rentals */
+
+/* Apply gradient to all pages using body selector */
+body {
+  background: linear-gradient(to right, #add8e6, #e6e6fa, #ffc0cb); /* Light blue to lavender to pink gradient */
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+/* Alternative gradient if you prefer the colors from your screenshots */
+/* Uncomment this and comment out the above body style if you prefer this gradient */
+/*
+body {
+  background: linear-gradient(135deg, #8dd1e8, #e1a0e9);
+  background-attachment: fixed;
+  background-size: cover;
+}
+*/
+
+/* Override the default background for all page types to ensure gradient shows through */
+.template-index,
+.template-page,
+.template-article,
+.template-collection, 
+.template-product,
+.template-cart,
+.template-blog,
+.template-list-collections,
+.template-customers-account,
+.template-404,
+.template-search,
+.page-width,
+.content-container,
+main.content-for-layout {
+  background: transparent;
+}
+
+/* Ensure main content areas maintain transparency */
+.main-content,
+.site-wrapper,
+.page-container,
+.main-page-content {
+  background: transparent;
+}
+
+/* Fix for any sections that might have background color that overrides the gradient */
+.gradient {
+  background: transparent !important;
+}
+
+/* Override background color for content containers when they have a background */
+.content-container {
+  background-color: transparent;
+}
+
+/* Make sure header is transparent to show the gradient */
+.header-wrapper {
+  background-color: transparent;
+}
+
+/* Ensure feature sections are transparent */
+.featured-collection,
+.featured-blog,
+.image-with-text,
+.rich-text,
+.multicolumn {
+  background-color: transparent;
+}
+
+/* Ensure any potential grid or card backgrounds allow the gradient to show through */
+.grid__item,
+.card {
+  background-color: transparent;
+}
+
+/* Make any sections with potential backgrounds transparent */
+section.shopify-section {
+  background-color: transparent;
+}
+
+/* If you want the gradient to apply to the header as well */
+.shopify-section-header-sticky {
+  background: transparent;
+}
+
+/* For any content that should appear in boxes with a background color */ 
+.content-box {
+  background-color: rgba(255, 255, 255, 0.7); /* semi-transparent white */
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+/* Ensure footer has transparent background */
+.footer {
+  background-color: transparent;
+}
+
+/* Add a subtle text shadow to headings to improve readability over gradient */
+h1, h2, h3, h4, h5, h6 {
+  text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.5);
+}
+
 .product-card-wrapper .card,
 .contains-card--product {
   --border-radius: var(--product-card-corner-radius);
