@@ -1,11 +1,11 @@
 {{ 'section-image-gallery.css' | asset_url | stylesheet_tag }}
 
-<div class="image-gallery page-width section-{{ section.id }}-padding">
+<div class="image-gallery page-width section-{{ section.id }}-padding color-{{ section.settings.color_scheme }}">
   {%- if section.settings.title != blank -%}
     <h2 class="image-gallery__heading inline-richtext">{{ section.settings.title }}</h2>
   {%- endif -%}
   
-  <div class="image-gallery__grid grid grid--1-col grid--2-col-tablet grid--3-col-desktop">
+  <div class="image-gallery__grid grid grid--1-col grid--2-col-tablet {% if section.settings.columns_desktop == '2' %}grid--2-col-desktop{% elsif section.settings.columns_desktop == '4' %}grid--4-col-desktop{% else %}grid--3-col-desktop{% endif %}">
     {%- for block in section.blocks -%}
       <div class="image-gallery__item grid__item" {{ block.shopify_attributes }}>
         {%- if block.settings.image != blank -%}
