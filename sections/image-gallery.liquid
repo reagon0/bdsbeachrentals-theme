@@ -1,6 +1,6 @@
 {{ 'section-image-gallery.css' | asset_url | stylesheet_tag }}
 
-<div class="image-gallery page-width section-{{ section.id }}-padding color-{{ section.settings.color_scheme }}">
+<div class="image-gallery page-width section-{{ section.id }}-padding color-{{ section.settings.color_scheme }} gradient">
   {%- if section.settings.title != blank -%}
     <h2 class="image-gallery__heading inline-richtext">{{ section.settings.title }}</h2>
   {%- endif -%}
