@@ -179,10 +179,7 @@
         "gallery-2",
         "gallery-3"
       ],
-      "custom_css": [
-        ".image-gallery {margin-top: -1px; margin-bottom: -1px;}",
-        ".image-gallery__grid {padding: 0;}"
-      ],
+      "custom_css": [],
       "settings": {
         "title": "See the B-Wagon in Action",
         "columns_desktop": "3",
