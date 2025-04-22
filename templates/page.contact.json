@@ -1,7 +1,47 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
+    "rich_text_Wj3dgG": {
+      "type": "rich-text",
+      "blocks": {
+        "heading_Rgg7Hh": {
+          "type": "heading",
+          "settings": {
+            "heading": "Contact Us",
+            "heading_size": "h1"
+          }
+        },
+        "text_D3NJnn": {
+          "type": "text",
+          "settings": {
+            "text": "<p>For purchase and lease inquiries, please email your request to info@bdsbeachrentals.com or give us a call at 715-292-3414!</p>"
+          }
+        }
+      },
+      "block_order": [
+        "heading_Rgg7Hh",
+        "text_D3NJnn"
+      ],
+      "settings": {
+        "desktop_content_position": "center",
+        "content_alignment": "center",
+        "color_scheme": "scheme-296d77c0-ca93-4e26-8f27-2413c21d303b",
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
+    },
     "main": {
       "type": "main-page",
+      "disabled": true,
       "settings": {
         "padding_top": 36,
         "padding_bottom": 36
@@ -12,13 +52,14 @@
       "settings": {
         "heading": "",
         "heading_size": "h1",
-        "color_scheme": "scheme-1",
+        "color_scheme": "scheme-296d77c0-ca93-4e26-8f27-2413c21d303b",
         "padding_top": 36,
         "padding_bottom": 36
       }
     }
   },
   "order": [
+    "rich_text_Wj3dgG",
     "main",
     "form"
   ]
