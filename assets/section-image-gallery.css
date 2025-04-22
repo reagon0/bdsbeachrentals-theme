@@ -1,0 +1,41 @@
+.image-gallery {
+    margin-top: 30px;
+    margin-bottom: 30px;
+  }
+  
+  .image-gallery__heading {
+    margin-bottom: 30px;
+    text-align: center;
+  }
+  
+  .image-gallery__grid {
+    gap: 20px;
+  }
+  
+  .image-gallery__item {
+    position: relative;
+  }
+  
+  .image-gallery__image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+  }
+  
+  .image-gallery__item:hover .image-gallery__image {
+    transform: scale(1.03);
+  }
+  
+  .image-gallery__caption {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 14px;
+  }
+  
+  @media screen and (max-width: 749px) {
+    .image-gallery__grid {
+      gap: 15px;
+    }
+  }

@@ -7,7 +7,9 @@
  * made to this file may be overwritten.
  * ------------------------------------------------------------
  */
-{
+
+
+ {
   "sections": {
     "image_banner": {
       "type": "image-banner",
@@ -164,12 +166,51 @@
         "stack_images_on_mobile": false,
         "show_text_below": false
       }
+    },
+    "image_gallery": {
+      "type": "image-gallery",
+      "blocks": {
+        "gallery-1": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/your_image_here.jpg",
+            "caption": "Beach Cart Demo"
+          }
+        },
+        "gallery-2": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/your_image_here.jpg",
+            "caption": "B-Wagon Setup"
+          }
+        },
+        "gallery-3": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/your_image_here.jpg",
+            "caption": "Beach Day"
+          }
+        }
+      },
+      "block_order": [
+        "gallery-1",
+        "gallery-2",
+        "gallery-3"
+      ],
+      "settings": {
+        "title": "See the B-Wagon in Action",
+        "columns_desktop": "3",
+        "color_scheme": "scheme-296d77c0-ca93-4e26-8f27-2413c21d303b",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
     }
   },
   "order": [
     "image_banner",
     "rich_text_GjcREb",
     "featured_product_rdhGN7",
+    "image_gallery",
     "image_banner_wTLNVH"
   ]
 }
