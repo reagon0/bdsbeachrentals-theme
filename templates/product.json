@@ -9,48 +9,6 @@
  */
 {
   "sections": {
-    "image_banner_mTbhtJ": {
-      "type": "image-banner",
-      "blocks": {
-        "heading_edKBaj": {
-          "type": "heading",
-          "settings": {
-            "heading": "Beach in luxury.",
-            "heading_size": "h0"
-          }
-        },
-        "buttons_yX3Lf6": {
-          "type": "buttons",
-          "settings": {
-            "booking_popup_button": true,
-            "button_label_1": "Reserve Now",
-            "button_link_1": "shopify://products/b-wagon",
-            "button_style_secondary_1": true,
-            "button_label_2": "",
-            "button_link_2": "",
-            "button_style_secondary_2": false
-          }
-        }
-      },
-      "block_order": [
-        "heading_edKBaj",
-        "buttons_yX3Lf6"
-      ],
-      "disabled": true,
-      "settings": {
-        "image": "shopify://shop_images/56173202-d8b4-4d43-83aa-910cf68b77ea.jpg",
-        "image_overlay_opacity": 0,
-        "image_height": "small",
-        "desktop_content_position": "top-center",
-        "show_text_box": false,
-        "desktop_content_alignment": "center",
-        "color_scheme": "scheme-3",
-        "image_behavior": "none",
-        "mobile_content_alignment": "center",
-        "stack_images_on_mobile": false,
-        "show_text_below": false
-      }
-    },
     "rich_text_hRFthA": {
       "type": "rich-text",
       "blocks": {
@@ -257,7 +215,6 @@
     }
   },
   "order": [
-    "image_banner_mTbhtJ",
     "rich_text_hRFthA",
     "main",
     "related-products",
