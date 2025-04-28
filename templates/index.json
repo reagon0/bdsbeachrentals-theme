@@ -151,7 +151,7 @@
       ],
       "disabled": true,
       "settings": {
-        "product": "b-wagon-single",
+        "product": "b-wagon",
         "color_scheme": "scheme-296d77c0-ca93-4e26-8f27-2413c21d303b",
         "secondary_background": false,
         "media_size": "medium",
